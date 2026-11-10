@@ -1,0 +1,18 @@
+# Build and Class files
+/build/
+bin/
+*.class
+
+# Eclipse metadata and temp files
+.metadata/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+
+# Logs and OS specific
+*.log
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
