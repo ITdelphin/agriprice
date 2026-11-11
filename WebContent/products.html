@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agricultural Commodities — AgriPrice Rwanda</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon">&#127793;</div>
+                <div class="brand-text">
+                    <h1>AgriPrice Rwanda</h1>
+                    <span>Rubavu &amp; Gisenyi Market System</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="prices.html" class="nav-link">Market Prices</a></li>
+                    <li><a href="watchlist.html" class="nav-link">My Watchlist</a></li>
+                    <li><a href="products.html" class="nav-link active">Products</a></li>
+                    <li><a href="markets.html" class="nav-link">Markets</a></li>
+                    <li><a href="export/prices" class="nav-link" target="_blank">XML Bulletin</a></li>
+                    <li id="guestNavLinks"><a href="login.html" class="btn btn-sm btn-primary">Agent Login</a></li>
+                    <li id="agentNavLinks" style="display:none;">
+                        <a href="dashboard.html" class="btn btn-sm btn-primary">Dashboard</a>
+                        <button id="btnLogout" class="btn btn-sm btn-secondary" style="margin-left: 6px;">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h2>Agricultural Products Directory</h2>
+                <p class="text-muted">Catalog of registered Rwandan produce, staple grains, tubers, and vegetables.</p>
+            </div>
+            <div>
+                <button id="btnOpenAddProduct" class="btn btn-primary" style="display:none;">+ Add New Product</button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="card" style="padding: 14px 20px; margin-bottom: 20px;">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <input type="text" id="productSearchInput" class="form-control" placeholder="Search commodity by name or category (e.g. Cereals, Tubers)...">
+                <button id="btnSearchProducts" class="btn btn-secondary">Search</button>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Commodity Name</th>
+                            <th>Category</th>
+                            <th>Standard Unit</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th id="thProductActions" style="display:none;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr><td colspan="7" style="text-align: center; padding: 30px;">Loading commodities...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Add / Edit Product -->
+    <div id="productModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="card" style="width: 460px; max-width: 90%; background: white; margin: auto;">
+            <div class="card-header">
+                <h3 id="modalProductTitle" class="card-title">Add New Product</h3>
+                <button id="btnCloseProductModal" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="modalAction" value="create">
+                <input type="hidden" id="modalProductId" value="0">
+                <div class="form-group">
+                    <label class="form-label">Commodity Name:</label>
+                    <input type="text" id="modalProductName" class="form-control" required placeholder="e.g. Sorghum Grain">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category:</label>
+                    <input type="text" id="modalProductCategory" class="form-control" required placeholder="e.g. Cereals, Legumes, Tubers">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Standard Unit:</label>
+                    <select id="modalProductUnit" class="form-control" required>
+                        <option value="kg">kg</option>
+                        <option value="piece">piece</option>
+                        <option value="sack">sack</option>
+                        <option value="bunch">bunch</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description:</label>
+                    <textarea id="modalProductDesc" class="form-control" rows="3" placeholder="Commodity details, varieties, origin..."></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                    <button type="button" id="btnCancelProductModal" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="margin: 0 auto;">
+            <p>&copy; 2026 AgriPrice Rwanda. All rights reserved. Developed for Advanced Web &amp; Internet Programming Final Assessment.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        let allProducts = [];
+        let isAgent = false;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const auth = await AgriAPI.checkAuthStatus();
+            isAgent = auth && auth.authenticated;
+
+            if (isAgent) {
+                document.getElementById('btnOpenAddProduct').style.display = 'inline-block';
+                document.getElementById('thProductActions').style.display = 'table-cell';
+            }
+
+            await loadProducts();
+            setupHandlers();
+        });
+
+        async function loadProducts() {
+            try {
+                allProducts = await AgriAPI.getProducts();
+                renderProducts(allProducts);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderProducts(list) {
+            const tbody = document.getElementById('productsTableBody');
+            if (!list || list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 25px;">No products found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(p => `
+                <tr>
+                    <td>#${p.productId}</td>
+                    <td><strong>${escapeHtml(p.productName)}</strong></td>
+                    <td><span class="badge badge-info">${escapeHtml(p.category)}</span></td>
+                    <td>${escapeHtml(p.defaultUnit)}</td>
+                    <td><small>${escapeHtml(p.description || '')}</small></td>
+                    <td><span class="badge badge-success">${escapeHtml(p.status)}</span></td>
+                    ${isAgent ? `
+                        <td>
+                            <button class="btn btn-sm btn-outline btn-edit-prod" 
+                                    data-id="${p.productId}" 
+                                    data-name="${escapeHtml(p.productName)}" 
+                                    data-cat="${escapeHtml(p.category)}" 
+                                    data-unit="${escapeHtml(p.defaultUnit)}" 
+                                    data-desc="${escapeHtml(p.description || '')}">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-delete-prod" data-id="${p.productId}">
+                                Delete
+                            </button>
+                        </td>
+                    ` : ''}
+                </tr>
+            `).join('');
+        }
+
+        function setupHandlers() {
+            // Search
+            document.getElementById('btnSearchProducts').addEventListener('click', () => {
+                const term = document.getElementById('productSearchInput').value.toLowerCase().trim();
+                const filtered = allProducts.filter(p => 
+                    p.productName.toLowerCase().includes(term) || 
+                    p.category.toLowerCase().includes(term) ||
+                    (p.description && p.description.toLowerCase().includes(term))
+                );
+                renderProducts(filtered);
+            });
+
+            document.getElementById('productSearchInput').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') document.getElementById('btnSearchProducts').click();
+            });
+
+            // Modal Handlers
+            const modal = document.getElementById('productModal');
+            const openModal = () => {
+                document.getElementById('modalProductTitle').textContent = 'Add New Product';
+                document.getElementById('modalAction').value = 'create';
+                document.getElementById('modalProductId').value = '0';
+                document.getElementById('productForm').reset();
+                modal.style.display = 'flex';
+            };
+            const closeModal = () => modal.style.display = 'none';
+
+            document.getElementById('btnOpenAddProduct').addEventListener('click', openModal);
+            document.getElementById('btnCloseProductModal').addEventListener('click', closeModal);
+            document.getElementById('btnCancelProductModal').addEventListener('click', closeModal);
+
+            document.getElementById('productsTableBody').addEventListener('click', async (e) => {
+                if (e.target && e.target.classList.contains('btn-edit-prod')) {
+                    const btn = e.target;
+                    document.getElementById('modalProductTitle').textContent = 'Edit Product';
+                    document.getElementById('modalAction').value = 'update';
+                    document.getElementById('modalProductId').value = btn.getAttribute('data-id');
+                    document.getElementById('modalProductName').value = btn.getAttribute('data-name');
+                    document.getElementById('modalProductCategory').value = btn.getAttribute('data-cat');
+                    document.getElementById('modalProductUnit').value = btn.getAttribute('data-unit');
+                    document.getElementById('modalProductDesc').value = btn.getAttribute('data-desc');
+                    modal.style.display = 'flex';
+                }
+
+                if (e.target && e.target.classList.contains('btn-delete-prod')) {
+                    const id = parseInt(e.target.getAttribute('data-id'), 10);
+                    if (confirm(`Are you sure you want to delete Product #${id}?`)) {
+                        const res = await fetch('api/products', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'delete', productId: id })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            App.showToast('Product deleted successfully.');
+                            await loadProducts();
+                        } else {
+                            App.showToast(data.message || 'Deletion failed.', 'error');
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('productForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payload = {
+                    action: document.getElementById('modalAction').value,
+                    productId: parseInt(document.getElementById('modalProductId').value, 10),
+                    productName: document.getElementById('modalProductName').value.trim(),
+                    category: document.getElementById('modalProductCategory').value.trim(),
+                    defaultUnit: document.getElementById('modalProductUnit').value,
+                    description: document.getElementById('modalProductDesc').value.trim(),
+                    status: 'ACTIVE'
+                };
+
+                const res = await fetch('api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    App.showToast(data.message);
+                    closeModal();
+                    await loadProducts();
+                } else {
+                    App.showToast(data.message || 'Operation failed.', 'error');
+                }
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+    </script>
+</body>
+</html>

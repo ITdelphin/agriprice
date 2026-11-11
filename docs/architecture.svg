@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1b5e20;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2e7d32;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradClient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradServer" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e0f2fe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#bae6fd;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradDb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fde68a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.1" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="700" fill="#f8faf9" />
+
+  <!-- Title Header -->
+  <rect x="50" y="25" width="1000" height="60" rx="8" fill="url(#gradHeader)" filter="url(#shadow)" />
+  <text x="550" y="62" font-family="'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    AgriPrice Rwanda — System Architecture Diagram (FAT Advanced Web Programming)
+  </text>
+
+  <!-- TIER 1: Presentation Tier (Client-Side) -->
+  <rect x="50" y="110" width="300" height="540" rx="10" fill="#ffffff" stroke="#2e7d32" stroke-width="2" filter="url(#shadow)" />
+  <rect x="50" y="110" width="300" height="45" rx="10" fill="url(#gradHeader)" />
+  <text x="200" y="140" font-family="'Segoe UI', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">TIER 1: Client Browser</text>
+
+  <!-- Client components -->
+  <g transform="translate(70, 175)">
+    <rect width="260" height="65" rx="6" fill="url(#gradClient)" stroke="#81c784" />
+    <text x="130" y="28" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">Public &amp; Agent UI Pages</text>
+    <text x="130" y="48" font-family="'Segoe UI', sans-serif" font-size="11" fill="#2e7d32" text-anchor="middle">HTML5, CSS3 (Mobile-Responsive)</text>
+  </g>
+
+  <g transform="translate(70, 255)">
+    <rect width="260" height="75" rx="6" fill="url(#gradClient)" stroke="#81c784" />
+    <text x="130" y="25" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">Client-Side MVC Watchlist</text>
+    <text x="130" y="44" font-family="'Segoe UI', sans-serif" font-size="11" fill="#374151" text-anchor="middle">watchlist-model.js (State)</text>
+    <text x="130" y="60" font-family="'Segoe UI', sans-serif" font-size="11" fill="#374151" text-anchor="middle">watchlist-view.js &amp; controller.js</text>
+  </g>
+
+  <g transform="translate(70, 345)">
+    <rect width="260" height="75" rx="6" fill="url(#gradClient)" stroke="#81c784" />
+    <text x="130" y="25" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">Asynchronous I/O Layer</text>
+    <text x="130" y="44" font-family="'Segoe UI', sans-serif" font-size="11" fill="#374151" text-anchor="middle">Fetch API (JSON)</text>
+    <text x="130" y="60" font-family="'Segoe UI', sans-serif" font-size="11" fill="#374151" text-anchor="middle">XMLHttpRequest (Section 13 Req)</text>
+  </g>
+
+  <g transform="translate(70, 435)">
+    <rect width="260" height="65" rx="6" fill="url(#gradClient)" stroke="#81c784" />
+    <text x="130" y="28" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">Data Visualization (Chart.js)</text>
+    <text x="130" y="48" font-family="'Segoe UI', sans-serif" font-size="11" fill="#374151" text-anchor="middle">Trends (Line), Comparison (Bar), Dist (Pie)</text>
+  </g>
+
+  <g transform="translate(70, 515)">
+    <rect width="260" height="65" rx="6" fill="url(#gradClient)" stroke="#81c784" />
+    <text x="130" y="28" font-family="'Segoe UI', sans-serif" font-size="13" font-weight="bold" fill="#1b5e20" text-anchor="middle">QUnit Automated Tests</text>
+    <text x="130" y="48" font-family="'Segoe UI', sans-serif" font-size="11" fill="#374151" text-anchor="middle">12 Unit Tests across 2 Modules</text>
+  </g>
+
+  <g transform="translate(70, 595)">
+    <rect width="260" height="40" rx="6" fill="url(#gradClient)" stroke="#81c784" />
+    <text x="130" y="25" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#1b5e20" text-anchor="middle">Client Cookies (Market &amp; Language)</text>
+  </g>
+
+  <!-- Connectors Tier 1 -> Tier 2 -->
+  <line x1="350" y1="210" x2="400" y2="210" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="350" y1="380" x2="400" y2="380" stroke="#0284c7" stroke-width="2" />
+  <line x1="350" y1="540" x2="400" y2="540" stroke="#2e7d32" stroke-width="2" />
+
+  <!-- TIER 2: Application Tier (Tomcat 9 + Java Servlets) -->
+  <rect x="400" y="110" width="350" height="540" rx="10" fill="#ffffff" stroke="#0284c7" stroke-width="2" filter="url(#shadow)" />
+  <rect x="400" y="110" width="350" height="45" rx="10" fill="#0284c7" />
+  <text x="575" y="140" font-family="'Segoe UI', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">TIER 2: Apache Tomcat 9 (Java Servlets)</text>
+
+  <g transform="translate(420, 170)">
+    <rect width="310" height="50" rx="6" fill="url(#gradServer)" stroke="#38bdf8" />
+    <text x="155" y="22" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">web.xml Context Params &amp; Listener</text>
+    <text x="155" y="38" font-family="'Segoe UI', sans-serif" font-size="10" fill="#0284c7" text-anchor="middle">db.url, db.username, db.password, outlier.threshold</text>
+  </g>
+
+  <g transform="translate(420, 230)">
+    <rect width="310" height="90" rx="6" fill="url(#gradServer)" stroke="#38bdf8" />
+    <text x="155" y="20" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">RESTful / JSON Servlet Layer</text>
+    <text x="155" y="38" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">AuthServlet (/api/auth) &bull; PriceServlet (/api/prices)</text>
+    <text x="155" y="54" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">MarketServlet &bull; ProductServlet &bull; WatchlistServlet</text>
+    <text x="155" y="70" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">DashboardServlet &bull; TrendServlet</text>
+  </g>
+
+  <g transform="translate(420, 330)">
+    <rect width="310" height="75" rx="6" fill="url(#gradServer)" stroke="#38bdf8" />
+    <text x="155" y="20" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">XML / XSLT / XPath / XSD Subsystem</text>
+    <text x="155" y="38" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">XMLExportServlet (/export/prices)</text>
+    <text x="155" y="54" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">prices.xsd Validation &bull; prices.xsl (HTML/SMS)</text>
+    <text x="155" y="68" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">ETag &amp; Last-Modified (304 Caching)</text>
+  </g>
+
+  <g transform="translate(420, 415)">
+    <rect width="310" height="60" rx="6" fill="url(#gradServer)" stroke="#38bdf8" />
+    <text x="155" y="20" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">Business Rules &amp; Security Validation</text>
+    <text x="155" y="38" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">PasswordUtil (PBKDF2-SHA256) &bull; ValidationUtil</text>
+    <text x="155" y="52" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">7-Day Outlier Calculation &bull; Positive Price Check</text>
+  </g>
+
+  <g transform="translate(420, 485)">
+    <rect width="310" height="80" rx="6" fill="url(#gradServer)" stroke="#38bdf8" />
+    <text x="155" y="20" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">Data Access Object (DAO) Pattern</text>
+    <text x="155" y="38" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">AgentDAO &bull; MarketDAO &bull; ProductDAO</text>
+    <text x="155" y="54" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">PriceDAO &bull; WatchlistDAO &bull; AuditLogDAO</text>
+    <text x="155" y="70" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">PreparedStatement &bull; Transactions &bull; Rollback</text>
+  </g>
+
+  <g transform="translate(420, 575)">
+    <rect width="310" height="55" rx="6" fill="url(#gradServer)" stroke="#38bdf8" />
+    <text x="155" y="20" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0369a1" text-anchor="middle">DatabaseConnection.java (JDBC)</text>
+    <text x="155" y="38" font-family="'Segoe UI', sans-serif" font-size="10" fill="#374151" text-anchor="middle">com.mysql.cj.jdbc.Driver &bull; Least Privilege User</text>
+  </g>
+
+  <!-- Connectors Tier 2 -> Tier 3 -->
+  <line x1="750" y1="520" x2="800" y2="520" stroke="#d97706" stroke-width="2" />
+  <line x1="750" y1="600" x2="800" y2="600" stroke="#d97706" stroke-width="2" />
+
+  <!-- TIER 3: Data Tier (MySQL 8.x) -->
+  <rect x="800" y="110" width="250" height="540" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="2" filter="url(#shadow)" />
+  <rect x="800" y="110" width="250" height="45" rx="10" fill="#d97706" />
+  <text x="925" y="140" font-family="'Segoe UI', sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">TIER 3: MySQL 8.x Database</text>
+
+  <g transform="translate(820, 175)">
+    <rect width="210" height="60" rx="6" fill="url(#gradDb)" stroke="#f59e0b" />
+    <text x="105" y="25" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">agents</text>
+    <text x="105" y="44" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">agent_id (PK), email (UQ), salt, hash</text>
+  </g>
+
+  <g transform="translate(820, 245)">
+    <rect width="210" height="60" rx="6" fill="url(#gradDb)" stroke="#f59e0b" />
+    <text x="105" y="25" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">markets</text>
+    <text x="105" y="44" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">market_id (PK), Rubavu/Gisenyi hubs</text>
+  </g>
+
+  <g transform="translate(820, 315)">
+    <rect width="210" height="60" rx="6" fill="url(#gradDb)" stroke="#f59e0b" />
+    <text x="105" y="25" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">products</text>
+    <text x="105" y="44" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">product_id (PK), commodity, unit</text>
+  </g>
+
+  <g transform="translate(820, 385)">
+    <rect width="210" height="75" rx="6" fill="url(#gradDb)" stroke="#f59e0b" />
+    <text x="105" y="22" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">price_reports</text>
+    <text x="105" y="40" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">report_id (PK), FKs (prod, market, ag)</text>
+    <text x="105" y="55" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">CHECK (price &gt; 0) &bull; UQ (m, p, date)</text>
+    <text x="105" y="68" font-family="'Segoe UI', sans-serif" font-size="9" fill="#78350f" text-anchor="middle">Composite Performance Indexes</text>
+  </g>
+
+  <g transform="translate(820, 470)">
+    <rect width="210" height="60" rx="6" fill="url(#gradDb)" stroke="#f59e0b" />
+    <text x="105" y="25" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">audit_log</text>
+    <text x="105" y="44" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">audit_id (PK), action, old_val, new_val</text>
+  </g>
+
+  <g transform="translate(820, 540)">
+    <rect width="210" height="60" rx="6" fill="url(#gradDb)" stroke="#f59e0b" />
+    <text x="105" y="25" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#92400e" text-anchor="middle">watchlist</text>
+    <text x="105" y="44" font-family="'Segoe UI', sans-serif" font-size="10" fill="#78350f" text-anchor="middle">watchlist_id (PK), session, target_price</text>
+  </g>
+
+  <g transform="translate(820, 610)">
+    <rect width="210" height="30" rx="4" fill="#fee2e2" stroke="#ef4444" />
+    <text x="105" y="20" font-family="'Segoe UI', sans-serif" font-size="10" font-weight="bold" fill="#b91c1c" text-anchor="middle">User: agriprice_user (Least Privilege)</text>
+  </g>
+
+</svg>

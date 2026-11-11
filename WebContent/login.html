@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Authentication — AgriPrice Rwanda</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon">&#127793;</div>
+                <div class="brand-text">
+                    <h1>AgriPrice Rwanda</h1>
+                    <span>Rubavu &amp; Gisenyi Market System</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="prices.html" class="nav-link">Market Prices</a></li>
+                    <li><a href="watchlist.html" class="nav-link">My Watchlist</a></li>
+                    <li><a href="products.html" class="nav-link">Products</a></li>
+                    <li><a href="markets.html" class="nav-link">Markets</a></li>
+                    <li><a href="login.html" class="nav-link active">Agent Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 520px; margin-top: 50px;">
+        <div class="card" style="box-shadow: var(--shadow-lg); border-top: 5px solid var(--primary);">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div class="brand-icon" style="margin: 0 auto 12px; width: 48px; height: 48px; font-size: 24px;">&#128272;</div>
+                <h2 style="color: var(--primary-dark);">Market Agent Portal</h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Authenticate to submit and correct daily agricultural prices.</p>
+            </div>
+
+            <!-- Login Feedback Alert Box -->
+            <div id="loginFeedback" class="alert-box" style="display: none;"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="agentEmail" class="form-label">Enumerator Email Address:</label>
+                    <input type="email" id="agentEmail" class="form-control" placeholder="e.g. delphin@agriprice.rw" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="agentPassword" class="form-label">Password:</label>
+                    <input type="password" id="agentPassword" class="form-control" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">
+                    Sign In Securely
+                </button>
+            </form>
+
+            <!-- Demonstration Credentials Helper Box for Academic Examination -->
+            <div style="margin-top: 24px; padding: 16px; background-color: var(--primary-soft); border-radius: var(--radius-sm); font-size: 0.85rem; border: 1px dashed var(--primary);">
+                <strong style="color: var(--primary-dark); display: block; margin-bottom: 6px;">&#128736; Academic Demonstration Accounts:</strong>
+                <p style="margin-bottom: 8px;"><strong>Shared Password:</strong> <code>Agent@123456</code></p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <div><a href="#" class="quick-fill" data-email="delphin@agriprice.rw">&#10148; delphin@agriprice.rw</a> (Rubavu)</div>
+                    <div><a href="#" class="quick-fill" data-email="bizimana@agriprice.rw">&#10148; bizimana@agriprice.rw</a> (Gisenyi)</div>
+                    <div><a href="#" class="quick-fill" data-email="uwase@agriprice.rw">&#10148; uwase@agriprice.rw</a> (Mahoko)</div>
+                    <div><a href="#" class="quick-fill" data-email="habimana@agriprice.rw">&#10148; habimana@agriprice.rw</a> (Nyabugogo)</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="margin: 0 auto;">
+            <p>&copy; 2026 AgriPrice Rwanda. All rights reserved. Developed for Advanced Web &amp; Internet Programming Final Assessment.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Quick fill demo links
+            document.querySelectorAll('.quick-fill').forEach(a => {
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('agentEmail').value = a.getAttribute('data-email');
+                    document.getElementById('agentPassword').value = 'Agent@123456';
+                });
+            });
+
+            const form = document.getElementById('loginForm');
+            const feedback = document.getElementById('loginFeedback');
+            const btnSubmit = document.getElementById('btnLoginSubmit');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                feedback.style.display = 'none';
+                btnSubmit.disabled = true;
+                btnSubmit.textContent = 'Verifying PBKDF2 Hash...';
+
+                const email = document.getElementById('agentEmail').value.trim();
+                const password = document.getElementById('agentPassword').value;
+
+                try {
+                    const res = await AgriAPI.login(email, password);
+                    if (res.status === 200 && res.data.success) {
+                        feedback.className = 'alert-box alert-success';
+                        feedback.style.display = 'block';
+                        feedback.innerHTML = `<strong>Welcome, ${res.data.fullName}!</strong> Redirecting to Agent Dashboard...`;
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    } else {
+                        feedback.className = 'alert-box alert-warning';
+                        feedback.style.display = 'block';
+                        feedback.innerHTML = `<strong>Login Failed:</strong> ${res.data.message || 'Invalid credentials'}`;
+                        btnSubmit.disabled = false;
+                        btnSubmit.textContent = 'Sign In Securely';
+                    }
+                } catch (err) {
+                    feedback.className = 'alert-box alert-warning';
+                    feedback.style.display = 'block';
+                    feedback.textContent = 'Server connection error during login.';
+                    btnSubmit.disabled = false;
+                    btnSubmit.textContent = 'Sign In Securely';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

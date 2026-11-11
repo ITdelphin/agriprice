@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+  <!-- =================================================================== -->
+  <!-- AgriPrice Rwanda - Daily Agricultural Market Bulletin Schema (XSD)   -->
+  <!-- =================================================================== -->
+
+  <!-- Root Element -->
+  <xs:element name="marketBulletin">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata" type="MetadataType"/>
+        <xs:element name="reports" type="ReportsType"/>
+      </xs:sequence>
+      <!-- Constraint 2: Date must use valid xs:date type -->
+      <xs:attribute name="bulletinDate" type="xs:date" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Metadata Type -->
+  <xs:complexType name="MetadataType">
+    <xs:sequence>
+      <xs:element name="publisher" type="xs:string"/>
+      <xs:element name="region" type="xs:string"/>
+      <xs:element name="totalReports" type="xs:nonNegativeInteger"/>
+      <xs:element name="currency" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Reports Container -->
+  <xs:complexType name="ReportsType">
+    <xs:sequence>
+      <xs:element name="priceReport" type="PriceReportType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Individual Price Report -->
+  <xs:complexType name="PriceReportType">
+    <xs:sequence>
+      <xs:element name="market" type="MarketType"/>
+      <xs:element name="product" type="ProductType"/>
+      <!-- Constraint 1: Price must be strictly greater than zero with unit enum -->
+      <xs:element name="price">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="PositivePriceType">
+              <!-- Constraint 4: Unit must use defined enumeration -->
+              <xs:attribute name="unit" type="UnitEnumType" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <!-- Constraint 5: Agent must be required -->
+      <xs:element name="agent" type="NonEmptyStringType"/>
+      <!-- Constraint 2b: Report date must use valid date type -->
+      <xs:element name="reportDate" type="xs:date"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+  </xs:complexType>
+
+  <!-- Market Type with Constraint 3: Market Name Enumeration -->
+  <xs:complexType name="MarketType">
+    <xs:sequence>
+      <xs:element name="marketId" type="xs:positiveInteger"/>
+      <xs:element name="marketName" type="MarketNameEnumType"/>
+      <xs:element name="district" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Product Type -->
+  <xs:complexType name="ProductType">
+    <xs:sequence>
+      <xs:element name="productId" type="xs:positiveInteger"/>
+      <xs:element name="productName" type="xs:string"/>
+      <xs:element name="category" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Custom Constrained Types -->
+  <!-- Positive Price Type: minExclusive > 0 -->
+  <xs:simpleType name="PositivePriceType">
+    <xs:restriction base="xs:decimal">
+      <xs:minExclusive value="0.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Unit Enumeration -->
+  <xs:simpleType name="UnitEnumType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="kg"/>
+      <xs:enumeration value="piece"/>
+      <xs:enumeration value="sack"/>
+      <xs:enumeration value="bunch"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Market Name Enumeration -->
+  <xs:simpleType name="MarketNameEnumType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Gisenyi Central Market"/>
+      <xs:enumeration value="Rubavu Cross-Border Market"/>
+      <xs:enumeration value="Mahoko Modern Market"/>
+      <xs:enumeration value="Nyabugogo Central Market"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Non-empty String -->
+  <xs:simpleType name="NonEmptyStringType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:whiteSpace value="collapse"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

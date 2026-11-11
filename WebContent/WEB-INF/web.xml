@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <display-name>AgriPrice Rwanda</display-name>
+    <description>Agricultural Market Price Information System for Rubavu and Gisenyi, Rwanda</description>
+
+    <!-- =================================================================== -->
+    <!-- Database Configuration Context Parameters (Strict Requirement: No Hardcoding) -->
+    <!-- =================================================================== -->
+    <context-param>
+        <param-name>db.url</param-name>
+        <param-value>jdbc:mysql://localhost:3306/agriprice?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC&amp;characterEncoding=UTF-8</param-value>
+    </context-param>
+    <context-param>
+        <param-name>db.username</param-name>
+        <param-value>agriprice_user</param-value>
+    </context-param>
+    <context-param>
+        <param-name>db.password</param-name>
+        <param-value>AgriPrice@2026</param-value>
+    </context-param>
+    <context-param>
+        <param-name>outlier.threshold</param-name>
+        <param-value>25.0</param-value>
+    </context-param>
+
+    <!-- Lifecycle Listener for Database Configuration -->
+    <listener>
+        <listener-class>com.agriprice.config.DatabaseConnection</listener-class>
+    </listener>
+
+    <!-- =================================================================== -->
+    <!-- Servlet Declarations and Mappings                                   -->
+    <!-- =================================================================== -->
+
+    <!-- Authentication Servlet -->
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.AuthServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/api/auth/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Price Reports Management Servlet -->
+    <servlet>
+        <servlet-name>PriceServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.PriceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PriceServlet</servlet-name>
+        <url-pattern>/api/prices/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Market Management Servlet -->
+    <servlet>
+        <servlet-name>MarketServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.MarketServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MarketServlet</servlet-name>
+        <url-pattern>/api/markets/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Product Management Servlet -->
+    <servlet>
+        <servlet-name>ProductServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.ProductServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductServlet</servlet-name>
+        <url-pattern>/api/products/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Watchlist Management Servlet -->
+    <servlet>
+        <servlet-name>WatchlistServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.WatchlistServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WatchlistServlet</servlet-name>
+        <url-pattern>/api/watchlist/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Dashboard Aggregate Metrics Servlet -->
+    <servlet>
+        <servlet-name>DashboardServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.DashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DashboardServlet</servlet-name>
+        <url-pattern>/api/dashboard/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Price Trends and Visualization Analytics Servlet -->
+    <servlet>
+        <servlet-name>TrendServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.TrendServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TrendServlet</servlet-name>
+        <url-pattern>/api/trends/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- XML Daily Market Bulletin Export Servlet -->
+    <servlet>
+        <servlet-name>XMLExportServlet</servlet-name>
+        <servlet-class>com.agriprice.servlet.XMLExportServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>XMLExportServlet</servlet-name>
+        <url-pattern>/export/prices</url-pattern>
+    </servlet-mapping>
+
+    <!-- =================================================================== -->
+    <!-- Session Configuration & Security                                    -->
+    <!-- =================================================================== -->
+    <session-config>
+        <session-timeout>60</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
+    <!-- Default Welcome Files -->
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

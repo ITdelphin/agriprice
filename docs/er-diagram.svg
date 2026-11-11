@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" width="100%" height="100%">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1b5e20;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2e7d32;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.1" />
+    </filter>
+  </defs>
+
+  <rect width="1100" height="750" fill="#f8faf9" />
+
+  <!-- Main Title -->
+  <rect x="50" y="20" width="1000" height="50" rx="6" fill="url(#headerGrad)" />
+  <text x="550" y="52" font-family="'Segoe UI', sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    AgriPrice Rwanda — Entity-Relationship (ER) Relational Diagram
+  </text>
+
+  <!-- TABLE: markets -->
+  <g transform="translate(60, 100)" filter="url(#shadow)">
+    <rect width="280" height="210" rx="8" fill="#ffffff" stroke="#2e7d32" stroke-width="2" />
+    <path d="M 0 0 L 280 0 L 280 36 L 0 36 Z" fill="#2e7d32" />
+    <text x="140" y="24" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">markets</text>
+    
+    <text x="15" y="60" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#b91c1c">&#128273; market_id : INT (PK, AI)</text>
+    <text x="15" y="85" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">market_name : VARCHAR(100) [UQ]</text>
+    <text x="15" y="110" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">district : VARCHAR(50)</text>
+    <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">province : VARCHAR(50)</text>
+    <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">location_description : TEXT</text>
+    <text x="15" y="185" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6b7280">created_at : TIMESTAMP</text>
+  </g>
+
+  <!-- TABLE: products -->
+  <g transform="translate(60, 360)" filter="url(#shadow)">
+    <rect width="280" height="210" rx="8" fill="#ffffff" stroke="#2e7d32" stroke-width="2" />
+    <path d="M 0 0 L 280 0 L 280 36 L 0 36 Z" fill="#2e7d32" />
+    <text x="140" y="24" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">products</text>
+    
+    <text x="15" y="60" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#b91c1c">&#128273; product_id : INT (PK, AI)</text>
+    <text x="15" y="85" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">product_name : VARCHAR(100) [UQ]</text>
+    <text x="15" y="110" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">category : VARCHAR(50)</text>
+    <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">default_unit : VARCHAR(20)</text>
+    <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">description : TEXT</text>
+    <text x="15" y="185" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">status : VARCHAR(20) [ACTIVE]</text>
+  </g>
+
+  <!-- TABLE: agents -->
+  <g transform="translate(760, 100)" filter="url(#shadow)">
+    <rect width="280" height="235" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2" />
+    <path d="M 0 0 L 280 0 L 280 36 L 0 36 Z" fill="#0284c7" />
+    <text x="140" y="24" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">agents</text>
+    
+    <text x="15" y="60" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#b91c1c">&#128273; agent_id : INT (PK, AI)</text>
+    <text x="15" y="85" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">full_name : VARCHAR(100)</text>
+    <text x="15" y="110" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">email : VARCHAR(100) [UQ]</text>
+    <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">phone : VARCHAR(20)</text>
+    <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">password_hash : VARCHAR(128)</text>
+    <text x="15" y="185" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">password_salt : VARCHAR(64)</text>
+    <text x="15" y="210" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6b7280">status : VARCHAR(20) &bull; created_at</text>
+  </g>
+
+  <!-- TABLE: price_reports (Central Relational Hub) -->
+  <g transform="translate(400, 190)" filter="url(#shadow)">
+    <rect width="300" height="280" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="2.5" />
+    <path d="M 0 0 L 300 0 L 300 36 L 0 36 Z" fill="#d97706" />
+    <text x="150" y="24" font-family="'Segoe UI', sans-serif" font-size="15" font-weight="bold" fill="#ffffff" text-anchor="middle">price_reports (Fact Hub)</text>
+    
+    <text x="15" y="60" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#b91c1c">&#128273; report_id : INT (PK, AI)</text>
+    <text x="15" y="85" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0284c7">&#128279; product_id : INT (FK -&gt; products)</text>
+    <text x="15" y="110" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0284c7">&#128279; market_id : INT (FK -&gt; markets)</text>
+    <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#0284c7">&#128279; agent_id : INT (FK -&gt; agents)</text>
+    <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">unit : VARCHAR(20) [kg/piece/sack]</text>
+    <text x="15" y="185" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#1b5e20">price_rwf : DECIMAL(10,2) [CHECK &gt; 0]</text>
+    <text x="15" y="210" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">report_date : DATE</text>
+    <text x="15" y="235" font-family="'Segoe UI', sans-serif" font-size="11" fill="#4b5563">[UQ: market_id + product_id + report_date]</text>
+    <text x="15" y="255" font-family="'Segoe UI', sans-serif" font-size="11" fill="#6b7280">created_at &bull; updated_at : TIMESTAMP</text>
+  </g>
+
+  <!-- TABLE: audit_log -->
+  <g transform="translate(760, 410)" filter="url(#shadow)">
+    <rect width="280" height="210" rx="8" fill="#ffffff" stroke="#6b7280" stroke-width="2" />
+    <path d="M 0 0 L 280 0 L 280 36 L 0 36 Z" fill="#4b5563" />
+    <text x="140" y="24" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">audit_log (Audit Trail)</text>
+    
+    <text x="15" y="60" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#b91c1c">&#128273; audit_id : INT (PK, AI)</text>
+    <text x="15" y="85" font-family="'Segoe UI', sans-serif" font-size="12" fill="#0284c7">&#128279; agent_id : INT (FK -&gt; agents)</text>
+    <text x="15" y="110" font-family="'Segoe UI', sans-serif" font-size="12" fill="#0284c7">&#128279; report_id : INT (FK -&gt; price_reports)</text>
+    <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">action : VARCHAR(50)</text>
+    <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">old_value : TEXT</text>
+    <text x="15" y="185" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">new_value : TEXT</text>
+  </g>
+
+  <!-- TABLE: watchlist -->
+  <g transform="translate(400, 520)" filter="url(#shadow)">
+    <rect width="300" height="190" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="2" />
+    <path d="M 0 0 L 300 0 L 300 36 L 0 36 Z" fill="#7c3aed" />
+    <text x="150" y="24" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">watchlist (Visitor Alerts)</text>
+    
+    <text x="15" y="60" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#b91c1c">&#128273; watchlist_id : INT (PK, AI)</text>
+    <text x="15" y="85" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">visitor_session_id : VARCHAR(100)</text>
+    <text x="15" y="110" font-family="'Segoe UI', sans-serif" font-size="12" fill="#0284c7">&#128279; product_id : INT (FK -&gt; products)</text>
+    <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" fill="#0284c7">&#128279; market_id : INT (FK, NULLable)</text>
+    <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold" fill="#1b5e20">target_price : DECIMAL(10,2) [&gt;0]</text>
+  </g>
+
+  <!-- RELATIONSHIP LINES -->
+  <!-- markets -> price_reports (1 : N) -->
+  <path d="M 340 180 L 370 180 L 370 290 L 400 290" fill="none" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4,2" />
+  <circle cx="340" cy="180" r="4" fill="#2e7d32" />
+  <polygon points="400,290 390,285 390,295" fill="#2e7d32" />
+
+  <!-- products -> price_reports (1 : N) -->
+  <path d="M 340 450 L 370 450 L 370 320 L 400 320" fill="none" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4,2" />
+  <circle cx="340" cy="450" r="4" fill="#2e7d32" />
+  <polygon points="400,320 390,315 390,325" fill="#2e7d32" />
+
+  <!-- agents -> price_reports (1 : N) -->
+  <path d="M 760 210 L 730 210 L 730 320 L 700 320" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,2" />
+  <circle cx="760" cy="210" r="4" fill="#0284c7" />
+  <polygon points="700,320 710,315 710,325" fill="#0284c7" />
+
+  <!-- price_reports -> audit_log (1 : N) -->
+  <path d="M 700 350 L 730 350 L 730 490 L 760 490" fill="none" stroke="#d97706" stroke-width="2" stroke-dasharray="4,2" />
+  <circle cx="700" cy="350" r="4" fill="#d97706" />
+  <polygon points="760,490 750,485 750,495" fill="#d97706" />
+
+  <!-- products -> watchlist (1 : N) -->
+  <path d="M 200 570 L 200 630 L 400 630" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,2" />
+  <circle cx="200" cy="570" r="4" fill="#7c3aed" />
+  <polygon points="400,630 390,625 390,635" fill="#7c3aed" />
+
+</svg>
