@@ -62,13 +62,13 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>#ID</th>
-                            <th>Commodity Name</th>
+                            <th>Commodity</th>
+                            <th>Name</th>
                             <th>Category</th>
                             <th>Standard Unit</th>
                             <th>Description</th>
                             <th>Status</th>
-                            <th id="thProductActions" style="display:none;">Actions</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="productsTableBody">
@@ -134,13 +134,21 @@
         let allProducts = [];
         let isAgent = false;
 
+        const productImages = {
+            1: 'assets/images/maize.svg',
+            2: 'assets/images/potatoes.svg',
+            3: 'assets/images/beans.svg',
+            4: 'assets/images/cassava.svg',
+            5: 'assets/images/onions.svg',
+            6: 'assets/images/bananas.svg'
+        };
+
         document.addEventListener('DOMContentLoaded', async () => {
             const auth = await AgriAPI.checkAuthStatus();
             isAgent = auth && auth.authenticated;
 
             if (isAgent) {
                 document.getElementById('btnOpenAddProduct').style.display = 'inline-block';
-                document.getElementById('thProductActions').style.display = 'table-cell';
             }
 
             await loadProducts();
@@ -163,17 +171,22 @@
                 return;
             }
 
-            tbody.innerHTML = list.map(p => `
+            tbody.innerHTML = list.map(p => {
+                const imgSrc = productImages[p.productId] || 'assets/images/maize.svg';
+                return `
                 <tr>
-                    <td>#${p.productId}</td>
+                    <td style="width: 60px; text-align: center;">
+                        <img src="${imgSrc}" alt="${escapeHtml(p.productName)}" style="width: 44px; height: 44px; object-fit: contain;">
+                    </td>
                     <td><strong>${escapeHtml(p.productName)}</strong></td>
                     <td><span class="badge badge-info">${escapeHtml(p.category)}</span></td>
                     <td>${escapeHtml(p.defaultUnit)}</td>
                     <td><small>${escapeHtml(p.description || '')}</small></td>
                     <td><span class="badge badge-success">${escapeHtml(p.status)}</span></td>
-                    ${isAgent ? `
-                        <td>
-                            <button class="btn btn-sm btn-outline btn-edit-prod" 
+                    <td>
+                        <a href="prices.html?productId=${p.productId}" class="btn btn-sm btn-outline">&#128269; View Prices</a>
+                        ${isAgent ? `
+                            <button class="btn btn-sm btn-secondary btn-edit-prod" 
                                     data-id="${p.productId}" 
                                     data-name="${escapeHtml(p.productName)}" 
                                     data-cat="${escapeHtml(p.category)}" 
@@ -184,10 +197,10 @@
                             <button class="btn btn-sm btn-danger btn-delete-prod" data-id="${p.productId}">
                                 Delete
                             </button>
-                        </td>
-                    ` : ''}
+                        ` : ''}
+                    </td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
         function setupHandlers() {

@@ -143,16 +143,18 @@
             }
 
             container.innerHTML = list.map(m => `
-                <div class="card" style="border-left: 4px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="card" style="border-left: 5px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md);">
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                            <h3 style="color: var(--primary-dark); font-size: 1.15rem;">${escapeHtml(m.marketName)}</h3>
+                            <h3 style="color: var(--primary-dark); font-size: 1.25rem;">
+                                &#127968; ${escapeHtml(m.marketName)}
+                            </h3>
                             <span class="badge badge-info">${escapeHtml(m.district)}</span>
                         </div>
                         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
                             <strong>Province:</strong> ${escapeHtml(m.province)}
                         </p>
-                        <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px;">
+                        <p style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px;">
                             ${escapeHtml(m.locationDescription || 'Major agricultural trading point.')}
                         </p>
                     </div>

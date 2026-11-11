@@ -37,7 +37,7 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Background Photo -->
     <section class="hero">
         <div class="hero-content">
             <h2>Reliable Agricultural Market Prices in Rwanda</h2>
@@ -68,7 +68,7 @@
     <main class="container">
 
         <!-- Top Preferences & Fast XHR Snapshot Bar -->
-        <div class="card" style="padding: 14px 20px; margin-bottom: 24px; background: #fdfdfd;">
+        <div class="card" style="padding: 14px 20px; margin-bottom: 24px; background: #ffffff;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <div>
@@ -99,6 +99,50 @@
             </div>
             <div id="xhrSnapshotOutput" style="display: none; margin-top: 12px; padding: 10px; background: #e8f5e9; border-radius: 6px; font-size: 0.85rem;"></div>
         </div>
+
+        <!-- Featured Agricultural Commodities Showcase (Images Added) -->
+        <section class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">&#127793; Popular Agricultural Commodities in Rubavu &amp; Gisenyi</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Click any staple crop to explore market price trends and set personal buy targets.</p>
+                </div>
+                <a href="products.html" class="btn btn-sm btn-outline">All Products &rarr;</a>
+            </div>
+
+            <div class="grid-6">
+                <a href="prices.html?productId=1" class="commodity-card">
+                    <img src="assets/images/maize.svg" alt="Maize Grain" class="commodity-thumb">
+                    <span class="commodity-title">Maize Grain</span>
+                    <span class="commodity-cat">Cereals</span>
+                </a>
+                <a href="prices.html?productId=2" class="commodity-card">
+                    <img src="assets/images/potatoes.svg" alt="Irish Potatoes" class="commodity-thumb">
+                    <span class="commodity-title">Kinigi Potatoes</span>
+                    <span class="commodity-cat">Tubers</span>
+                </a>
+                <a href="prices.html?productId=3" class="commodity-card">
+                    <img src="assets/images/beans.svg" alt="Dry Beans" class="commodity-thumb">
+                    <span class="commodity-title">Colta Beans</span>
+                    <span class="commodity-cat">Legumes</span>
+                </a>
+                <a href="prices.html?productId=4" class="commodity-card">
+                    <img src="assets/images/cassava.svg" alt="Cassava Flour" class="commodity-thumb">
+                    <span class="commodity-title">Cassava Flour</span>
+                    <span class="commodity-cat">Flour</span>
+                </a>
+                <a href="prices.html?productId=5" class="commodity-card">
+                    <img src="assets/images/onions.svg" alt="Red Onions" class="commodity-thumb">
+                    <span class="commodity-title">Red Onions</span>
+                    <span class="commodity-cat">Vegetables</span>
+                </a>
+                <a href="prices.html?productId=6" class="commodity-card">
+                    <img src="assets/images/bananas.svg" alt="Bananas Matooke" class="commodity-thumb">
+                    <span class="commodity-title">Matooke</span>
+                    <span class="commodity-cat">Fruits</span>
+                </a>
+            </div>
+        </section>
 
         <!-- Latest Prices Section -->
         <section class="card">
@@ -155,22 +199,17 @@
             </div>
         </div>
 
-        <!-- About and Location Focus Section -->
-        <section class="card" style="background: linear-gradient(to right, #ffffff, #f7faf8); border-left: 4px solid var(--primary);">
-            <div class="grid-2">
+        <!-- About and Location Focus Section with Farm Image Accent -->
+        <section class="card" style="position: relative; overflow: hidden; border-left: 5px solid var(--primary);">
+            <div class="grid-2" style="align-items: center;">
                 <div>
                     <h3 style="color: var(--primary-dark); margin-bottom: 10px;">About AgriPrice Rwanda</h3>
                     <p>AgriPrice Rwanda was developed for the <strong>Final Assessment Test (FAT) — Advanced Web and Internet Programming</strong>. It addresses market information asymmetry across border markets in Rubavu and Gisenyi.</p>
                     <p style="margin-top: 10px;">The system enforces database integrity constraints, outlier detection algorithms, atomic transactions, XML daily bulletin exports with XSLT/XPath, client-side MVC watchlists, and secure agent authentication.</p>
                 </div>
-                <div>
-                    <h4 style="color: var(--primary-dark); margin-bottom: 8px;">Key Monitored Hubs</h4>
-                    <ul style="padding-left: 20px; font-size: 0.95rem; line-height: 1.8;">
-                        <li><strong>Gisenyi Central Market:</strong> Principal retail hub near Grand Barriere border.</li>
-                        <li><strong>Rubavu Cross-Border Market:</strong> High-volume Petite Barriere regional produce hub.</li>
-                        <li><strong>Mahoko Modern Market:</strong> Agricultural collector hub along Rubavu highway.</li>
-                        <li><strong>Nyabugogo Central Market:</strong> Kigali terminal connecting harvest supply chains.</li>
-                    </ul>
+                <div style="text-align: center;">
+                    <img src="assets/images/farm-bg.jpg" alt="Rwandan Agricultural Farmland in Western Province" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; box-shadow: var(--shadow-md);">
+                    <small style="color: var(--text-muted); display: block; margin-top: 6px;">Cultivated highland agricultural terraces in Western Province, Rwanda</small>
                 </div>
             </div>
         </section>
