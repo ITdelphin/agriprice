@@ -1,0 +1,10 @@
+.git
+.vercel
+build
+public
+docs
+*.war
+*.zip
+*.log
+Thumbs.db
+.DS_Store
