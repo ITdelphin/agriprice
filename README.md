@@ -77,10 +77,11 @@ Following the Principle of Least Privilege, database settings are supplied at ru
 Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 
 ### 3.3 Reset Email Settings
-Password reset links are delivered over SMTP SSL. Configure these runtime variables:
+Password reset links are delivered over SMTP with SSL or STARTTLS. Configure these runtime variables:
 
 - `AGRIPRICE_SMTP_HOST` — defaults to `smtp.gmail.com`
-- `AGRIPRICE_SMTP_PORT` — defaults to `465`
+- `AGRIPRICE_SMTP_PORT` — defaults to `587`
+- `AGRIPRICE_SMTP_SECURITY` — `starttls` or `ssl`; auto-detected from the port when omitted
 - `AGRIPRICE_SMTP_USER` — mailbox used to authenticate
 - `AGRIPRICE_SMTP_PASSWORD` — mailbox app password; never committed
 - `AGRIPRICE_SMTP_FROM` — optional sender address; defaults to `AGRIPRICE_SMTP_USER`

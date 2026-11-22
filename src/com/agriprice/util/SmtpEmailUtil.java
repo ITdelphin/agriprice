@@ -6,9 +6,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 public final class SmtpEmailUtil {
@@ -24,11 +25,14 @@ public final class SmtpEmailUtil {
 
     public static void sendPasswordResetEmail(String to, String resetUrl, int expiryMinutes) throws IOException {
         String host = setting("AGRIPRICE_SMTP_HOST") == null ? "smtp.gmail.com" : setting("AGRIPRICE_SMTP_HOST");
-        int port = 465;
+        int port = 587;
         String portValue = setting("AGRIPRICE_SMTP_PORT");
         if (portValue != null) {
             port = Integer.parseInt(portValue);
         }
+        String security = setting("AGRIPRICE_SMTP_SECURITY");
+        boolean ssl = "ssl".equalsIgnoreCase(security)
+                || (security == null && (port == 465 || port == 8465 || port == 443));
         String user = setting("AGRIPRICE_SMTP_USER");
         String password = setting("AGRIPRICE_SMTP_PASSWORD");
         String from = fromAddress();
@@ -45,12 +49,22 @@ public final class SmtpEmailUtil {
                 + "If you did not request this, ignore this email and your password will stay unchanged.\n\n"
                 + "AgriPrice Rwanda";
 
-        try (SSLSocket socket = (SSLSocket) SSLSocketFactory.getDefault().createSocket(host, port)) {
-            socket.setSoTimeout(15000);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-            Writer writer = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
+        Socket socket = connect(host, port, ssl);
+        try {
+            BufferedReader reader = reader(socket);
+            Writer writer = writer(socket);
 
             require(readResponse(reader), 2, "SMTP greeting failed");
+
+            if (!ssl) {
+                send(writer, reader, "EHLO " + InetAddress.getLocalHost().getHostName(), 2, "EHLO failed");
+                send(writer, reader, "STARTTLS", 2, "STARTTLS failed");
+                socket = ((SSLSocketFactory) SSLSocketFactory.getDefault()).createSocket(socket, host, port, true);
+                socket.setSoTimeout(15000);
+                reader = reader(socket);
+                writer = writer(socket);
+            }
+
             send(writer, reader, "EHLO " + InetAddress.getLocalHost().getHostName(), 2, "EHLO failed");
             send(writer, reader, "AUTH LOGIN", 3, "AUTH LOGIN failed");
             send(writer, reader, encode(user), 3, "SMTP username rejected");
@@ -66,8 +80,7 @@ public final class SmtpEmailUtil {
             line(writer, "Content-Type: text/plain; charset=UTF-8");
             line(writer, "Content-Transfer-Encoding: 8bit");
             line(writer, "");
-            String[] bodyLines = body.split("\\R", -1);
-            for (String bodyLine : bodyLines) {
+            for (String bodyLine : body.split("\\R", -1)) {
                 line(writer, bodyLine.startsWith(".") ? "." + bodyLine : bodyLine);
             }
             line(writer, ".");
@@ -75,7 +88,24 @@ public final class SmtpEmailUtil {
 
             require(readResponse(reader), 2, "Message rejected");
             send(writer, reader, "QUIT", -1, "QUIT failed");
+        } finally {
+            socket.close();
         }
+    }
+
+    private static Socket connect(String host, int port, boolean ssl) throws IOException {
+        Socket socket = ssl ? SSLSocketFactory.getDefault().createSocket() : new Socket();
+        socket.connect(new InetSocketAddress(host, port), 15000);
+        socket.setSoTimeout(15000);
+        return socket;
+    }
+
+    private static BufferedReader reader(Socket socket) throws IOException {
+        return new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+    }
+
+    private static Writer writer(Socket socket) throws IOException {
+        return new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
     }
 
     private static String fromAddress() {
