@@ -77,16 +77,20 @@ Following the Principle of Least Privilege, database settings are supplied at ru
 Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 
 ### 3.3 Reset Email Settings
-Password reset links are delivered over SMTP with SSL or STARTTLS. Configure these runtime variables:
+Password reset links are delivered over Brevo's HTTPS email API when `AGRIPRICE_BREVO_API_KEY` is set. This works on Railway Free/Trial/Hobby plans, where outbound SMTP is blocked. SMTP with SSL or STARTTLS remains a fallback only on platforms that allow outbound SMTP.
+
+- `AGRIPRICE_BREVO_API_KEY` — Brevo API key; never committed
+- `AGRIPRICE_SMTP_FROM` — verified sender address; defaults to `AGRIPRICE_SMTP_USER`
+- `AGRIPRICE_PUBLIC_BASE_URL` — e.g. `https://agripricerwanda.vercel.app`
+- `AGRIPRICE_RESET_PREVIEW` — development-only `true` value that returns the link in the API response; never enable in production
+
+SMTP fallback settings:
 
 - `AGRIPRICE_SMTP_HOST` — defaults to `smtp.gmail.com`
 - `AGRIPRICE_SMTP_PORT` — defaults to `587`
 - `AGRIPRICE_SMTP_SECURITY` — `starttls` or `ssl`; auto-detected from the port when omitted
 - `AGRIPRICE_SMTP_USER` — mailbox used to authenticate
 - `AGRIPRICE_SMTP_PASSWORD` — mailbox app password; never committed
-- `AGRIPRICE_SMTP_FROM` — optional sender address; defaults to `AGRIPRICE_SMTP_USER`
-- `AGRIPRICE_PUBLIC_BASE_URL` — e.g. `https://agripricerwanda.vercel.app`
-- `AGRIPRICE_RESET_PREVIEW` — development-only `true` value that returns the link in the API response; never enable in production
 
 ---
 
