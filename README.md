@@ -77,15 +77,20 @@ Following the Principle of Least Privilege, database settings are supplied at ru
 Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 
 ### 3.3 Reset Email Settings
-Password reset links are delivered over Brevo's HTTPS email API when `AGRIPRICE_BREVO_API_KEY` is set. This works on Railway Free/Trial/Hobby plans, where outbound SMTP is blocked. SMTP with SSL or STARTTLS remains a fallback only on platforms that allow outbound SMTP.
+Password reset links are delivered over the Gmail API over HTTPS when `AGRIPRICE_GMAIL_CLIENT_ID`, `AGRIPRICE_GMAIL_CLIENT_SECRET`, and `AGRIPRICE_GMAIL_REFRESH_TOKEN` are set. This works on Railway Free/Trial/Hobby plans, where outbound SMTP is blocked. Brevo API and SMTP are secondary fallbacks.
 
-- `AGRIPRICE_BREVO_API_KEY` — Brevo API key; never committed
-- `AGRIPRICE_SMTP_FROM` — verified sender address; defaults to `AGRIPRICE_SMTP_USER`
+Primary Gmail API settings:
+
+- `AGRIPRICE_GMAIL_CLIENT_ID` — Google OAuth client id; never committed
+- `AGRIPRICE_GMAIL_CLIENT_SECRET` — Google OAuth client secret; never committed
+- `AGRIPRICE_GMAIL_REFRESH_TOKEN` — OAuth refresh token with `https://www.googleapis.com/auth/gmail.send`; never committed
+- `AGRIPRICE_SMTP_FROM` — Gmail sender address; defaults to `AGRIPRICE_SMTP_USER`
 - `AGRIPRICE_PUBLIC_BASE_URL` — e.g. `https://agripricerwanda.vercel.app`
 - `AGRIPRICE_RESET_PREVIEW` — development-only `true` value that returns the link in the API response; never enable in production
 
-SMTP fallback settings:
+Fallback settings:
 
+- `AGRIPRICE_BREVO_API_KEY` — Brevo API key; never committed
 - `AGRIPRICE_SMTP_HOST` — defaults to `smtp.gmail.com`
 - `AGRIPRICE_SMTP_PORT` — defaults to `587`
 - `AGRIPRICE_SMTP_SECURITY` — `starttls` or `ssl`; auto-detected from the port when omitted

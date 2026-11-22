@@ -3,6 +3,7 @@ package com.agriprice.servlet;
 import com.agriprice.dao.AgentDAO;
 import com.agriprice.model.Agent;
 import com.agriprice.util.BrevoEmailUtil;
+import com.agriprice.util.GmailApiEmailUtil;
 import com.agriprice.util.PasswordUtil;
 import com.agriprice.util.SmtpEmailUtil;
 import com.google.gson.Gson;
@@ -186,9 +187,10 @@ public class AuthServlet extends HttpServlet {
             data.put("success", true);
             data.put("message", "If the account exists, a password reset link has been sent.");
 
+            boolean gmailConfigured = GmailApiEmailUtil.isConfigured();
             boolean brevoConfigured = BrevoEmailUtil.isConfigured();
             boolean smtpConfigured = SmtpEmailUtil.isConfigured();
-            if (!brevoConfigured && !smtpConfigured && !isPreviewEnabled()) {
+            if (!gmailConfigured && !brevoConfigured && !smtpConfigured && !isPreviewEnabled()) {
                 response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 data.put("success", false);
                 data.put("message", "Password reset email is not configured. Contact the administrator.");
@@ -197,7 +199,9 @@ public class AuthServlet extends HttpServlet {
                 return;
             }
 
-            if (brevoConfigured) {
+            if (gmailConfigured) {
+                GmailApiEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);
+            } else if (brevoConfigured) {
                 BrevoEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);
             } else if (smtpConfigured) {
                 SmtpEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);
