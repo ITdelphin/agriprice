@@ -40,24 +40,9 @@ public final class WebhookEmailUtil {
         payload.addProperty("html", html);
 
         byte[] body = payload.toString().getBytes(StandardCharsets.UTF_8);
-        String url = setting("AGRIPRICE_EMAIL_WEBHOOK_URL");
-        for (int attempt = 0; attempt < 6; attempt++) {
-            WebhookResponse response = postOnce(url, body);
-            if (isRedirect(response.status) && response.location != null && attempt < 5) {
-                url = URI.create(url).resolve(response.location).toString();
-                continue;
-            }
-            if (response.status >= 200 && response.status < 300 && "ok".equals(response.text.trim())) {
-                return;
-            }
-            throw new IOException("Email webhook failed. HTTP " + response.status);
-        }
-        throw new IOException("Email webhook redirect loop.");
-    }
-
-    private static WebhookResponse postOnce(String url, byte[] body) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) URI.create(url).toURL().openConnection();
-        connection.setInstanceFollowRedirects(false);
+        HttpURLConnection connection = (HttpURLConnection) URI.create(setting("AGRIPRICE_EMAIL_WEBHOOK_URL"))
+                .toURL().openConnection();
+        connection.setInstanceFollowRedirects(true);
         connection.setRequestMethod("POST");
         connection.setConnectTimeout(15000);
         connection.setReadTimeout(15000);
@@ -71,10 +56,12 @@ public final class WebhookEmailUtil {
         }
 
         int status = connection.getResponseCode();
-        String text = readBody(connection);
-        String location = connection.getHeaderField("Location");
+        String response = readBody(connection);
         connection.disconnect();
-        return new WebhookResponse(status, text, location);
+
+        if (status < 200 || status >= 300 || !"ok".equals(response.trim())) {
+            throw new IOException("Email webhook failed. HTTP " + status);
+        }
     }
 
     private static String readBody(HttpURLConnection connection) throws IOException {
@@ -96,10 +83,6 @@ public final class WebhookEmailUtil {
         return text.toString();
     }
 
-    private static boolean isRedirect(int status) {
-        return status == 301 || status == 302 || status == 303 || status == 307 || status == 308;
-    }
-
     private static String setting(String name) {
         String value = System.getProperty(name);
         if (value == null || value.trim().isEmpty()) {
@@ -114,17 +97,5 @@ public final class WebhookEmailUtil {
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
-    }
-
-    private static final class WebhookResponse {
-        private final int status;
-        private final String text;
-        private final String location;
-
-        private WebhookResponse(int status, String text, String location) {
-            this.status = status;
-            this.text = text;
-            this.location = location;
-        }
     }
 }
