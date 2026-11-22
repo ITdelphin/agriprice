@@ -5,7 +5,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/export/prices", "destination": "/export.html" },
+    { "source": "/export/prices", "destination": "/export" },
     { "source": "/api/auth/status", "destination": "/data/auth-status.json" },
     { "source": "/api/products", "destination": "/data/products.json" },
     { "source": "/api/markets", "destination": "/data/markets.json" },
