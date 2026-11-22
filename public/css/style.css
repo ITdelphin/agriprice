@@ -888,6 +888,12 @@ body.public-home { display:block; background:#f7f9f7; font-family:"DM Sans",-app
 .login-password-input { position:relative; }
 .login-password-input input { padding-right:65px; }
 .login-password-input button { position:absolute; top:50%; right:10px; transform:translateY(-50%); padding:5px; border:0; color:#38744d; background:transparent; font:inherit; font-size:10px; font-weight:700; cursor:pointer; }
+.login-forgot-link { margin:8px 0 0; text-align:right; font-size:10px; }
+.login-forgot-link a { color:#2f6b47; font-weight:700; }
+.reset-token-box { margin:0 0 16px; padding:13px; border:1px solid #cfe2d4; border-radius:8px; background:#f3faf5; }
+.reset-token-box p { margin:0 0 8px; color:#354a3b; font-size:11px; }
+.reset-token-box code { display:block; margin-bottom:10px; padding:9px; border-radius:6px; color:#173b25; background:#e5f2e9; font-size:11px; word-break:break-all; }
+.reset-token-box .btn { display:inline-block; }
 .login-submit { display:flex; align-items:center; justify-content:space-between; min-height:47px; margin-top:2px; padding:0 15px; border:0; border-radius:8px; color:white; background:#205d3c; font:inherit; font-size:12px; font-weight:700; cursor:pointer; transition:background .18s ease,transform .18s ease; }
 .login-submit:hover { transform:translateY(-1px); background:#17492f; }
 .login-submit:disabled { transform:none; opacity:.7; cursor:wait; }

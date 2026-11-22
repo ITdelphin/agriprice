@@ -13,6 +13,7 @@ FLUSH PRIVILEGES;
 
 
 DROP TABLE IF EXISTS audit_log;
+DROP TABLE IF EXISTS password_reset_tokens;
 DROP TABLE IF EXISTS watchlist;
 DROP TABLE IF EXISTS price_reports;
 DROP TABLE IF EXISTS products;
@@ -27,6 +28,17 @@ CREATE TABLE agents (
     password_hash VARCHAR(128) NOT NULL,
     password_salt VARCHAR(64) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE password_reset_tokens (
+    token_id INT AUTO_INCREMENT PRIMARY KEY,
+    agent_id INT NOT NULL,
+    token_hash CHAR(64) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_reset_agent FOREIGN KEY (agent_id)
+        REFERENCES agents(agent_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

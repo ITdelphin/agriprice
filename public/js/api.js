@@ -137,6 +137,30 @@ const AgriAPI = {
         return await res.json();
     },
 
+    async requestPasswordReset(email) {
+        if (STATIC_HOSTED) {
+            return { success: false, message: 'Password reset is disabled in the static demo.' };
+        }
+        const res = await fetch('api/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        return await res.json();
+    },
+
+    async resetPassword(token, newPassword) {
+        if (STATIC_HOSTED) {
+            return { success: false, message: 'Password reset is disabled in the static demo.' };
+        }
+        const res = await fetch('api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ token, newPassword })
+        });
+        return await res.json();
+    },
+
     async checkAuthStatus() {
         if (STATIC_HOSTED) return { authenticated: false };
         const res = await fetch('api/auth/status');

@@ -65,7 +65,7 @@ SOURCE database/seed.sql;
 
 For an existing installation, apply `database/upgrade_product_images.sql` before deploying the image-enabled product editor. It adds only a nullable product image path and preserves existing rows.
 
-The scripts create six related tables and seed four agent accounts, three displayed markets, six products and seeded price reports over 16 dates. Agent passwords are stored as PBKDF2 hashes with per-agent salts. All `.test` emails and phone placeholders are fictional.
+The scripts create seven related tables and seed four agent accounts, three displayed markets, six products and seeded price reports over 16 dates. Agent passwords are stored as PBKDF2 hashes with per-agent salts. All `.test` emails and phone placeholders are fictional.
 
 ### 3.2 Dedicated Application User Credentials
 Following the Principle of Least Privilege, database settings are supplied at runtime through environment variables:
@@ -83,6 +83,14 @@ Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 Agent credentials are seeded in `database/seed.sql` and managed by the project team. Passwords are stored with **PBKDF2WithHmacSHA256** (65,536 iterations with distinct random 16-byte cryptographic salts).
 
 Sign in with an agent account to submit and manage price reports.
+
+### Password recovery
+1. On the sign-in page, select **Forgot password?** and enter the registered agent email.
+2. The recovery page displays a single-use token valid for 30 minutes (email delivery can be added when SMTP credentials are available).
+3. Open the reset link, paste the token, choose a new password of at least 8 characters and confirm it.
+4. Sign in again with the same email and the new password. Expired or used tokens are rejected.
+
+For existing installations, apply `database/upgrade_password_reset.sql` before using this flow.
 
 ---
 
