@@ -11,6 +11,7 @@ public class Product implements Serializable {
     private String defaultUnit;
     private String description;
     private String status;
+    private String imageUrl;
 
     public Product() {}
 
@@ -70,4 +71,8 @@ public class Product implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

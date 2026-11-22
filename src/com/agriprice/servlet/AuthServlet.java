@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -119,13 +118,6 @@ public class AuthServlet extends HttpServlet {
                 return;
             }
 
-            if (!"ACTIVE".equalsIgnoreCase(agent.getStatus())) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                out.print("{\"success\":false,\"message\":\"Account is suspended or inactive. Please contact administration.\"}");
-                out.flush();
-                return;
-            }
-
             boolean verified = PasswordUtil.verifyPassword(password, agent.getPasswordSalt(), agent.getPasswordHash());
             if (!verified) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -136,6 +128,7 @@ public class AuthServlet extends HttpServlet {
 
             // Create Authenticated Session
             HttpSession session = request.getSession(true);
+            request.changeSessionId();
             session.setAttribute("agentId", agent.getAgentId());
             session.setAttribute("agentName", agent.getFullName());
             session.setAttribute("agentEmail", agent.getEmail());
@@ -157,4 +150,5 @@ public class AuthServlet extends HttpServlet {
             out.flush();
         }
     }
+
 }

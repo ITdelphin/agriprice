@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -90,66 +91,10 @@
         .home-commodity-strip-label a:hover { color: #174b2e; }
         .home-commodity-row {
             display: grid;
-            grid-template-columns: repeat(6, minmax(0,1fr));
-            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 20px;
         }
-        @media(max-width:900px) { .home-commodity-row { grid-template-columns: repeat(3,minmax(0,1fr)); } }
-        @media(max-width:500px) { .home-commodity-row { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-
-        /* Preference / utility bar */
-        .home-pref-bar {
-            background: #f4f8f4;
-            border-bottom: 1px solid #e3eae4;
-        }
-        .home-pref-bar-inner {
-            max-width: 1216px;
-            margin: 0 auto;
-            padding: 10px 32px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .home-pref-bar label {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: #5d7266;
-            font-size: 10px;
-            font-weight: 700;
-        }
-        .home-pref-bar select {
-            padding: 6px 26px 6px 9px;
-            border: 1px solid #d8e4da;
-            border-radius: 7px;
-            color: #2c3e30;
-            background: white;
-            font: inherit;
-            font-size: 10px;
-            min-width: 140px;
-        }
-        .home-pref-bar .xhr-btn {
-            margin-left: auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 7px 13px;
-            border: 1px solid #d0dfd3;
-            border-radius: 7px;
-            color: #2d6442;
-            background: white;
-            font: inherit;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background .15s;
-        }
-        .home-pref-bar .xhr-btn:hover { background: #ebf4ec; }
-        #xhrStatus {
-            font-size: 10px;
-            color: #609073;
-            font-weight: 600;
-        }
+        @media(max-width:760px) { .home-commodity-row { grid-template-columns: 1fr; gap: 14px; } }
 
         /* Content wrapper — two-col layout for large screens */
         .home-layout {
@@ -292,13 +237,12 @@
             height: 34px;
             display: grid;
             place-items: center;
+            overflow: hidden;
             border-radius: 10px;
-            font-weight: 800;
-            font-size: 14px;
+            background: #eef5ef;
             flex: 0 0 auto;
         }
-        .chart-card-pro-mark.green { color: #2d7449; background: #e8f4ea; }
-        .chart-card-pro-mark.amber { color: #9a6b2a; background: #f8f1e4; }
+        .chart-card-pro-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .chart-card-pro-body { padding: 16px 18px; }
         .chart-card-pro-body .chart-wrapper { height: 215px; }
 
@@ -427,39 +371,44 @@
         /* Markets grid */
         .home-markets-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0,1fr));
-            gap: 12px;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 16px;
         }
         @media(max-width:720px) { .home-markets-grid { grid-template-columns: 1fr; } }
         .market-card-pro {
             display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 18px;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
             border: 1px solid #e5ece6;
-            border-radius: 12px;
+            border-radius: 14px;
             background: #fff;
             text-decoration: none;
             color: inherit;
             transition: border-color .18s, transform .18s, box-shadow .18s;
             box-shadow: 0 3px 12px rgba(22,52,34,.035);
         }
-        .market-card-pro:hover { transform: translateY(-2px); border-color: #b8d6c0; box-shadow: 0 8px 22px rgba(22,52,34,.07); }
-        .market-card-icon {
-            width: 46px;
-            height: 46px;
-            flex: 0 0 auto;
-            display: grid;
-            place-items: center;
-            border-radius: 12px;
-            background: #edf6ee;
-            color: #2b7449;
-            font-size: 22px;
+        .market-card-pro:hover { transform: translateY(-2px); border-color: #b8d6c0; box-shadow: 0 10px 26px rgba(22,52,34,.09); }
+        .market-card-photo {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #eef4ee;
         }
-        .market-card-body { flex: 1; min-width: 0; }
-        .market-card-body strong { display: block; color: #1e3628; font-size: 12px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .market-card-body small { display: block; margin-top: 4px; color: #849087; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .market-card-arrow { color: #9db8a5; font-size: 16px; }
+        .market-card-photo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s ease;
+        }
+        .market-card-pro:hover .market-card-photo img { transform: scale(1.04); }
+        .market-card-body { display: flex; align-items: center; gap: 12px; padding: 15px 17px 17px; min-width: 0; }
+        .market-card-text { flex: 1; min-width: 0; }
+        .market-card-body strong { display: block; color: #1e3628; font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .market-card-body small { display: block; margin-top: 5px; color: #849087; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .market-card-arrow { flex: 0 0 auto; color: #7fa98b; font-size: 16px; }
 
         /* Stats pills inside hero */
         .hero-stat-pills {
@@ -486,10 +435,18 @@
         .hero-stat-pill strong { color: #fff; }
         .hero-stat-pill span.pill-label { color: rgba(255,255,255,.65); font-weight: 500; font-size: 10px; }
 
+        /* Inline image icons replace decorative emoji throughout the home page */
+        .home-ic { width: 1.05em; height: 1.05em; flex: 0 0 auto; display: inline-block; vertical-align: -0.16em; }
+        .btn-hero-primary .home-ic,
+        .btn-hero-secondary .home-ic { width: 16px; height: 16px; }
+        .hero-stat-pill .pill-icon { display: inline-flex; align-items: center; }
+        .hero-stat-pill .pill-icon svg { width: 14px; height: 14px; }
+        .home-commodity-strip-label h2 { display: flex; align-items: center; gap: 6px; }
+        .home-commodity-strip-label h2 .home-ic { width: 18px; height: 18px; color: #2c7d4f; }
+
         @media(max-width:760px) {
             .home-layout { padding: 36px 18px 50px; }
             .home-commodity-strip { padding: 0 18px; }
-            .home-pref-bar-inner { padding: 10px 18px; }
             .hero-stat-pills { gap: 7px; }
             .hero-stat-pill { font-size: 10px; padding: 6px 10px; }
             .home-about-grid { padding: 22px 18px; }
@@ -499,6 +456,82 @@
             .home-commodity-strip-inner { padding: 20px 0 24px; }
             .home-charts-row { gap: 10px; }
         }
+
+        /* Product showcase refresh: strong photography with readable details below */
+        .home-commodity-row {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+        .home-product-card {
+            border-radius: 18px;
+            border-color: #e2ebe3;
+            box-shadow: 0 8px 24px rgba(22,52,34,.055);
+        }
+        .home-product-art {
+            aspect-ratio: 5 / 4;
+            background: #edf4ee;
+        }
+        .home-product-art img { object-fit: cover; }
+        .home-product-info {
+            align-items: stretch;
+            gap: 12px;
+            padding: 19px 20px 21px;
+        }
+        .home-product-text strong {
+            color: #193b28;
+            font-size: 18px;
+            white-space: normal;
+            line-height: 1.3;
+        }
+        .home-product-text small {
+            margin-top: 7px;
+            color: #3f8055;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+        }
+        .home-product-description {
+            display: -webkit-box;
+            min-height: 42px;
+            overflow: hidden;
+            color: #68796e;
+            font-size: 12px;
+            line-height: 1.7;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+        .home-product-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid #edf2ed;
+        }
+        .home-product-unit {
+            color: #77877c;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .home-product-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #236640;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        @media (max-width: 900px) {
+            .home-commodity-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        }
+        @media (max-width: 560px) {
+            .home-commodity-strip { padding: 0 18px; }
+            .home-commodity-row { grid-template-columns: 1fr; gap: 16px; }
+            .home-product-art { aspect-ratio: 16 / 10; }
+            .home-product-info { padding: 17px; }
+        }
+
     </style>
 </head>
 <body class="public-home">
@@ -551,75 +584,50 @@
                 <!-- CTA button row -->
                 <div class="home-hero-cta-row">
                     <a href="prices.html" class="btn-hero-primary">
-                        📊 Browse prices <span>→</span>
+                        <svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        Browse prices <span>→</span>
                     </a>
-                    <a href="login.html" class="btn-hero-secondary">
-                        🔑 Agent sign in
-                    </a>
+                   
                 </div>
 
                 <!-- Live stats pills -->
                 <div class="hero-stat-pills" aria-label="Network statistics">
                     <div class="hero-stat-pill">
-                        <span class="pill-icon">📈</span>
+                        <span class="pill-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M7 15l3-4 3 2 4-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                         <strong id="statReportsCount" aria-live="polite">—</strong>
                         <span class="pill-label">Price reports</span>
                     </div>
                     <div class="hero-stat-pill">
-                        <span class="pill-icon">📍</span>
+                        <span class="pill-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-10a6 6 0 1 1 12 0c0 4.6-6 10-6 10Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2.2" fill="currentColor"/></svg></span>
                         <strong id="statMarketsCount">—</strong>
                         <span class="pill-label">Markets</span>
                     </div>
                     <div class="hero-stat-pill">
-                        <span class="pill-icon">🌾</span>
+                        <span class="pill-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M12 9c0-3 2-6 6-6 0 4-3 6-6 6Zm0 4c-3 0-6-2-6-6 3 0 6 2 6 6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                         <strong id="statProductsCount">—</strong>
                         <span class="pill-label">Products</span>
                     </div>
                     <div class="hero-stat-pill">
-                        <span class="pill-icon">✅</span>
+                        <span class="pill-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l2.5 2.5L16 9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                         <strong id="statAgentsCount">—</strong>
                         <span class="pill-label">Agents</span>
                     </div>
                 </div>
 
             </div>
-            <div class="hero-photo-credit">Tea hills, Western Rwanda · <a href="https://commons.wikimedia.org/wiki/File:Tea_Hills_and_Blue_Skies.jpg" target="_blank" rel="noopener noreferrer">Patricia K / Wikimedia Commons</a></div>
+            <div class="hero-photo-credit"></div>
         </section>
 
         <!-- ══ KEY COMMODITIES STRIP ═══════════════════════════════════ -->
         <div class="home-commodity-strip">
             <div class="home-commodity-strip-inner">
                 <div class="home-commodity-strip-label">
-                    <h2>🌾 Today's key commodities</h2>
+                    <h2><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M12 9c0-3 2-6 6-6 0 4-3 6-6 6Zm0 4c-3 0-6-2-6-6 3 0 6 2 6 6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Today's key commodities</h2>
                     <a href="products.html">Browse all products →</a>
                 </div>
                 <div class="home-commodity-row" id="homeProducts">
                     <div class="home-loading"><span class="home-spinner"></span> Loading products…</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- ══ PREFERENCE / UTILITY BAR ════════════════════════════════ -->
-        <div class="home-pref-bar" role="toolbar" aria-label="Preferences">
-            <div class="home-pref-bar-inner">
-                <label>
-                    📍 Preferred market
-                    <select id="prefMarketSelect" aria-label="Choose your preferred market">
-                        <option value="">All markets</option>
-                    </select>
-                </label>
-                <label>
-                    🌐 Language
-                    <select id="prefLangSelect" aria-label="Choose display language">
-                        <option value="en">English</option>
-                        <option value="rw">Kinyarwanda</option>
-                        <option value="fr">Français</option>
-                    </select>
-                </label>
-                <button type="button" class="xhr-btn" id="xhrRefreshBtn" aria-label="Refresh prices using XMLHttpRequest">
-                    ↺ Refresh prices (XHR)
-                </button>
-                <span id="xhrStatus" role="status" aria-live="polite"></span>
             </div>
         </div>
 
@@ -673,7 +681,6 @@
                 <div class="section-header">
                     <div class="section-header-left">
                         <span class="section-eyebrow">Price insights</span>
-                        <h2>See how prices move</h2>
                         <p>14-day trends and cross-market comparisons for key commodities.</p>
                     </div>
                     <a href="prices.html" class="section-view-link">Explore trends →</a>
@@ -687,7 +694,7 @@
                                 <h3>Maize grain — 14-day trend</h3>
                                 <p>Recent reported prices</p>
                             </div>
-                            <span class="chart-card-pro-mark green">M</span>
+                            <span class="chart-card-pro-mark"><img src="assets/images/catalog/maize.jpg" alt="Maize grain" loading="lazy" width="34" height="34"></span>
                         </div>
                         <div class="chart-card-pro-body">
                             <p id="homeTrendStatus" class="chart-state" role="status">Loading price history…</p>
@@ -702,7 +709,7 @@
                                 <h3>Potatoes — market comparison</h3>
                                 <p>Current prices by market</p>
                             </div>
-                            <span class="chart-card-pro-mark amber">P</span>
+                            <span class="chart-card-pro-mark"><img src="assets/images/catalog/potatoes.jpg" alt="Potatoes" loading="lazy" width="34" height="34"></span>
                         </div>
                         <div class="chart-card-pro-body">
                             <p id="homeComparisonStatus" class="chart-state" role="status">Loading comparison…</p>
@@ -736,14 +743,14 @@
                         <p>AgriPrice Rwanda brings produce price reports from participating Rwandan markets into one place. Compare locations, follow price changes over time, and use current information to plan your next sale or purchase — whether you are a smallholder farmer, a trader, or a buyer.</p>
                         <p>Our network of verified market agents submit daily price updates directly from the trading floor, so the data you see reflects what is actually happening in local markets today.</p>
                         <div class="home-about-links">
-                            <a href="prices.html" class="about-link-btn">📋 View all prices →</a>
-                            <a href="watchlist.html" class="about-link-btn">👁 Manage watchlist →</a>
-                            <a href="markets.html" class="about-link-btn">📍 Explore markets →</a>
+                            <a href="prices.html" class="about-link-btn"><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> View all prices →</a>
+                            <a href="watchlist.html" class="about-link-btn"><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg> Manage watchlist →</a>
+                            <a href="markets.html" class="about-link-btn"><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-10a6 6 0 1 1 12 0c0 4.6-6 10-6 10Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2.2" fill="currentColor"/></svg> Explore markets →</a>
                         </div>
                     </div>
                     <div class="home-about-photo">
-                        <img src="assets/images/farm-bg.jpg" alt="Farmers working in a Rwandan agricultural field" loading="lazy">
-                        <div class="home-about-photo-caption">📷 Rwandan coffee farm, Western Province</div>
+                        <img src="assets/images/kigali-market.jpg" alt="Fresh produce on display at Kigali Market" loading="lazy">
+                        <div class="home-about-photo-caption"><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/></svg> Market day at Kigali Market, Rwanda</div>
                     </div>
                 </div>
             </section>
@@ -808,13 +815,14 @@
         /* ─── Helpers ───────────────────────────────────────────── */
         const productArtwork = name => {
             const v = (name || '').toLowerCase();
-            if (v.includes('maize'))   return ['maize.svg',    'Cereals'];
-            if (v.includes('potato'))  return ['potatoes.svg', 'Roots & tubers'];
-            if (v.includes('bean'))    return ['beans.svg',    'Legumes'];
-            if (v.includes('cassava')) return ['cassava.svg',  'Roots & tubers'];
-            if (v.includes('onion'))   return ['onions.svg',   'Vegetables'];
-            if (v.includes('banana'))  return ['bananas.svg',  'Fruits'];
-            return ['maize.svg', 'Agricultural products'];
+            if (v.includes('maize') || v.includes('corn')) return ['maize.jpg', 'Cereals'];
+            if (v.includes('sweet') && v.includes('potato')) return ['sweet-potatoes.jpg', 'Roots & tubers'];
+            if (v.includes('potato'))  return ['potatoes.jpg', 'Roots & tubers'];
+            if (v.includes('bean') || v.includes('pea') || v.includes('legume')) return ['beans.jpg', 'Legumes'];
+            if (v.includes('cassava') || v.includes('manioc')) return ['cassava.jpg', 'Roots & tubers'];
+            if (v.includes('onion'))   return ['onions.jpg', 'Vegetables'];
+            if (v.includes('banana') || v.includes('plantain')) return ['bananas.jpg', 'Fruits'];
+            return ['maize.jpg', 'Agricultural products'];
         };
         function escapeHome(value) {
             const node = document.createElement('span');
@@ -838,7 +846,7 @@
             /* Auth check */
             try {
                 const auth = await AgriAPI.checkAuthStatus();
-                homeCanManageWatchlist = Boolean(auth && auth.authenticated && auth.role === 'AGENT');
+                homeCanManageWatchlist = Boolean(auth && auth.authenticated);
             } catch (_) { homeCanManageWatchlist = false; }
 
             /* Search form */
@@ -873,43 +881,6 @@
             /* Filter listeners */
             document.getElementById('homeProductFilter').addEventListener('change', renderHomePrices);
             document.getElementById('homeMarketFilter').addEventListener('change', renderHomePrices);
-
-            /* Preferred market cookie */
-            const savedMarket = AgriCookies ? AgriCookies.get('preferredMarket') : null;
-            if (savedMarket) document.getElementById('prefMarketSelect').value = savedMarket;
-            document.getElementById('prefMarketSelect').addEventListener('change', function () {
-                if (window.AgriCookies) AgriCookies.set('preferredMarket', this.value, 30);
-            });
-
-            /* Language cookie */
-            const savedLang = AgriCookies ? AgriCookies.get('preferredLang') : null;
-            if (savedLang) document.getElementById('prefLangSelect').value = savedLang;
-            document.getElementById('prefLangSelect').addEventListener('change', function () {
-                if (window.AgriCookies) AgriCookies.set('preferredLang', this.value, 30);
-            });
-
-            /* XHR refresh button (XMLHttpRequest demo — FAT requirement §13) */
-            document.getElementById('xhrRefreshBtn').addEventListener('click', () => {
-                const statusEl = document.getElementById('xhrStatus');
-                statusEl.textContent = 'Refreshing…';
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'api/prices?limit=6', true);
-                xhr.setRequestHeader('Accept', 'application/json');
-                xhr.onload = () => {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        try {
-                            homePriceReports = JSON.parse(xhr.responseText);
-                            renderHomePrices();
-                            statusEl.textContent = '✓ Updated just now';
-                        } catch (_) { statusEl.textContent = 'Parse error'; }
-                    } else {
-                        statusEl.textContent = `Error ${xhr.status}`;
-                    }
-                };
-                xhr.onerror = () => { statusEl.textContent = 'Network error'; };
-                xhr.send();
-                setTimeout(() => { statusEl.textContent = ''; }, 4000);
-            });
 
             /* Load data */
             loadHomeSummary();
@@ -994,15 +965,23 @@
                     products.map(p => `<option value="${encodeURIComponent(p.productId)}">${escapeHome(p.productName)}</option>`).join('');
 
                 container.innerHTML = products.slice(0, 6).map(p => {
-                    const [svg, cat] = productArtwork(p.productName);
-                    return `<a href="prices.html?productId=${encodeURIComponent(p.productId)}" class="home-product-card">
-                        <span class="home-product-art"><img src="assets/images/${svg}" alt="" loading="lazy"></span>
-                        <span class="home-product-info">
+                const [photo, cat] = productArtwork(p.productName);
+                const description = p.description || `Explore current market prices and reports for ${p.productName} from participating markets across Rwanda.`;
+                const unit = p.defaultUnit || p.unit || 'Standard market unit';
+                return `<a href="prices.html?productId=${encodeURIComponent(p.productId)}" class="home-product-card" aria-label="View market prices for ${escapeHome(p.productName)}">
+                    <span class="home-product-art"><img src="assets/images/catalog/${photo}" alt="${escapeHome(p.productName)}" loading="lazy"></span>
+                    <span class="home-product-info">
+                        <span class="home-product-text">
                             <strong>${escapeHome(p.productName)}</strong>
                             <small>${escapeHome(p.category || cat)}</small>
                         </span>
-                        <span class="home-card-arrow" aria-hidden="true">↗</span>
-                    </a>`;
+                        <span class="home-product-description">${escapeHome(description)}</span>
+                        <span class="home-product-meta">
+                            <span class="home-product-unit">Unit: ${escapeHome(unit)}</span>
+                            <span class="home-product-cta">View prices <span aria-hidden="true">→</span></span>
+                        </span>
+                    </span>
+                </a>`;
                 }).join('');
             } catch (_) {
                 container.innerHTML = '<p class="home-empty home-error">Products could not be loaded. <a href="products.html">Open the products list</a>.</p>';
@@ -1012,8 +991,6 @@
         /* ─── Featured markets ──────────────────────────────────── */
         async function loadFeaturedMarkets() {
             const container = document.getElementById('featuredMarkets');
-            const prefSelect = document.getElementById('prefMarketSelect');
-            const marketIcons = ['🏪', '🛒', '🏬', '🛍'];
             try {
                 const markets = await AgriAPI.getMarkets();
                 if (!markets.length) {
@@ -1024,20 +1001,21 @@
                 const opts = '<option value="">All markets</option>' +
                     markets.map(m => `<option value="${encodeURIComponent(m.marketId)}">${escapeHome(m.marketName)}</option>`).join('');
                 document.getElementById('homeMarketFilter').innerHTML = opts;
-                prefSelect.innerHTML = opts;
-                /* Restore saved preference */
-                const savedMarket = window.AgriCookies ? AgriCookies.get('preferredMarket') : null;
-                if (savedMarket) prefSelect.value = savedMarket;
 
-                container.innerHTML = markets.slice(0, 3).map((m, i) => `
+                container.innerHTML = markets.slice(0, 4).map(m => {
+                    const photo = App.marketPhoto(m);
+                    return `
                     <a class="market-card-pro" href="prices.html?marketId=${encodeURIComponent(m.marketId)}">
-                        <span class="market-card-icon">${marketIcons[i % marketIcons.length]}</span>
+                        <span class="market-card-photo"><img src="${photo.src}" alt="${escapeHome(photo.alt)}" loading="lazy"></span>
                         <span class="market-card-body">
-                            <strong>${escapeHome(m.marketName)}</strong>
-                            <small>${escapeHome(m.district)} · ${escapeHome(m.province)}</small>
+                            <span class="market-card-text">
+                                <strong>${escapeHome(m.marketName)}</strong>
+                                <small>${escapeHome(m.district)} · ${escapeHome(m.province)}</small>
+                            </span>
+                            <span class="market-card-arrow" aria-hidden="true">↗</span>
                         </span>
-                        <span class="market-card-arrow" aria-hidden="true">↗</span>
-                    </a>`).join('');
+                    </a>`;
+                }).join('');
             } catch (_) {
                 container.innerHTML = '<p class="home-empty home-error">Market locations could not be loaded. <a href="markets.html">Try the market directory</a>.</p>';
             }

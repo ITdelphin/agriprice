@@ -7,56 +7,49 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body class="agent-dashboard" data-app-shell="off">
+    <aside class="agent-sidebar" aria-label="Agent navigation">
+        <a href="index.html" class="agent-sidebar-brand"><span class="agent-brand-mark">A</span><span>AgriPrice<small>RWANDA · AGENT</small></span></a>
+        <p class="agent-sidebar-label">WORKSPACE</p>
+        <nav class="agent-sidebar-nav">
+            <a class="is-active" href="dashboard.html"><span>▦</span>Overview</a>
+            <a href="submit-price.html"><span>＋</span>Submit price</a>
+            <a href="prices.html"><span>≡</span>Price reports</a>
+            <a href="products.html"><span>◈</span>Products</a>
+            <a href="markets.html"><span>⌖</span>Markets</a>
+            <a href="watchlist.html"><span>☆</span>Watchlist</a>
+            <a href="trends.html"><span>⌁</span>Price trends</a>
+            <a href="export.html"><span>⇩</span>XML bulletin</a>
+        </nav>
+        <div class="agent-sidebar-bottom"><a href="settings.html"><span>⚙</span>Settings</a><button id="btnLogout" type="button"><span>↪</span>Sign out</button></div>
+        <div class="agent-sidebar-footnote">LOCAL MARKETS · LIVE DATA</div>
+    </aside>
 
-    <!-- Header Navigation -->
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="brand">
-                <div class="brand-icon">&#127793;</div>
-                <div class="brand-text">
-                    <h1>AgriPrice Rwanda</h1>
-                    <span>Rubavu &amp; Gisenyi Market System</span>
-                </div>
-            </a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="nav-link">Home</a></li>
-                    <li><a href="prices.html" class="nav-link">Market Prices</a></li>
-                    <li><a href="watchlist.html" class="nav-link">My Watchlist</a></li>
-                    <li><a href="products.html" class="nav-link">Products</a></li>
-                    <li><a href="markets.html" class="nav-link">Markets</a></li>
-                    <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
-                    <li><button id="btnLogout" class="btn btn-sm btn-secondary">Logout</button></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main class="container">
+    <main class="container agent-dashboard-main">
+        <div class="dashboard-topbar"><div><span class="dashboard-eyebrow">AGENT WORKSPACE</span><span class="dashboard-breadcrumb">/ Overview</span></div><a href="index.html" class="dashboard-public-link">View public site ↗</a></div>
 
         <!-- Agent Welcome Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+        <section class="dashboard-welcome">
             <div>
-                <h2>Market Agent Dashboard</h2>
-                <p class="text-muted">Welcome, <strong id="agentDisplayName" style="color: var(--primary-dark);">Enumerator</strong> &bull; Authenticated via PBKDF2 Session</p>
+                <span class="dashboard-welcome-label">MARKET INTELLIGENCE</span>
+                <h1>Good day, <strong id="agentDisplayName">Agent</strong></h1>
+                <p><span id="agentDisplayEmail">Signed in</span><span class="dashboard-dot">·</span> Track reports and keep local prices up to date.</p>
             </div>
-            <div>
-                <a href="export/prices" target="_blank" class="btn btn-sm btn-outline">&#128196; Download Daily XML Bulletin</a>
-            </div>
-        </div>
+            <a href="submit-price.html" class="dashboard-hero-action">＋ Submit today’s price</a>
+            <div class="dashboard-hero-orbit" aria-hidden="true">RW</div>
+        </section>
 
         <!-- Dashboard Stats Cards -->
-        <div class="grid-4" style="margin-bottom: 24px;">
+        <div class="grid-4 dashboard-stats">
             <div class="card" style="text-align: center; padding: 18px;">
                 <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Total System Reports</span>
                 <h3 id="statTotalReports" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
-                <span class="badge badge-success">Verified in MySQL</span>
+                <span class="badge badge-success">Price reports</span>
             </div>
             <div class="card" style="text-align: center; padding: 18px;">
                 <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Active Markets</span>
                 <h3 id="statTotalMarkets" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
-                <span class="badge badge-info">Rubavu &amp; Kigali</span>
+                <span class="badge badge-info">Reporting locations</span>
             </div>
             <div class="card" style="text-align: center; padding: 18px;">
                 <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Monitored Products</span>
@@ -64,64 +57,34 @@
                 <span class="badge badge-warning">Commodities</span>
             </div>
             <div class="card" style="text-align: center; padding: 18px;">
-                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Outlier Tolerance</span>
-                <h3 style="font-size: 2rem; color: var(--accent-dark); margin: 6px 0;">25%</h3>
-                <span class="badge badge-neutral">web.xml threshold</span>
+                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Total Agents</span>
+                <h3 id="statTotalAgents" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
+                <span class="badge badge-neutral">Active field team</span>
             </div>
+        </div>
+
+        <section class="card dashboard-activity-card" aria-labelledby="agentNotificationsTitle">
+            <div class="card-header"><div><h3 class="card-title" id="agentNotificationsTitle">Market activity</h3><p class="text-muted">Recent verified reports from across the network.</p></div><a class="btn btn-sm btn-outline" href="prices.html">View all reports</a></div>
+            <div class="notification-list" id="dashboardNotifications" aria-live="polite"><p class="text-muted">Loading recent market activity…</p></div>
+        </section>
+
+        <div class="grid-2">
+            <section class="card trend-card"><div class="card-header"><h3 class="card-title">Price trend</h3><a class="btn btn-sm btn-outline" href="trends.html">Explore trends</a></div><p id="dashboardTrendStatus" class="chart-state" role="status">Loading trend…</p><div class="chart-wrapper"><canvas id="dashboardTrendCanvas"></canvas></div></section>
+            <section class="card trend-card"><div class="card-header"><h3 class="card-title">Market comparison</h3><a class="btn btn-sm btn-outline" href="trends.html">Compare markets</a></div><p id="dashboardComparisonStatus" class="chart-state" role="status">Loading comparison…</p><div class="chart-wrapper"><canvas id="dashboardComparisonCanvas"></canvas></div></section>
         </div>
 
         <!-- Main Submission & Chart Grid -->
         <div class="grid-2">
 
-            <!-- Price Submission Form -->
             <section class="card" style="border-top: 4px solid var(--primary);">
-                <div class="card-header">
-                    <h3 class="card-title">&#10010; Submit Daily Market Price</h3>
-                    <span class="badge badge-success">ACID Transaction + Audit</span>
+                <div class="card-header"><h3 class="card-title">Quick actions</h3><span class="badge badge-success">Agent tools</span></div>
+                <p class="text-muted" style="margin-bottom:18px">Keep field reporting current and review your recent price submissions.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <a href="submit-price.html" class="btn btn-primary">＋ Submit a price report</a>
+                    <a href="prices.html" class="btn btn-outline">Browse price reports</a>
+                    <a href="watchlist.html" class="btn btn-outline">Review watchlist</a>
+                    <a href="export.html" class="btn btn-secondary">Export bulletin</a>
                 </div>
-
-                <div id="submitAlert" class="alert-box" style="display: none;"></div>
-
-                <form id="priceSubmitForm">
-                    <div class="form-group">
-                        <label class="form-label">Agricultural Commodity:</label>
-                        <select id="submitProduct" class="form-control" required>
-                            <option value="">-- Select Product --</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Market Location:</label>
-                        <select id="submitMarket" class="form-control" required>
-                            <option value="">-- Select Market --</option>
-                        </select>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
-                        <div class="form-group">
-                            <label class="form-label">Price (RWF):</label>
-                            <input type="number" id="submitPrice" class="form-control" min="1" step="0.5" placeholder="e.g. 520" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Unit:</label>
-                            <select id="submitUnit" class="form-control" required>
-                                <option value="kg">kg</option>
-                                <option value="piece">piece</option>
-                                <option value="sack">sack</option>
-                                <option value="bunch">bunch</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Survey Date:</label>
-                        <input type="date" id="submitDate" class="form-control" required>
-                    </div>
-
-                    <button type="submit" id="btnSubmitPrice" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">
-                        Commit Price Submission
-                    </button>
-                </form>
             </section>
 
             <!-- Chart 3: Market Reporting Distribution (Pie Chart) -->
@@ -130,6 +93,7 @@
                     <h3 class="card-title">&#127856; Market Submissions Distribution</h3>
                     <span class="badge badge-info">Chart.js Pie</span>
                 </div>
+                <p id="marketDistStatus" class="chart-state" role="status">Loading market distribution…</p>
                 <div class="chart-wrapper">
                     <canvas id="marketDistCanvas"></canvas>
                 </div>
@@ -171,9 +135,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer dashboard-footer">
         <div class="container" style="margin: 0 auto;">
-            <p>&copy; 2026 AgriPrice Rwanda. All rights reserved. Developed for Advanced Web &amp; Internet Programming Final Assessment.</p>
+            <p>&copy; 2026 AgriPrice Rwanda &middot; Daily market information for Rubavu and Gisenyi.</p>
         </div>
     </footer>
 
@@ -210,6 +174,7 @@
     <script src="js/api.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/shell.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
@@ -221,82 +186,29 @@
                 return;
             }
             document.getElementById('agentDisplayName').textContent = auth.fullName;
+            document.getElementById('agentDisplayEmail').textContent = auth.email || '';
 
-            // Set default date to today
-            document.getElementById('submitDate').value = new Date().toISOString().split('T')[0];
-
-            // 2. Load Dropdowns & Stats
+            // Load live aggregates, charts, notifications and the agent's reports.
             await loadDashboardData();
-
-            // 3. Setup Submission Form Handler
-            const form = document.getElementById('priceSubmitForm');
-            const alertBox = document.getElementById('submitAlert');
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                alertBox.style.display = 'none';
-
-                const payload = {
-                    productId: parseInt(document.getElementById('submitProduct').value, 10),
-                    marketId: parseInt(document.getElementById('submitMarket').value, 10),
-                    price: parseFloat(document.getElementById('submitPrice').value),
-                    unit: document.getElementById('submitUnit').value,
-                    reportDate: document.getElementById('submitDate').value
-                };
-
-                const res = await AgriAPI.submitPrice(payload);
-                if (res.status === 201 && res.data.success) {
-                    alertBox.className = 'alert-box alert-success';
-                    alertBox.style.display = 'block';
-                    alertBox.innerHTML = `<strong>Success!</strong> ${res.data.message} (Report ID: ${res.data.reportId})`;
-                    form.reset();
-                    document.getElementById('submitDate').value = new Date().toISOString().split('T')[0];
-                    await loadAgentSubmissions();
-                    await loadStats();
-                    AgriCharts.initDistributionChart('marketDistCanvas');
-                } else if (res.data.outlier) {
-                    // Outlier rejected by business rule
-                    alertBox.className = 'alert-box alert-warning';
-                    alertBox.style.display = 'block';
-                    alertBox.innerHTML = `<strong>Outlier Rejected:</strong> ${res.data.message}`;
-                } else {
-                    alertBox.className = 'alert-box alert-warning';
-                    alertBox.style.display = 'block';
-                    alertBox.innerHTML = `<strong>Submission Rejected:</strong> ${res.data.message}`;
-                }
-            });
-
-            // 4. Submissions Edit & Delete handlers
             document.getElementById('btnRefreshSubmissions').addEventListener('click', loadAgentSubmissions);
             setupTableActions();
         });
 
         async function loadDashboardData() {
             try {
-                const [products, markets] = await Promise.all([AgriAPI.getProducts(), AgriAPI.getMarkets()]);
-                const pSelect = document.getElementById('submitProduct');
-                const mSelect = document.getElementById('submitMarket');
-
-                products.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.productId;
-                    opt.textContent = `${p.productName} (${p.category})`;
-                    pSelect.appendChild(opt);
-                });
-
-                markets.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.marketId;
-                    opt.textContent = `${m.marketName} (${m.district})`;
-                    mSelect.appendChild(opt);
-                });
-
-                await loadStats();
+                const stats = await loadStats();
                 await loadAgentSubmissions();
-                AgriCharts.initDistributionChart('marketDistCanvas');
+                AgriCharts.initDistributionChart('marketDistCanvas', 'marketDistStatus');
+                const latestDate = stats && stats.recentReports && stats.recentReports[0] ? stats.recentReports[0].reportDate : new Date().toISOString().slice(0, 10);
+                const products = await AgriAPI.getProducts();
+                const firstProductId = products.find(product => product.status === 'ACTIVE')?.productId || products[0]?.productId || 1;
+                AgriCharts.initTrendChart('dashboardTrendCanvas', firstProductId, null, 30, 'dashboardTrendStatus');
+                AgriCharts.initComparisonChart('dashboardComparisonCanvas', firstProductId, latestDate, 'dashboardComparisonStatus');
+                renderDashboardNotifications(stats && stats.recentReports || []);
 
             } catch (err) {
                 console.error(err);
+                document.getElementById('dashboardNotifications').innerHTML = '<p class="text-danger">Market activity could not be loaded.</p>';
             }
         }
 
@@ -306,9 +218,19 @@
                 document.getElementById('statTotalReports').textContent = stats.totalReports;
                 document.getElementById('statTotalMarkets').textContent = stats.totalMarkets;
                 document.getElementById('statTotalProducts').textContent = stats.totalProducts;
+                document.getElementById('statTotalAgents').textContent = stats.totalAgents;
+                return stats;
             } catch (e) {
                 console.error(e);
+                ['statTotalReports','statTotalMarkets','statTotalProducts','statTotalAgents'].forEach(id => document.getElementById(id).textContent = '—');
+                return null;
             }
+        }
+
+        function renderDashboardNotifications(reports) {
+            const panel = document.getElementById('dashboardNotifications');
+            if (!reports.length) { panel.innerHTML = '<p class="text-muted">No recent market reports are available.</p>'; return; }
+            panel.innerHTML = reports.slice(0, 4).map(report => `<div class="notification-item"><strong>${escapeHtml(report.productName)}</strong> reported at ${Number(report.priceRwf).toLocaleString()} RWF / ${escapeHtml(report.unit)}<small>${escapeHtml(report.marketName)} · ${escapeHtml(report.reportDate)} · ${escapeHtml(report.agentName)}</small></div>`).join('');
         }
 
         async function loadAgentSubmissions() {
@@ -316,6 +238,7 @@
                 const res = await fetch('api/prices/agent');
                 const data = await res.json();
                 const tbody = document.getElementById('agentSubmissionsTbody');
+                if (!res.ok) throw new Error(data.message || 'Reports could not be loaded.');
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 25px;">No submissions found for your account.</td></tr>';
                     return;
@@ -345,6 +268,7 @@
                 `).join('');
             } catch (err) {
                 console.error(err);
+                document.getElementById('agentSubmissionsTbody').innerHTML = '<tr><td colspan="8" class="empty-state">Your reports could not be loaded. Try refreshing.</td></tr>';
             }
         }
 
@@ -399,7 +323,7 @@
             if (!str) return '';
             const d = document.createElement('div');
             d.textContent = str;
-            return d.innerHTML;
+            return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
     </script>
 </body>

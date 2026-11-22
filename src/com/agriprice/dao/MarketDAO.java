@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class MarketDAO {
 
+    private static final int HIDDEN_MARKET_ID = 4;
+
     // 1. CREATE
     public int create(Market market) throws SQLException {
         String sql = "INSERT INTO markets (market_name, district, province, location_description) VALUES (?, ?, ?, ?)";
@@ -38,10 +40,11 @@ public class MarketDAO {
     // 2. READ (Single)
     public Market findById(int marketId) throws SQLException {
         String sql = "SELECT market_id, market_name, district, province, location_description, created_at "
-                   + "FROM markets WHERE market_id = ?";
+                   + "FROM markets WHERE market_id = ? AND market_id <> ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, marketId);
+            ps.setInt(2, HIDDEN_MARKET_ID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapRow(rs);
@@ -55,12 +58,14 @@ public class MarketDAO {
     public List<Market> getAll() throws SQLException {
         List<Market> list = new ArrayList<>();
         String sql = "SELECT market_id, market_name, district, province, location_description, created_at "
-                   + "FROM markets ORDER BY market_name ASC";
+                   + "FROM markets WHERE market_id <> ? ORDER BY market_name ASC";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                list.add(mapRow(rs));
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, HIDDEN_MARKET_ID);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
             }
         }
         return list;
@@ -69,7 +74,7 @@ public class MarketDAO {
     // 3. UPDATE
     public boolean update(Market market) throws SQLException {
         String sql = "UPDATE markets SET market_name = ?, district = ?, province = ?, location_description = ? "
-                   + "WHERE market_id = ?";
+                   + "WHERE market_id = ? AND market_id <> ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, market.getMarketName().trim());
@@ -77,16 +82,18 @@ public class MarketDAO {
             ps.setString(3, market.getProvince().trim());
             ps.setString(4, market.getLocationDescription());
             ps.setInt(5, market.getMarketId());
+            ps.setInt(6, HIDDEN_MARKET_ID);
             return ps.executeUpdate() > 0;
         }
     }
 
     // 4. DELETE
     public boolean delete(int marketId) throws SQLException {
-        String sql = "DELETE FROM markets WHERE market_id = ?";
+        String sql = "DELETE FROM markets WHERE market_id = ? AND market_id <> ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, marketId);
+            ps.setInt(2, HIDDEN_MARKET_ID);
             return ps.executeUpdate() > 0;
         }
     }

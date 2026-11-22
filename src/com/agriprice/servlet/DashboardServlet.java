@@ -4,6 +4,7 @@ import com.agriprice.dao.AgentDAO;
 import com.agriprice.dao.MarketDAO;
 import com.agriprice.dao.PriceDAO;
 import com.agriprice.dao.ProductDAO;
+import com.agriprice.util.JsonFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,13 +22,14 @@ public class DashboardServlet extends HttpServlet {
     private final MarketDAO marketDAO = new MarketDAO();
     private final ProductDAO productDAO = new ProductDAO();
     private final AgentDAO agentDAO = new AgentDAO();
-    private final Gson gson = new Gson();
+    private final Gson gson = JsonFactory.create();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         PrintWriter out = response.getWriter();
 
         try {
@@ -35,7 +37,7 @@ public class DashboardServlet extends HttpServlet {
             stats.put("totalReports", priceDAO.getTotalReportsCount());
             stats.put("totalMarkets", marketDAO.getAll().size());
             stats.put("totalProducts", productDAO.getAll().size());
-            stats.put("totalAgents", agentDAO.getAllAgents().size());
+            stats.put("totalAgents", agentDAO.getAgentCount());
             stats.put("recentReports", priceDAO.getLatestPrices(10));
             stats.put("marketDistribution", priceDAO.getMarketSubmissionDistribution());
 

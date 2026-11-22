@@ -23,7 +23,7 @@ public class XsltTransformTest {
     }
 
     public static void main(String[] args) throws Exception {
-        File xslFile = new File("C:/Users/delph/AgriPrice/WebContent/xml/prices.xsl");
+        File xslFile = new File(args.length > 0 ? args[0] : "WebContent/xml/prices.xsl");
         String sampleXml = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<marketBulletin bulletinDate=\"2026-11-09\">\n" +
@@ -38,21 +38,21 @@ public class XsltTransformTest {
             "      <market><marketId>1</marketId><marketName>Gisenyi Central Market</marketName><district>Rubavu</district></market>\n" +
             "      <product><productId>1</productId><productName>Maize Grain</productName><category>Cereals</category></product>\n" +
             "      <price unit=\"kg\">540.00</price>\n" +
-            "      <agent>Delphin Mugisha</agent>\n" +
+            "      <agent>Delphi</agent>\n" +
             "      <reportDate>2026-11-09</reportDate>\n" +
             "    </priceReport>\n" +
             "    <priceReport id=\"2\">\n" +
             "      <market><marketId>1</marketId><marketName>Gisenyi Central Market</marketName><district>Rubavu</district></market>\n" +
             "      <product><productId>2</productId><productName>Irish Potatoes (Kinigi)</productName><category>Tubers</category></product>\n" +
             "      <price unit=\"kg\">480.00</price>\n" +
-            "      <agent>Delphin Mugisha</agent>\n" +
+            "      <agent>Delphi</agent>\n" +
             "      <reportDate>2026-11-09</reportDate>\n" +
             "    </priceReport>\n" +
             "    <priceReport id=\"3\">\n" +
             "      <market><marketId>3</marketId><marketName>Mahoko Modern Market</marketName><district>Rubavu</district></market>\n" +
             "      <product><productId>1</productId><productName>Maize Grain</productName><category>Cereals</category></product>\n" +
             "      <price unit=\"kg\">480.00</price>\n" +
-            "      <agent>Aline Uwase</agent>\n" +
+            "      <agent>Uwase</agent>\n" +
             "      <reportDate>2026-11-09</reportDate>\n" +
             "    </priceReport>\n" +
             "  </reports>\n" +

@@ -14,6 +14,9 @@ public class XsdValidationTest {
     public static boolean validate(String xmlContent, String xsdPath) {
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             Schema schema = factory.newSchema(new File(xsdPath));
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(new StringReader(xmlContent)));
@@ -28,7 +31,7 @@ public class XsdValidationTest {
     }
 
     public static void main(String[] args) {
-        String xsdPath = "C:/Users/delph/AgriPrice/WebContent/xml/prices.xsd";
+        String xsdPath = args.length > 0 ? args[0] : "WebContent/xml/prices.xsd";
 
         // 1. Valid XML Document
         String validXml = 
@@ -54,7 +57,7 @@ public class XsdValidationTest {
             "        <category>Cereals</category>\n" +
             "      </product>\n" +
             "      <price unit=\"kg\">540.00</price>\n" +
-            "      <agent>Delphin Mugisha</agent>\n" +
+            "      <agent>Delphi</agent>\n" +
             "      <reportDate>2026-11-09</reportDate>\n" +
             "    </priceReport>\n" +
             "  </reports>\n" +

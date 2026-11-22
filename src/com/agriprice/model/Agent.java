@@ -12,21 +12,9 @@ public class Agent implements Serializable {
     private String phone;
     private String passwordHash;
     private String passwordSalt;
-    private String status;
     private Timestamp createdAt;
 
     public Agent() {}
-
-    public Agent(int agentId, String fullName, String email, String phone, String passwordHash, String passwordSalt, String status, Timestamp createdAt) {
-        this.agentId = agentId;
-        this.fullName = fullName;
-        this.email = email;
-        this.phone = phone;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
-        this.status = status;
-        this.createdAt = createdAt;
-    }
 
     public int getAgentId() {
         return agentId;
@@ -74,14 +62,6 @@ public class Agent implements Serializable {
 
     public void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Timestamp getCreatedAt() {

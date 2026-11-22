@@ -1,185 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriPrice Rwanda — FAT Project Report</title>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #1f2937; margin: 40px; background: #fff; }
-        .cover { text-align: center; padding: 60px 20px; border-bottom: 3px double #1b5e20; margin-bottom: 40px; page-break-after: always; }
-        .cover h1 { font-size: 2.4rem; color: #1b5e20; margin-bottom: 10px; }
-        .cover h2 { font-size: 1.3rem; color: #4b5563; font-weight: 500; margin-bottom: 25px; }
-        .cover .meta { font-size: 1.05rem; margin-top: 35px; color: #374151; }
-        .cover .meta p { margin: 6px 0; }
-        h2 { color: #1b5e20; border-bottom: 2px solid #e8f5e9; padding-bottom: 6px; margin-top: 35px; font-size: 1.5rem; }
-        h3 { color: #2e7d32; margin-top: 20px; font-size: 1.2rem; }
-        p { margin: 10px 0; }
-        table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.95rem; }
-        th, td { border: 1px solid #d1d5db; padding: 10px 14px; text-align: left; }
-        th { background: #f0fdf4; color: #166534; font-weight: 600; }
-        code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 0.9em; }
-        pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px; overflow-x: auto; font-family: Consolas, monospace; font-size: 0.88rem; }
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; background: #dcfce7; color: #166534; }
-        .page-break { page-break-after: always; }
-        @media print {
-            body { margin: 20mm; }
-            .cover { page-break-after: always; padding-top: 100px; }
-            .page-break { page-break-after: always; }
-        }
-    </style>
-</head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FAT Project Report — AgriPrice Rwanda</title>
+<style>
+@page{size:A4;margin:17mm 16mm 18mm}*{box-sizing:border-box}body{margin:0;color:#26352b;background:#eef2ee;font:10.2pt/1.55 "Segoe UI",Arial,sans-serif}.sheet{width:210mm;min-height:297mm;margin:18px auto;padding:17mm 16mm 18mm;background:white;box-shadow:0 5px 24px #183d2920;position:relative}.cover{min-height:260mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#214a32}.seal{width:64px;height:64px;display:grid;place-items:center;border-radius:18px;color:white;background:#205b3a;font:bold 32px Arial;margin-bottom:26px}.cover h1{margin:0;font-size:28pt;letter-spacing:-1px}.cover h2{margin:8px 0 28px;font-size:16pt;font-weight:500;color:#5f7464}.cover .institution{font-size:13pt;font-weight:700;letter-spacing:.6px}.cover .meta{width:100%;margin-top:36px;padding:22px;border:1px solid #dce8de;border-radius:12px;text-align:left;background:#f7faf7}.cover .meta p{margin:7px}.placeholder{color:#825a2c}.toc{margin:20px 0 30px;padding:18px 22px;border-radius:10px;background:#f0f6f0}h1,h2,h3{font-family:"Segoe UI",Arial,sans-serif;color:#1d5536}h2{margin:26px 0 9px;padding-bottom:6px;border-bottom:1px solid #dce9dd;font-size:17pt;page-break-after:avoid}h3{margin:17px 0 6px;font-size:12pt;page-break-after:avoid}p{margin:7px 0 10px}ul,ol{margin:7px 0 13px;padding-left:22px}li{margin:3px 0}table{width:100%;margin:12px 0 17px;border-collapse:collapse;font-size:9pt}th,td{padding:7px 8px;border:1px solid #dce5dd;text-align:left;vertical-align:top}th{color:#1d5536;background:#eff6ef}code{padding:1px 4px;border-radius:3px;background:#eef2ee;font:9pt Consolas,monospace}.callout{padding:11px 14px;border-left:4px solid #4c8a5d;background:#f1f7f1}.warning{padding:11px 14px;border-left:4px solid #bd8b44;background:#fbf6ec}.figure{margin:15px 0 20px;text-align:center;page-break-inside:avoid}.figure img{display:block;max-width:100%;max-height:145mm;margin:auto;object-fit:contain;border:1px solid #e1e9e2;border-radius:5px}.figure figcaption{margin-top:5px;color:#718078;font-size:8.5pt}.screenshot img{max-height:135mm}.screenshot-wide img{max-height:105mm}.break{page-break-before:always}.page-count{position:absolute;bottom:8mm;left:16mm;right:16mm;display:flex;justify-content:space-between;border-top:1px solid #e7ece7;padding-top:5px;color:#87948a;font-size:8pt}.muted{color:#68786e}.small{font-size:9pt}.contrib td{height:30px}.endnote{margin-top:20px;padding:13px;background:#f5f8f5;border-radius:8px}
+@media print{body{background:white}.sheet{width:auto;min-height:260mm;margin:0;padding:0;box-shadow:none;page-break-after:always}.sheet:last-child{page-break-after:auto}.cover{min-height:260mm}.page-count{position:fixed}}
+</style></head>
 <body>
+<section class="sheet cover">
+<div class="seal">A</div><p class="institution">KIGALI INDEPENDENT UNIVERSITY ULK</p>
+<p>School of Science and Technology<br>Department of Software Engineering</p>
+<h1>FAT Project Report</h1><h2>AgriPrice Rwanda<br>Agricultural Market Price Information System</h2>
+<div class="meta">
+<p><b>Module:</b> Advanced Web and Internet Programming</p><p><b>Lecturer:</b> NTIRENGANYA Jean Paul</p>
+<p><b>Academic year:</b> 2026–2027 &nbsp; <b>Class:</b> Y4 &nbsp; <b>Program:</b> Day</p>
+<p><b>Project:</b> Market price information system for Rubavu and Gisenyi</p>
+<p><b>Date of examination/presentation:</b> 20 November 2026</p>
+<p class="placeholder"><b>Team member name(s) and ULK roll number(s):</b> complete with actual registered information before printing.</p>
+</div><p class="muted" style="margin-top:28px">Prepared for the Final Assessment Test</p>
+<div class="page-count"><span>AgriPrice Rwanda · FAT</span><span>Cover</span></div>
+</section>
 
-    <!-- Cover Page -->
-    <div class="cover">
-        <span class="badge">FAT PROJECT REPORT</span>
-        <h1>AgriPrice Rwanda</h1>
-        <h2>Agricultural Market Price Information System</h2>
-        <p style="font-size: 1.1rem; color: #059669; font-weight: 600;">Focus Region: Rubavu and Gisenyi, Western Province, Rwanda</p>
-        
-        <div class="meta">
-            <p><strong>Module Name:</strong> Advanced Web and Internet Programming</p>
-            <p><strong>Academic Purpose:</strong> Final Assessment Test (FAT)</p>
-            <p><strong>Candidate Name / Lead:</strong> Delphin Mugisha</p>
-            <p><strong>Date of Examination:</strong> November 11, 2026</p>
-            <p><strong>Application Server:</strong> Apache Tomcat 9 &bull; <strong>Database:</strong> MySQL 8.x Community Server</p>
-        </div>
-    </div>
+<section class="sheet">
+<h2>1. Introduction</h2>
+<p>Farmers and produce traders in Rubavu and Gisenyi need current market information when deciding where and when to sell or buy. AgriPrice Rwanda provides public price and trend views and an authenticated workspace where market agents submit and correct reports. Reports are stored in MySQL and can be published in HTML, XML, grouped-market and SMS-style bulletin formats.</p>
+<h2>2. Tools and technologies</h2>
+<table><thead><tr><th>Layer</th><th>Technology</th><th>Use</th></tr></thead><tbody>
+<tr><td>IDE / project</td><td>Eclipse Enterprise Java, Dynamic Web Project</td><td>Project development and Tomcat server integration</td></tr>
+<tr><td>Server / API</td><td>Java Servlets (`javax.servlet`) on Tomcat 9</td><td>Authentication, validation, CRUD, JSON and XML endpoints</td></tr>
+<tr><td>Persistence</td><td>MySQL 8, JDBC, Connector/J, PreparedStatement</td><td>Relational data access through DAO classes</td></tr>
+<tr><td>Browser</td><td>HTML5, CSS3, vanilla JavaScript, Fetch and XMLHttpRequest</td><td>Responsive UI and asynchronous JSON requests</td></tr>
+<tr><td>Data / charts / tests</td><td>Gson, XML, XSD, XPath, XSLT, Chart.js, QUnit</td><td>JSON serialization, bulletins, visualizations and unit tests</td></tr>
+</tbody></table>
+<h2>3. System architecture</h2>
+<p>Browser pages call servlet mappings declared in <code>WEB-INF/web.xml</code>. Servlets validate requests and delegate SQL work to DAOs. DAOs obtain connections from <code>DatabaseConnection</code> and bind query values using prepared statements. The database contains the persistent application records.</p>
+<figure class="figure"><img src="architecture.svg" alt="AgriPrice system architecture diagram"><figcaption>AgriPrice Rwanda application architecture</figcaption></figure>
+<div class="page-count"><span>ULK · Software Engineering · Y4</span><span>Introduction and architecture</span></div>
+</section>
 
-    <!-- Section 1 -->
-    <h2>1. Introduction</h2>
-    <p>Agricultural commercialization is central to Rwanda's economic development, particularly in the border districts of the Western Province where daily agricultural trade flows between Rubavu, Gisenyi, and neighboring Goma (Democratic Republic of Congo). <strong>AgriPrice Rwanda</strong> is a robust, secure, and production-grade Web Information System engineered to deliver verified daily commodity prices from physical markets directly to farmers, cooperatives, traders, and institutional buyers.</p>
+<section class="sheet">
+<h2>4. Database design</h2>
+<p>The schema defines six related InnoDB tables: <code>agents</code>, <code>markets</code>, <code>products</code>, <code>price_reports</code>, <code>audit_log</code> and <code>watchlist</code>. Foreign keys preserve relationships. Price reports enforce a positive price and the unique key <code>(market_id, product_id, report_date)</code>. Query values are bound with <code>PreparedStatement</code>; JDBC resources use try-with-resources.</p>
+<figure class="figure"><img src="er-diagram.svg" alt="Entity relationship diagram for the six AgriPrice tables"><figcaption>Database entities and foreign-key relationships</figcaption></figure>
+<p><code>schema.sql</code> creates the database, tables and local application user. <code>seed.sql</code> supplies four fictional agent accounts, three displayed markets, six products and seeded price reports across 16 dates. Seed agent names, `.test` email addresses and phone placeholders are synthetic; stored passwords are salted PBKDF2 hashes.</p>
+<div class="warning"><b>Clean-database setup:</b> <code>schema.sql</code> contains <code>DROP DATABASE</code> because the deliverable must rebuild an empty assessment database. Run it only on a clean/disposable database, then run <code>seed.sql</code>. A destructive clean restore was not run over the existing development database; its existing price reports were preserved.</div>
+<h2>5. Roles and business rules</h2>
+<ul><li>Public visitors browse and filter market prices, products and markets, use a session-backed watchlist and view trends.</li><li>Agents authenticate against salted password hashes. Session checks and ownership rules protect report submission, correction and deletion.</li><li>Prices must be positive; inactive or unknown products, invalid units and malformed inputs are rejected.</li><li>One product/market/date submission is enforced in application code and by a database unique key.</li><li>Price deviations beyond <code>outlier.threshold</code> are rejected against the prior seven-day average. Price and audit rows share one transaction.</li></ul>
+<div class="page-count"><span>AgriPrice Rwanda · FAT</span><span>Database and rules</span></div>
+</section>
 
-    <!-- Section 2 -->
-    <h2>2. Problem Statement</h2>
-    <p>Smallholder farmers in Rubavu often experience market information asymmetry, lacking verifiable price data from primary market aggregation centers (Mahoko Modern Market, Gisenyi Central Market, Rubavu Cross-Border Market). Unverified pricing data leads to financial exploitation by intermediaries, while manual data collection is susceptible to undetected errors and lacks audit trails.</p>
+<section class="sheet">
+<h2>6. XML, XSD, XPath and XSLT</h2>
+<p><code>GET /export/prices</code> selects the latest report date and builds a nested XML bulletin from MySQL. A requested date can be supplied as <code>?date=YYYY-MM-DD</code>. Raw XML is available using <code>?format=xml</code>.</p>
+<p>The XSD constrains positive decimal prices, XML date types, enumerated market names and units (<code>kg</code>, <code>piece</code>, <code>sack</code>, <code>bunch</code>) and a required non-empty agent. The Java validation runner accepted a valid sample and rejected invalid negative price, market name, unit and date variants.</p>
+<h3>Runnable XPath examples</h3>
+<ol><li><code>//priceReport[product/productName='Maize Grain']/price</code></li><li><code>//priceReport[market/marketName='Gisenyi Central Market']/price</code></li><li><code>//priceReport[number(price) &gt; 1000]/product/productName</code></li><li><code>//priceReport[contains(product/productName, 'Kinigi')]/market/marketName</code></li><li><code>//priceReport[reportDate = /marketBulletin/@bulletinDate]/product/productName</code></li></ol>
+<p><code>?format=xpath</code> runs these five expressions against the current database-generated bulletin and shows matching values. XSLT supports the formatted HTML bulletin, grouping by market, and plain-text SMS lines.</p>
+<figure class="figure screenshot screenshot-wide"><img src="screenshots/xml-export-desktop.png" alt="XML export page showing raw bulletin and validation controls"><figcaption>XML export page: raw source, format links and schema validation</figcaption></figure>
+<h2>7. HTTP and caching</h2>
+<p>Live price, dashboard and trend JSON endpoints return <code>Cache-Control: no-store</code>. Bulletin representations have representation-specific ETags, Last-Modified and revalidation headers. A repeated request with a matching ETag returned 304. Invalid filter input returned 400 and an unauthenticated report write returned 401.</p>
+<p>The assessment instance uses local HTTP. Production agent login must use HTTPS/TLS and a Secure session cookie. The session cookie is HttpOnly. JavaScript-readable market and language preference cookies use expiry and SameSite=Lax; they are intentionally not HttpOnly because the browser scripts need to read them.</p>
+<div class="callout"><b>Assessment evidence:</b> The ETag/304 behavior was verified programmatically. A DevTools Network screenshot with headers and timings still needs to be captured by the candidate during rehearsal.</div>
+<div class="page-count"><span>ULK · Advanced Web and Internet Programming</span><span>XML and HTTP</span></div>
+</section>
 
-    <!-- Section 3 -->
-    <h2>3. Objectives</h2>
-    <ul>
-        <li>Deploy a multi-tier Java Servlet and MySQL architecture running on Apache Tomcat 9.</li>
-        <li>Implement secure salted password hashing using PBKDF2WithHmacSHA256 (65,536 iterations).</li>
-        <li>Enforce strict business rules: positive prices, duplicate daily submission prevention, and 7-day trailing price outlier detection with configurable thresholds.</li>
-        <li>Provide client-side MVC architecture for visitor watchlists with real-time target price alert notifications.</li>
-        <li>Generate daily XML market bulletins validated against a W3C XML Schema (XSD), queryable via XPath, and transformable via XSLT into HTML and SMS formats.</li>
-    </ul>
+<section class="sheet">
+<h2>8. AJAX, client-side MVC and charts</h2>
+<p>Product and market filters request JSON without reloading the price page. The price list refreshes every 5 seconds. Agent price submissions use Fetch POST and refresh the agent's recent-submission table after success. XMLHttpRequest is exercised by the live market snapshot.</p>
+<p>The watchlist separates <code>watchlist-model.js</code>, <code>watchlist-view.js</code> and <code>watchlist-controller.js</code>. The model owns item state and target calculations, the view renders DOM and feedback, and the controller coordinates API calls. Items persist in MySQL; watched prices and target status refresh every 15 seconds while the page is visible.</p>
+<ul><li>Line chart: historical average, minimum and maximum prices.</li><li>Bar chart: selected commodity comparison by market.</li><li>Pie chart: report counts grouped by market.</li></ul>
+<figure class="figure screenshot screenshot-wide"><img src="screenshots/homepage-desktop.png" alt="AgriPrice public homepage with live statistics and latest price filters"><figcaption>Public homepage with live totals, searchable market information and latest reports</figcaption></figure>
+<h2>9. Test results</h2>
+<p>The QUnit browser runner completed <b>12 tests and 22 assertions with zero failures</b>. The tests cover price positivity, percentage deviation, threshold boundaries, averages, watchlist model alerts and duplicate detection. The QUnit page was run in Edge headless during this implementation.</p>
+<figure class="figure screenshot screenshot-wide"><img src="screenshots/qunit-results.png" alt="QUnit results showing 12 tests and 22 assertions passed"><figcaption>QUnit 2.20 result captured in Edge headless</figcaption></figure>
+<div class="warning"><b>TDD evidence gap:</b> The repository does not show a failing-first test commit or screenshot. The passing suite is verified, but failing-first TDD evidence must be provided by the actual project team; it cannot be reconstructed retrospectively.</div>
+<div class="page-count"><span>AgriPrice Rwanda · FAT</span><span>Browser features and tests</span></div>
+</section>
 
-    <!-- Section 4 -->
-    <h2>4. Tools and Technologies Used</h2>
-    <table>
-        <thead>
-            <tr><th>Layer</th><th>Technology</th><th>Role in AgriPrice Rwanda</th></tr>
-        </thead>
-        <tbody>
-            <tr><td>Backend</td><td>Java 21 LTS (javax.servlet 4.0)</td><td>Servlet controller pipeline, authentication, transactions</td></tr>
-            <tr><td>Server</td><td>Apache Tomcat 9.0.123</td><td>Servlet container &amp; web application hosting</td></tr>
-            <tr><td>Database</td><td>MySQL 8.0 &amp; Connector/J 8.4.0</td><td>Relational data persistence, foreign keys, CHECK constraints</td></tr>
-            <tr><td>Security</td><td>PBKDF2WithHmacSHA256</td><td>Salted password hashing (PasswordUtil.java)</td></tr>
-            <tr><td>Frontend</td><td>HTML5, CSS3, Vanilla JavaScript</td><td>Mobile-responsive UI, Fetch API, XMLHttpRequest</td></tr>
-            <tr><td>Architecture</td><td>Client-Side MVC</td><td>Watchlist Model, View, and Controller separation</td></tr>
-            <tr><td>XML Standards</td><td>XML, XSD, XPath, XSLT</td><td>Daily bulletin export, schema validation, 3 transformations</td></tr>
-            <tr><td>Visualizations</td><td>Chart.js 4.x</td><td>Line chart (Trends), Bar chart (Comparison), Pie chart (Distribution)</td></tr>
-            <tr><td>Testing</td><td>QUnit 2.20</td><td>Automated testing suite (12 unit tests across 2 modules)</td></tr>
-        </tbody>
-    </table>
-
-    <!-- Section 5 -->
-    <h2>5. System Architecture</h2>
-    <p>The system adheres to a Three-Tier Architecture model:</p>
-    <ul>
-        <li><strong>Presentation Tier:</strong> HTML5/CSS3 client interface with Vanilla JavaScript Fetch API and XMLHttpRequest, Client-Side MVC Watchlist, and Chart.js analytics.</li>
-        <li><strong>Application Tier:</strong> Apache Tomcat 9 hosting Java Servlets (<code>AuthServlet</code>, <code>PriceServlet</code>, <code>MarketServlet</code>, <code>ProductServlet</code>, <code>WatchlistServlet</code>, <code>DashboardServlet</code>, <code>TrendServlet</code>, <code>XMLExportServlet</code>), DAO layer, and <code>DatabaseConnection.java</code>.</li>
-        <li><strong>Data Tier:</strong> MySQL 8.x executing transactions with <code>PreparedStatement</code> and connection pooling via <code>agriprice_user</code> unprivileged account.</li>
-    </ul>
-
-    <!-- Section 6 -->
-    <h2>6. Database Design and ER Diagram</h2>
-    <p>The database <code>agriprice</code> encompasses six related tables:</p>
-    <table>
-        <thead>
-            <tr><th>Table</th><th>Primary Key</th><th>Foreign Keys</th><th>Constraints &amp; Key Features</th></tr>
-        </thead>
-        <tbody>
-            <tr><td><code>agents</code></td><td>agent_id</td><td>None</td><td>email UNIQUE, password_hash, password_salt, status</td></tr>
-            <tr><td><code>markets</code></td><td>market_id</td><td>None</td><td>market_name UNIQUE, district, province</td></tr>
-            <tr><td><code>products</code></td><td>product_id</td><td>None</td><td>product_name UNIQUE, category, default_unit, status</td></tr>
-            <tr><td><code>price_reports</code></td><td>report_id</td><td>product_id, market_id, agent_id</td><td>CHECK (price_rwf &gt; 0), UNIQUE (market_id, product_id, report_date)</td></tr>
-            <tr><td><code>audit_log</code></td><td>audit_id</td><td>agent_id, report_id</td><td>action, old_value, new_value, action_date</td></tr>
-            <tr><td><code>watchlist</code></td><td>watchlist_id</td><td>product_id, market_id</td><td>target_price &gt; 0, UNIQUE (visitor_session_id, product_id, market_id)</td></tr>
-        </tbody>
-    </table>
-
-    <!-- Section 7 -->
-    <h2>7. Implementation Details &amp; Business Rules</h2>
-    <h3>PreparedStatement Security &amp; Injection Defense</h3>
-    <p>All database queries are parameterized in DAO classes. When injection strings like <code>' OR '1'='1</code> are provided, PreparedStatement binds the parameter as literal string text, completely preventing syntax manipulation.</p>
-
-    <h3>ACID Transactions &amp; Rollback Safety</h3>
-    <p>In <code>PriceDAO.java</code>, submissions and modifications use <code>conn.setAutoCommit(false)</code>. If an error occurs during report saving or audit log insertion, <code>conn.rollback()</code> restores the prior database state atomically.</p>
-
-    <h3>7-Day Outlier Detection Formula</h3>
-    <p>Prices are verified against the trailing 7-day average for the commodity in that market:</p>
-    <pre>deviation = Math.abs(newPrice - averagePrice) / averagePrice * 100.0;</pre>
-    <p>If the deviation exceeds the <code>web.xml</code> parameter (25.0%), the submission is rejected with a <code>PriceOutlierException</code>.</p>
-
-    <!-- Section 8 -->
-    <h2>8. XML, XSD, XPath, and XSLT Subsystem</h2>
-    <ul>
-        <li><strong>Schema Validation:</strong> <code>prices.xsd</code> enforces 5 strict constraints: price &gt; 0, valid <code>xs:date</code>, market enumeration, unit enumeration, and mandatory agent field. Both valid and deliberately invalid XML were verified.</li>
-        <li><strong>XPath Predicates:</strong> 5 expressions demonstrate complex querying, such as <code>//priceReport[product/productName='Maize Grain']/price</code> and <code>//priceReport[number(price) &gt; 1000]/product/productName</code>.</li>
-        <li><strong>XSLT Transformations:</strong> <code>prices.xsl</code> delivers 3 operational outputs: HTML summary table, market-grouped bulletin, and SMS-style plain-text output.</li>
-    </ul>
-
-    <!-- Section 9 -->
-    <h2>9. HTTP, Cookies, and Caching</h2>
-    <p>The <code>XMLExportServlet</code> generates ETag and Last-Modified headers. When the client presents <code>If-None-Match</code> or <code>If-Modified-Since</code>, the server responds with <strong>HTTP 304 Not Modified</strong>. User preferences for preferred market and interface language are stored via cookies configured with <code>SameSite=Lax</code>.</p>
-
-    <!-- Section 10 -->
-    <h2>10. Client-Side MVC Watchlist</h2>
-    <ul>
-        <li><strong>Model (<code>watchlist-model.js</code>):</strong> Stores state array, computes target price reached logic, and notifies subscribers. Contains zero DOM manipulation code.</li>
-        <li><strong>View (<code>watchlist-view.js</code>):</strong> Renders table markup, manages alert badges, and binds user click actions.</li>
-        <li><strong>Controller (<code>watchlist-controller.js</code>):</strong> Handles events, communicates with <code>WatchlistServlet</code> via Fetch API, and validates inputs.</li>
-    </ul>
-
-    <!-- Section 11 -->
-    <h2>11. Testing and Results (QUnit)</h2>
-    <p>The automated test runner (<code>WebContent/js/tests/index.html</code>) verified 12 unit tests across 2 modules:</p>
-    <ul>
-        <li>Module 1: Positive prices accepted; zero price rejected; negative price rejected; percentage deviation calculation; outlier triggers (&gt;25%); 25% boundary test; 7-day average calculation; empty dataset handling.</li>
-        <li>Module 2: Model item addition; alert triggers on target match; missing product detection; duplicate daily submission prevention.</li>
-        <li><strong>Outcome:</strong> 12 passed, 0 failed.</li>
-    </ul>
-
-    <!-- Section 12 -->
-    <h2>12. Data Visualization (Chart.js)</h2>
-    <ul>
-        <li><strong>Price Trends (Line Chart):</strong> Tracks 14-day trailing prices with Min, Max, and Average trend lines.</li>
-        <li><strong>Market Comparison (Bar Chart):</strong> Compares prices across Gisenyi, Rubavu Cross-Border, Mahoko, and Nyabugogo.</li>
-        <li><strong>Market Distribution (Pie Chart):</strong> Illustrates reporting volume by market.</li>
-    </ul>
-
-    <!-- Section 13 -->
-    <h2>13. Individual Contributions</h2>
-    <table>
-        <thead>
-            <tr><th>Name</th><th>Role</th><th>Key Deliverables</th></tr>
-        </thead>
-        <tbody>
-            <tr><td>Delphin Mugisha</td><td>Lead Full-Stack Architect</td><td>Database schema/seed, JDBC config, PasswordUtil PBKDF2, DAOs, Servlets</td></tr>
-            <tr><td>Team Member 2</td><td>Backend Developer</td><td>Servlet API endpoints, validation exceptions, transaction rollback</td></tr>
-            <tr><td>Team Member 3</td><td>Frontend &amp; XML Engineer</td><td>Client-side MVC, XML bulletin, XSD schema, XSLT stylesheet (3 modes)</td></tr>
-            <tr><td>Team Member 4</td><td>QA &amp; Security Specialist</td><td>QUnit automated tests, Chart.js integrations, WAR packaging</td></tr>
-        </tbody>
-    </table>
-
-    <!-- Section 14 -->
-    <h2>14. Challenges Faced &amp; Solutions</h2>
-    <p>Ensuring atomic price reporting alongside audit logging was solved via explicit JDBC transaction control (<code>setAutoCommit(false)</code> and <code>rollback()</code>). Strict XSD enumeration constraints were addressed by defining explicit <code>xs:simpleType</code> restrictions.</p>
-
-    <!-- Section 15 -->
-    <h2>15. Conclusion</h2>
-    <p>AgriPrice Rwanda satisfies all technology and architectural criteria required for the Advanced Web and Internet Programming FAT assessment. The system is deployable on Apache Tomcat 9, connects cleanly to MySQL 8.x, and provides robust agricultural market price intelligence for Rubavu and Rwanda.</p>
-
-</body>
-</html>
+<section class="sheet">
+<h2>10. Screens and runtime verification</h2>
+<p>The pages below were served by the running Tomcat 9 project. The public homepage loads prices, products, markets and dashboard totals from the existing JSON APIs. The agent login/session/status/logout path was exercised with a seeded agent account. An unknown product and an extreme outlier were rejected without inserting a report. No successful report insert was performed during final checks so the existing report rows remained intact.</p>
+<figure class="figure screenshot screenshot-wide"><img src="screenshots/login-desktop.png" alt="AgriPrice agent sign-in page"><figcaption>Agent authentication page</figcaption></figure>
+<figure class="figure screenshot screenshot-wide"><img src="screenshots/prices-desktop.png" alt="AgriPrice market price reports page"><figcaption>Public price reports and product/market filters</figcaption></figure>
+<figure class="figure screenshot screenshot-wide"><img src="screenshots/homepage-mobile.png" alt="AgriPrice homepage responsive layout at narrow viewport"><figcaption>Homepage narrow viewport rendering; separate device emulation is still recommended before presentation</figcaption></figure>
+<h2>11. Limits and remaining presentation preparation</h2>
+<ul><li>Rebuild from <code>schema.sql</code> and <code>seed.sql</code> on a disposable MySQL instance before the live assessment; the existing working database was not dropped.</li><li>Capture actual browser DevTools evidence for at least four requests, a conditional 304, response headers and timing.</li><li>Provide authentic failing-first TDD evidence if the team followed that process.</li><li>Complete actual team names, ULK roll numbers and signed contribution form. The repository currently records one configured Git author; no additional contributors are invented in this report.</li></ul>
+<h2>12. Individual contribution table</h2>
+<table class="contrib"><thead><tr><th>Actual member name</th><th>ULK roll number</th><th>Work completed</th><th>Commit IDs / signature</th></tr></thead><tbody><tr><td>Confirm configured author “Delphin” and enter official name</td><td>Complete</td><td>Confirm actual contribution from Git history</td><td>See <code>docs/git-history.txt</code>; sign</td></tr><tr><td>Only add real members</td><td>Complete</td><td>Record verified work</td><td>Add verified commits; sign</td></tr></tbody></table>
+<h2>13. Conclusion</h2>
+<p>The agent dashboard has its own sidebar layout. Management tools use horizontal navigation and page-specific layouts for the product catalog, market directory, price explorer, watchlist, report form, trend charts, XML console and preferences. Product management accepts optional JPEG, PNG, or GIF photos up to 2 MB with the relative image path saved in MySQL, and the catalog uses the same image-led card grid as the market directory. Duplicate names return conflict messages. Products used in historical reports are archived on removal, while referenced markets cannot be deleted; saved history remains intact. The markets directory and homepage market cards use locally bundled photos for each displayed seeded market (Gisenyi, Rubavu and Mahoko), with a Kigali market hero photo; authors, sources and licenses are listed in <code>docs/PRODUCT_IMAGE_CREDITS.md</code>. AgriPrice Rwanda implements the core public price-information and agent-reporting workflow with Servlets, JDBC/MySQL, Fetch/XHR, JSON, client-side MVC, QUnit, Chart.js and XML/XSD/XPath/XSLT. Core pages and endpoints run on the current Tomcat/MySQL instance. The report identifies evidence that must still be supplied by the actual team rather than claiming it exists.</p>
+<div class="page-count"><span>Kigali Independent University ULK · Y4</span><span>Results, contributions and conclusion</span></div>
+</section>
+</body></html>

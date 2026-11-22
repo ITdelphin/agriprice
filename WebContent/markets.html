@@ -6,13 +6,13 @@
     <title>Markets Directory — AgriPrice Rwanda</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="markets-page" data-app-shell="off">
 
     <!-- Header Navigation -->
     <header class="navbar">
         <div class="nav-container">
             <a href="index.html" class="brand">
-                <div class="brand-icon">&#127793;</div>
+                <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
                 <div class="brand-text">
                     <h1>AgriPrice Rwanda</h1>
                     <span>Rubavu &amp; Gisenyi Market System</span>
@@ -25,7 +25,7 @@
                     <li><a href="watchlist.html" class="nav-link">My Watchlist</a></li>
                     <li><a href="products.html" class="nav-link">Products</a></li>
                     <li><a href="markets.html" class="nav-link active">Markets</a></li>
-                    <li><a href="export/prices" class="nav-link" target="_blank">XML Bulletin</a></li>
+                    <li><a href="export/prices?format=html" class="nav-link" target="_blank">Daily Bulletin</a></li>
                     <li id="guestNavLinks"><a href="login.html" class="btn btn-sm btn-primary">Agent Login</a></li>
                     <li id="agentNavLinks" style="display:none;">
                         <a href="dashboard.html" class="btn btn-sm btn-primary">Dashboard</a>
@@ -38,20 +38,18 @@
 
     <main class="container">
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-            <div>
-                <h2>Physical Agricultural Markets Directory</h2>
-                <p class="text-muted">Monitored market centers in Rubavu District and key supply chain hubs in Rwanda.</p>
-            </div>
-            <div>
-                <button id="btnOpenAddMarket" class="btn btn-primary" style="display:none;">+ Add New Market</button>
-            </div>
-        </div>
+        <section class="market-directory-hero">
+            <div class="market-directory-copy"><span>MARKETS ACROSS RWANDA</span><h2>Where local trade comes together</h2><p>Explore market centers and compare the places where daily produce prices are reported.</p></div>
+            <button id="btnOpenAddMarket" class="btn btn-primary market-add-button" style="display:none;">+ Add market</button>
+            <small class="market-image-credit">Kigali Market · Zenith4237 · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Kigali_Market_(02).jpg" target="_blank" rel="noopener noreferrer">Source</a></small>
+        </section>
 
         <!-- Search Bar -->
         <div class="card" style="padding: 14px 20px; margin-bottom: 20px;">
-            <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="directory-search market-search-row">
                 <input type="text" id="marketSearchInput" class="form-control" placeholder="Search market by name, district, or description...">
+                <select id="marketDistrictFilter" class="form-control" aria-label="Filter markets by district"><option value="">All districts</option></select>
+                <select id="marketProvinceFilter" class="form-control" aria-label="Filter markets by province"><option value="">All provinces</option></select>
                 <button id="btnSearchMarkets" class="btn btn-secondary">Search</button>
             </div>
         </div>
@@ -102,13 +100,14 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container" style="margin: 0 auto;">
-            <p>&copy; 2026 AgriPrice Rwanda. All rights reserved. Developed for Advanced Web &amp; Internet Programming Final Assessment.</p>
+            <p>&copy; 2026 AgriPrice Rwanda &middot; Daily market information for Rubavu and Gisenyi.</p>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/shell.js"></script>
 
     <script>
         let allMarkets = [];
@@ -129,9 +128,12 @@
         async function loadMarkets() {
             try {
                 allMarkets = await AgriAPI.getMarkets();
+                document.getElementById('marketDistrictFilter').innerHTML = '<option value="">All districts</option>' + [...new Set(allMarkets.map(m => m.district).filter(Boolean))].sort().map(value => `<option>${escapeHtml(value)}</option>`).join('');
+                document.getElementById('marketProvinceFilter').innerHTML = '<option value="">All provinces</option>' + [...new Set(allMarkets.map(m => m.province).filter(Boolean))].sort().map(value => `<option>${escapeHtml(value)}</option>`).join('');
                 renderMarkets(allMarkets);
             } catch (err) {
                 console.error(err);
+                document.getElementById('marketsListContainer').innerHTML = '<p class="empty-state">Markets could not be loaded. Please try again.</p>';
             }
         }
 
@@ -142,59 +144,61 @@
                 return;
             }
 
-            container.innerHTML = list.map(m => `
-                <div class="card" style="border-left: 5px solid var(--primary); display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md);">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                            <h3 style="color: var(--primary-dark); font-size: 1.25rem;">
-                                &#127968; ${escapeHtml(m.marketName)}
-                            </h3>
+            container.innerHTML = list.map(m => {
+                const photo = App.marketPhoto(m);
+                return `
+                <article class="market-directory-card">
+                    <div class="market-directory-photo">
+                        <img src="${photo.src}" alt="${escapeHtml(photo.alt)}" loading="lazy">
+                    </div>
+                    <div class="market-directory-body">
+                        <div class="market-directory-head">
+                            <h3>${escapeHtml(m.marketName)}</h3>
                             <span class="badge badge-info">${escapeHtml(m.district)}</span>
                         </div>
-                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
-                            <strong>Province:</strong> ${escapeHtml(m.province)}
-                        </p>
-                        <p style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px;">
-                            ${escapeHtml(m.locationDescription || 'Major agricultural trading point.')}
-                        </p>
+                        <p class="market-directory-province"><strong>Province:</strong> ${escapeHtml(m.province)}</p>
+                        <p class="market-directory-desc">${escapeHtml(m.locationDescription || 'Major agricultural trading point.')}</p>
+                        <div class="market-directory-actions">
+                            <a href="prices.html?marketId=${m.marketId}" class="btn btn-sm btn-outline">View prices</a>
+                            ${isAgent ? `
+                                <div class="market-directory-manage">
+                                    <button class="btn btn-sm btn-secondary btn-edit-market"
+                                            data-id="${m.marketId}"
+                                            data-name="${escapeHtml(m.marketName)}"
+                                            data-dist="${escapeHtml(m.district)}"
+                                            data-prov="${escapeHtml(m.province)}"
+                                            data-desc="${escapeHtml(m.locationDescription || '')}">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-delete-market" data-id="${m.marketId}">
+                                        Delete
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 10px;">
-                        <a href="prices.html?marketId=${m.marketId}" class="btn btn-sm btn-outline">&#128269; View Prices</a>
-                        ${isAgent ? `
-                            <div>
-                                <button class="btn btn-sm btn-secondary btn-edit-market" 
-                                        data-id="${m.marketId}" 
-                                        data-name="${escapeHtml(m.marketName)}" 
-                                        data-dist="${escapeHtml(m.district)}" 
-                                        data-prov="${escapeHtml(m.province)}" 
-                                        data-desc="${escapeHtml(m.locationDescription || '')}">
-                                    Edit
-                                </button>
-                                <button class="btn btn-sm btn-danger btn-delete-market" data-id="${m.marketId}">
-                                    Delete
-                                </button>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `).join('');
+                </article>
+            `;
+            }).join('');
         }
 
         function setupMarketHandlers() {
             // Search
-            document.getElementById('btnSearchMarkets').addEventListener('click', () => {
+            const applyMarketFilters = () => {
                 const term = document.getElementById('marketSearchInput').value.toLowerCase().trim();
+                const district = document.getElementById('marketDistrictFilter').value;
+                const province = document.getElementById('marketProvinceFilter').value;
                 const filtered = allMarkets.filter(m => 
-                    m.marketName.toLowerCase().includes(term) || 
-                    m.district.toLowerCase().includes(term) ||
-                    m.province.toLowerCase().includes(term) ||
-                    (m.locationDescription && m.locationDescription.toLowerCase().includes(term))
+                    (!district || m.district === district) && (!province || m.province === province) && (!term || m.marketName.toLowerCase().includes(term) || m.district.toLowerCase().includes(term) || m.province.toLowerCase().includes(term) || (m.locationDescription && m.locationDescription.toLowerCase().includes(term)))
                 );
                 renderMarkets(filtered);
-            });
+            };
+            document.getElementById('btnSearchMarkets').addEventListener('click', applyMarketFilters);
+            document.getElementById('marketDistrictFilter').addEventListener('change', applyMarketFilters);
+            document.getElementById('marketProvinceFilter').addEventListener('change', applyMarketFilters);
 
             document.getElementById('marketSearchInput').addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') document.getElementById('btnSearchMarkets').click();
+                if (e.key === 'Enter') applyMarketFilters();
             });
 
             // Modal
@@ -229,7 +233,7 @@
 
                 if (e.target && e.target.classList.contains('btn-delete-market')) {
                     const id = parseInt(e.target.getAttribute('data-id'), 10);
-                    if (confirm(`Are you sure you want to delete Market #${id}?`)) {
+                    if (confirm('Delete this market? Markets linked to saved price reports are protected so that historical data stays intact.')) {
                         const res = await fetch('api/markets', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -237,7 +241,7 @@
                         });
                         const data = await res.json();
                         if (res.ok && data.success) {
-                            App.showToast('Market deleted.');
+                            App.showToast(data.message || 'Market deleted.');
                             await loadMarkets();
                         } else {
                             App.showToast(data.message || 'Deletion failed.', 'error');
@@ -277,7 +281,7 @@
             if (!str) return '';
             const d = document.createElement('div');
             d.textContent = str;
-            return d.innerHTML;
+            return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
     </script>
 </body>

@@ -17,7 +17,7 @@ public class ProductDAO {
 
     // 1. CREATE
     public int create(Product product) throws SQLException {
-        String sql = "INSERT INTO products (product_name, category, default_unit, description, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO products (product_name, category, default_unit, description, status, image_url) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, product.getProductName().trim());
@@ -25,6 +25,7 @@ public class ProductDAO {
             ps.setString(3, product.getDefaultUnit().trim());
             ps.setString(4, product.getDescription());
             ps.setString(5, product.getStatus() != null ? product.getStatus() : "ACTIVE");
+            ps.setString(6, product.getImageUrl());
             ps.executeUpdate();
             try (ResultSet gk = ps.getGeneratedKeys()) {
                 if (gk.next()) {
@@ -38,7 +39,7 @@ public class ProductDAO {
 
     // 2. READ (Single)
     public Product findById(int productId) throws SQLException {
-        String sql = "SELECT product_id, product_name, category, default_unit, description, status "
+        String sql = "SELECT product_id, product_name, category, default_unit, description, status, image_url "
                    + "FROM products WHERE product_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -55,11 +56,11 @@ public class ProductDAO {
     // 2. READ (All)
     public List<Product> getAll() throws SQLException {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT product_id, product_name, category, default_unit, description, status "
+        String sql = "SELECT product_id, product_name, category, default_unit, description, status, image_url "
                    + "FROM products ORDER BY product_name ASC";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(mapRow(rs));
             }
@@ -69,7 +70,7 @@ public class ProductDAO {
 
     // 3. UPDATE
     public boolean update(Product product) throws SQLException {
-        String sql = "UPDATE products SET product_name = ?, category = ?, default_unit = ?, description = ?, status = ? "
+        String sql = "UPDATE products SET product_name = ?, category = ?, default_unit = ?, description = ?, status = ?, image_url = ? "
                    + "WHERE product_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -78,7 +79,8 @@ public class ProductDAO {
             ps.setString(3, product.getDefaultUnit().trim());
             ps.setString(4, product.getDescription());
             ps.setString(5, product.getStatus());
-            ps.setInt(6, product.getProductId());
+            ps.setString(6, product.getImageUrl());
+            ps.setInt(7, product.getProductId());
             return ps.executeUpdate() > 0;
         }
     }
@@ -93,6 +95,34 @@ public class ProductDAO {
         }
     }
 
+    public boolean existsByName(String name, int exceptProductId) throws SQLException {
+        String sql = "SELECT 1 FROM products WHERE product_name = ? AND product_id <> ? LIMIT 1";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name.trim());
+            ps.setInt(2, exceptProductId);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
+        }
+    }
+
+    public boolean hasPriceReports(int productId) throws SQLException {
+        String sql = "SELECT 1 FROM price_reports WHERE product_id = ? LIMIT 1";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
+        }
+    }
+
+    public boolean archive(int productId) throws SQLException {
+        String sql = "UPDATE products SET status = 'INACTIVE' WHERE product_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            return ps.executeUpdate() > 0 || findById(productId) != null;
+        }
+    }
+
     private Product mapRow(ResultSet rs) throws SQLException {
         Product p = new Product();
         p.setProductId(rs.getInt("product_id"));
@@ -101,6 +131,7 @@ public class ProductDAO {
         p.setDefaultUnit(rs.getString("default_unit"));
         p.setDescription(rs.getString("description"));
         p.setStatus(rs.getString("status"));
+        p.setImageUrl(rs.getString("image_url"));
         return p;
     }
 }

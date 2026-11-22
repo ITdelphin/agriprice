@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Prices — AgriPrice Rwanda</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="prices-page" data-app-shell="off">
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
+                <div class="brand-text">
+                    <h1>AgriPrice Rwanda</h1>
+                    <span>Rubavu &amp; Gisenyi Market System</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="prices.html" class="nav-link active">Market Prices</a></li>
+                    <li><a href="watchlist.html" class="nav-link">My Watchlist <span id="watchlistBadge" class="nav-badge" style="display:none;">0</span></a></li>
+                    <li><a href="products.html" class="nav-link">Products</a></li>
+                    <li><a href="markets.html" class="nav-link">Markets</a></li>
+                    <li><a href="export/prices?format=html" class="nav-link" target="_blank">Daily Bulletin</a></li>
+                    <li id="guestNavLinks"><a href="login.html" class="btn btn-sm btn-primary">Agent Login</a></li>
+                    <li id="agentNavLinks" style="display:none;">
+                        <a href="dashboard.html" class="btn btn-sm btn-primary">Dashboard</a>
+                        <button id="btnLogout" class="btn btn-sm btn-secondary" style="margin-left: 6px;">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="prices-page-heading">
+            <div>
+                <h2>Daily Agricultural Market Prices</h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Live database prices for Rubavu and regional trading hubs in Rwanda.</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span id="autoRefreshIndicator" class="badge badge-success">&#9679; Auto-Refreshing (12s)</span>
+                <span id="lastUpdatedTimestamp" class="text-muted" style="font-size: 0.85rem;"></span>
+            </div>
+        </div>
+
+        <!-- Filter Bar (AJAX & JSON live filtering without page reload) -->
+        <div class="filter-bar">
+            <div class="filter-item">
+                <label class="form-label">Search Keyword:</label>
+                <input type="text" id="filterSearch" class="form-control" placeholder="Search product or market...">
+            </div>
+            <div class="filter-item">
+                <label class="form-label">Filter by Product:</label>
+                <select id="filterProduct" class="form-control">
+                    <option value="">-- All Products --</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label class="form-label">Filter by Market:</label>
+                <select id="filterMarket" class="form-control">
+                    <option value="">-- All Markets --</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label class="form-label">Report Date:</label>
+                <input type="date" id="filterDate" class="form-control" value="">
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button id="btnApplyFilter" class="btn btn-primary">Filter</button>
+                <button id="btnResetFilter" class="btn btn-secondary">Reset</button>
+            </div>
+        </div>
+
+        <!-- Price Table Card -->
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">&#128181; Verified Price Reports (<span id="resultCount">0</span> records)</h3>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="export/prices?format=xml" target="_blank" class="btn btn-sm btn-outline">&#128196; Raw XML</a>
+                    <a href="export/prices?format=html" target="_blank" class="btn btn-sm btn-outline">&#127760; Formatted Bulletin</a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Commodity</th>
+                            <th>Category</th>
+                            <th>Market</th>
+                            <th>District</th>
+                            <th>Unit</th>
+                            <th>Price (RWF)</th>
+                            <th>Change</th>
+                            <th>Date</th>
+                            <th>Agent</th>
+                            <th>Watchlist</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pricesTableBody">
+                        <tr><td colspan="10" style="text-align: center; padding: 40px;">Fetching prices from database...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pricePagination" aria-label="Price report pages"></div>
+        </section>
+
+        <!-- Quick Interactive Price Trends Chart -->
+        <section class="card">
+            <div class="card-header">
+                <h3 class="card-title">&#128202; Interactive Price Trend for Selected Product</h3>
+                <span id="chartProductLabel" class="badge badge-info">Maize Grain</span>
+            </div>
+            <p id="priceTrendStatus" class="chart-state" role="status">Loading price history…</p>
+            <div class="chart-wrapper">
+                <canvas id="priceFilterTrendCanvas"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="margin: 0 auto;">
+            <p>&copy; 2026 AgriPrice Rwanda &middot; Daily market information for Rubavu and Gisenyi.</p>
+        </div>
+    </footer>
+
+    <!-- Add to Watchlist Modal -->
+    <div id="watchlistModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="card" style="width: 420px; max-width: 90%; background: white; margin: auto;">
+            <div class="card-header">
+                <h3 class="card-title">Add to Personal Watchlist</h3>
+                <button id="btnCloseModal" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="formAddToWatchlist">
+                <input type="hidden" id="modalProductId">
+                <input type="hidden" id="modalMarketId">
+                <div class="form-group">
+                    <label class="form-label">Product:</label>
+                    <input type="text" id="modalProductName" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Market:</label>
+                    <input type="text" id="modalMarketName" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Current Observed Price:</label>
+                    <input type="text" id="modalCurrentPrice" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Target Buy Price (RWF):</label>
+                    <input type="number" id="modalTargetPrice" class="form-control" min="1" step="10" required placeholder="e.g. 450">
+                    <small class="text-muted">You will receive an alert whenever the price reaches or drops below this target.</small>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" id="btnCancelModal" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save to Watchlist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/watchlist-model.js"></script>
+    <script src="js/watchlist-view.js"></script>
+    <script src="js/watchlist-controller.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/shell.js"></script>
+
+    <script>
+        let currentProductId = 1;
+        let canManageWatchlist = false;
+        let filteredPriceReports = [];
+        let pricePage = 1;
+        const pricePageSize = 10;
+
+        async function loadDropdowns() {
+            try {
+                const [products, markets] = await Promise.all([AgriAPI.getProducts(), AgriAPI.getMarkets()]);
+                const prodSelect = document.getElementById('filterProduct');
+                const marketSelect = document.getElementById('filterMarket');
+
+                products.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.productId;
+                    opt.textContent = `${p.productName} (${p.category})`;
+                    prodSelect.appendChild(opt);
+                });
+
+                markets.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.marketId;
+                    opt.textContent = `${m.marketName} (${m.district})`;
+                    marketSelect.appendChild(opt);
+                });
+
+                // Apply saved preferred market cookie if available
+                const savedMarket = AgriCookies.get('preferred_market');
+                if (savedMarket) marketSelect.value = savedMarket;
+                const params = new URLSearchParams(location.search);
+                if (params.has('productId')) prodSelect.value = params.get('productId');
+                if (params.has('marketId')) marketSelect.value = params.get('marketId');
+                if (params.has('search')) document.getElementById('filterSearch').value = params.get('search');
+
+            } catch (err) {
+                console.error('Error loading filters:', err);
+            }
+        }
+
+        async function fetchAndRenderPrices() {
+            const search = document.getElementById('filterSearch').value.trim();
+            const productId = document.getElementById('filterProduct').value;
+            const marketId = document.getElementById('filterMarket').value;
+            const date = document.getElementById('filterDate').value;
+
+            const params = {};
+            params.all = 'true';
+            if (search) params.search = search;
+            if (productId) params.productId = productId;
+            if (marketId) params.marketId = marketId;
+            if (date) params.date = date;
+
+            try {
+                const reports = await AgriAPI.getPrices(params);
+                const tbody = document.getElementById('pricesTableBody');
+                filteredPriceReports = Array.isArray(reports) ? reports : [];
+                pricePage = 1;
+                document.getElementById('resultCount').textContent = filteredPriceReports.length;
+                document.getElementById('lastUpdatedTimestamp').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+
+                if (!filteredPriceReports.length) {
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">No price reports matching filter criteria.</td></tr>';
+                    document.getElementById('pricePagination').innerHTML = '';
+                    return;
+                }
+                renderPricePage();
+
+                // Update chart for current product
+                const activeProd = productId ? parseInt(productId, 10) : (reports[0] ? reports[0].productId : 1);
+                currentProductId = activeProd;
+                const prodObj = reports.find(r => r.productId === activeProd);
+                if (prodObj) {
+                    document.getElementById('chartProductLabel').textContent = prodObj.productName;
+                }
+                AgriCharts.initTrendChart('priceFilterTrendCanvas', activeProd, marketId ? parseInt(marketId, 10) : null, 30, 'priceTrendStatus');
+
+            } catch (err) {
+                console.error('Failed to fetch prices:', err);
+                document.getElementById('pricesTableBody').innerHTML = '<tr><td colspan="10" class="empty-state">Prices could not be loaded. Check the connection and try again.</td></tr>';
+                document.getElementById('pricePagination').innerHTML = '';
+            }
+        }
+
+        function renderPricePage() {
+            const tbody = document.getElementById('pricesTableBody');
+            const start = (pricePage - 1) * pricePageSize;
+            const pageReports = filteredPriceReports.slice(start, start + pricePageSize);
+            tbody.innerHTML = pageReports.map(r => {
+                const previous = filteredPriceReports.find(other => other.productId === r.productId && other.marketId === r.marketId && other.reportDate < r.reportDate);
+                const change = previous ? ((r.priceRwf - previous.priceRwf) / previous.priceRwf) * 100 : null;
+                const changeLabel = change === null ? '<span class="text-muted">—</span>' : `<span class="${change > 0 ? 'text-danger' : change < 0 ? 'text-success' : 'text-muted'}">${change > 0 ? '↑' : change < 0 ? '↓' : '→'} ${Math.abs(change).toFixed(1)}%</span>`;
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(r.productName)}</strong></td>
+                        <td><span class="badge badge-info">${escapeHtml(r.productCategory)}</span></td>
+                        <td>${escapeHtml(r.marketName)}</td>
+                        <td>${escapeHtml(r.marketDistrict)}</td>
+                        <td>${escapeHtml(r.unit)}</td>
+                        <td class="price-cell">${r.priceRwf.toLocaleString()} RWF</td>
+                        <td>${changeLabel}</td>
+                        <td>${r.reportDate}</td>
+                        <td><span class="badge badge-neutral">${escapeHtml(r.agentName)}</span></td>
+                        <td>${canManageWatchlist ? `
+                            <button class="btn btn-sm btn-outline btn-watch-trigger" 
+                                    data-pid="${r.productId}" 
+                                    data-pname="${escapeHtml(r.productName)}" 
+                                    data-mid="${r.marketId}" 
+                                    data-mname="${escapeHtml(r.marketName)}" 
+                                    data-price="${r.priceRwf}">
+                                + Watch
+                            </button>
+                        ` : '<a href="watchlist.html" class="btn btn-sm btn-secondary">View watchlist</a>'}</td>
+                    </tr>
+                `;
+            }).join('');
+            const pageCount = Math.ceil(filteredPriceReports.length / pricePageSize);
+            document.getElementById('pricePagination').innerHTML = `<button class="btn btn-sm btn-secondary" type="button" id="pricePrev" ${pricePage <= 1 ? 'disabled' : ''}>Previous</button><span class="text-muted">Page ${pricePage} of ${pageCount}</span><button class="btn btn-sm btn-secondary" type="button" id="priceNext" ${pricePage >= pageCount ? 'disabled' : ''}>Next</button>`;
+            document.getElementById('pricePrev').addEventListener('click', () => { pricePage--; renderPricePage(); });
+            document.getElementById('priceNext').addEventListener('click', () => { pricePage++; renderPricePage(); });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const auth = await AgriAPI.checkAuthStatus();
+                canManageWatchlist = Boolean(auth && auth.authenticated);
+            } catch (_) { canManageWatchlist = false; }
+            await loadDropdowns();
+            await fetchAndRenderPrices();
+
+            // Set up automatic refresh every 5s
+            App.startAutoRefresh(() => {
+                fetchAndRenderPrices();
+            });
+
+            // Filter button events
+            document.getElementById('btnApplyFilter').addEventListener('click', fetchAndRenderPrices);
+            document.getElementById('filterSearch').addEventListener('keydown', event => { if (event.key === 'Enter') fetchAndRenderPrices(); });
+            document.getElementById('btnResetFilter').addEventListener('click', () => {
+                document.getElementById('filterSearch').value = '';
+                document.getElementById('filterProduct').value = '';
+                document.getElementById('filterMarket').value = '';
+                document.getElementById('filterDate').value = '';
+                fetchAndRenderPrices();
+            });
+
+            // Add to watchlist modal handling
+            const modal = document.getElementById('watchlistModal');
+            document.getElementById('pricesTableBody').addEventListener('click', (e) => {
+                if (e.target && e.target.classList.contains('btn-watch-trigger')) {
+                    if (!canManageWatchlist) return;
+                    const btn = e.target;
+                    document.getElementById('modalProductId').value = btn.getAttribute('data-pid');
+                    document.getElementById('modalMarketId').value = btn.getAttribute('data-mid');
+                    document.getElementById('modalProductName').value = btn.getAttribute('data-pname');
+                    document.getElementById('modalMarketName').value = btn.getAttribute('data-mname');
+                    document.getElementById('modalCurrentPrice').value = btn.getAttribute('data-price') + ' RWF';
+                    document.getElementById('modalTargetPrice').value = Math.round(parseFloat(btn.getAttribute('data-price')) * 0.95);
+                    modal.style.display = 'flex';
+                }
+            });
+
+            const closeModal = () => modal.style.display = 'none';
+            document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+            document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+
+            document.getElementById('formAddToWatchlist').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!canManageWatchlist) return;
+                const pid = document.getElementById('modalProductId').value;
+                const mid = document.getElementById('modalMarketId').value;
+                const target = document.getElementById('modalTargetPrice').value;
+
+                const model = new WatchlistModel();
+                const view = new WatchlistView();
+                view.setCanManage(canManageWatchlist);
+                const controller = new WatchlistController(model, view);
+                await controller.handleAddItem(pid, mid, target);
+                closeModal();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -8,6 +8,11 @@ class WatchlistView {
         this.alertBanner = document.getElementById('watchlistAlertBanner');
         this.alertCountBadge = document.getElementById('watchlistBadge');
         this.emptyState = document.getElementById('watchlistEmpty');
+        this.canManage = false;
+    }
+
+    setCanManage(canManage) {
+        this.canManage = Boolean(canManage);
     }
 
     render(items, alertCount) {
@@ -38,7 +43,7 @@ class WatchlistView {
             this.container.innerHTML = `
                 <div class="empty-card">
                     <p>No agricultural commodities on your watchlist yet.</p>
-                    <p class="text-muted">Browse market prices and click "Add to Watchlist" to set target price alerts.</p>
+                    <p class="text-muted">${this.canManage ? 'Add products and target prices to track them here.' : 'This watchlist is view-only for visitors. A market agent can add and manage target prices.'}</p>
                 </div>
             `;
             return;
@@ -55,7 +60,7 @@ class WatchlistView {
                         <th>Current Price</th>
                         <th>Target Price</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                    <th>${this.canManage ? 'Agent actions' : 'Access'}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,18 +80,13 @@ class WatchlistView {
                     <td><span class="badge badge-info">${this.escape(item.category || 'General')}</span></td>
                     <td>${this.escape(item.marketName || 'All Markets')}</td>
                     <td class="price-cell">${currentPriceText}</td>
-                    <td>
-                        <div class="inline-edit">
-                            <input type="number" class="input-target-price" id="target-input-${item.watchlistId}" 
-                                   value="${item.targetPrice}" step="10" min="1" style="width: 100px;">
-                            <span>RWF</span>
-                        </div>
-                    </td>
+                    <td>${this.canManage
+                        ? `<div class="inline-edit"><input type="number" class="input-target-price" id="target-input-${item.watchlistId}" value="${item.targetPrice}" step="10" min="1" aria-label="Target price for ${this.escape(item.productName)}"><span>RWF</span></div>`
+                        : `<span class="watchlist-readonly-price">${Number(item.targetPrice).toLocaleString()} RWF / ${this.escape(item.defaultUnit || 'kg')}</span>`}</td>
                     <td><span class="badge ${statusClass}">${statusText}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline btn-save-target" data-id="${item.watchlistId}">Update</button>
-                        <button class="btn btn-sm btn-danger btn-remove-item" data-id="${item.watchlistId}">Remove</button>
-                    </td>
+                    <td>${this.canManage
+                        ? `<div class="watchlist-agent-actions"><button class="btn btn-sm btn-outline btn-save-target" data-id="${item.watchlistId}">Save</button><button class="btn btn-sm btn-danger btn-remove-item" data-id="${item.watchlistId}">Delete</button></div>`
+                        : '<span class="watchlist-view-only">View only</span>'}</td>
                 </tr>
             `;
         });
@@ -99,7 +99,7 @@ class WatchlistView {
     }
 
     bindUpdateTarget(handler) {
-        if (!this.container) return;
+        if (!this.container || !this.canManage) return;
         this.container.addEventListener('click', e => {
             if (e.target && e.target.classList.contains('btn-save-target')) {
                 const id = parseInt(e.target.getAttribute('data-id'), 10);
@@ -113,7 +113,7 @@ class WatchlistView {
     }
 
     bindRemoveItem(handler) {
-        if (!this.container) return;
+        if (!this.container || !this.canManage) return;
         this.container.addEventListener('click', e => {
             if (e.target && e.target.classList.contains('btn-remove-item')) {
                 const id = parseInt(e.target.getAttribute('data-id'), 10);

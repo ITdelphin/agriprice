@@ -1,6 +1,6 @@
-# AgriPrice Rwanda — Agricultural Market Price Information System
+﻿# AgriPrice Rwanda â€” Agricultural Market Price Information System
 
-**Academic Purpose:** Final Assessment Test (FAT) — Advanced Web & Internet Programming  
+**Academic Purpose:** Final Assessment Test (FAT) â€” Advanced Web & Internet Programming  
 **Geographic Focus:** Rubavu and Gisenyi, Western Province, Rwanda  
 **Primary Users:** Farmers, agricultural cooperatives, market traders, field enumerators, and the public  
 
@@ -10,16 +10,16 @@
 
 AgriPrice Rwanda is a complete, secure, database-driven agricultural market price information system connecting market centers in Rubavu District and national aggregation terminals in Rwanda.
 
-### Final Deliverables Summary
-1. **Complete Dynamic Web Project:** Ready in Eclipse workspace at `C:\Users\delph\AgriPrice` (`C:\Users\delph\eclipse-workspace\AgriPriceRwanda`).
-2. **Deployable WAR File:** [`AgriPriceRwanda.war`](file:///C:/Users/delph/AgriPrice/AgriPriceRwanda.war) (2.8 MB, pre-packaged with compiled classes, WebContent, and libraries).
-3. **Zipped Eclipse Project:** [`AgriPriceRwanda.zip`](file:///C:/Users/delph/AgriPrice/AgriPriceRwanda.zip).
-4. **Database Scripts:** [`database/schema.sql`](file:///C:/Users/delph/AgriPrice/database/schema.sql) and [`database/seed.sql`](file:///C:/Users/delph/AgriPrice/database/seed.sql).
-5. **Architectural & ER Diagrams:** [`docs/architecture.svg`](file:///C:/Users/delph/AgriPrice/docs/architecture.svg) and [`docs/er-diagram.svg`](file:///C:/Users/delph/AgriPrice/docs/er-diagram.svg).
-6. **Project Report:** [`docs/PROJECT_REPORT.md`](file:///C:/Users/delph/AgriPrice/docs/PROJECT_REPORT.md) & [`docs/PROJECT_REPORT.html`](file:///C:/Users/delph/AgriPrice/docs/PROJECT_REPORT.html) (formatted for direct PDF export).
-7. **Automated Test Suite:** [`WebContent/js/tests/index.html`](file:///C:/Users/delph/AgriPrice/WebContent/js/tests/index.html) (12 QUnit tests across 2 modules).
-8. **XML/XSD/XSLT Subsystem:** [`WebContent/xml/prices.xsd`](file:///C:/Users/delph/AgriPrice/WebContent/xml/prices.xsd) & [`WebContent/xml/prices.xsl`](file:///C:/Users/delph/AgriPrice/WebContent/xml/prices.xsl).
-9. **Git History:** [`docs/git-history.txt`](file:///C:/Users/delph/AgriPrice/docs/git-history.txt).
+### Deliverables
+
+1. Eclipse Dynamic Web Project and deployable [`AgriPriceRwanda.war`](AgriPriceRwanda.war).
+2. Zipped project source [`AgriPriceRwanda.zip`](AgriPriceRwanda.zip), including `WEB-INF/lib`.
+3. Database rebuild scripts: [schema.sql](database/schema.sql) and [seed.sql](database/seed.sql).
+4. System and ER diagrams: [architecture.svg](docs/architecture.svg) and [er-diagram.svg](docs/er-diagram.svg).
+5. Report files: [Markdown source](docs/PROJECT_REPORT.md), [HTML print layout](docs/PROJECT_REPORT.html), and [PDF](docs/PROJECT_REPORT.pdf).
+6. Browser test runner: [QUnit suite](WebContent/js/tests/index.html); screenshots and HTTP verification notes are in `docs/`.
+7. XML artifacts: [prices.xsd](WebContent/xml/prices.xsd) and [prices.xsl](WebContent/xml/prices.xsl).
+8. Repository history: [git-history.txt](docs/git-history.txt).
 
 ---
 
@@ -36,41 +36,53 @@ AgriPrice Rwanda is a complete, secure, database-driven agricultural market pric
 - **Data Visualizations:** Chart.js 4.x
 - **Testing:** QUnit 2.20
 
+### Application Screens
+
+- Public homepage: `index.html` with live market summaries, product search, recent prices, featured markets, and trend previews.
+- Agent workspace: `dashboard.html`, `submit-price.html`, `products.html`, `markets.html`, `prices.html`, `watchlist.html`, `trends.html`, `export.html`, and `settings.html`.
+- The agent dashboard has its own dark-green workspace sidebar, responsive KPI layout, activity feed, and Chart.js panels. Other pages retain the public navigation.
+- Management tools no longer reuse the dashboard shell: product catalog, market directory, price explorer, watchlist, submission form, trend charts, XML console and preferences each have their own page layout with a compact horizontal navigation.
+- Agents can attach an optional JPEG, PNG, or GIF product photo (maximum 2 MB); the relative image path is saved with the product in MySQL. Products without a matching photograph use a neutral placeholder.
+- The product catalog has a dedicated catalog layout, responsive image-led product card grid, client-side category/status filters, paging, and signed-in CRUD controls. It uses optimized local crop photographs; image sources and license details are in [PRODUCT_IMAGE_CREDITS.md](docs/PRODUCT_IMAGE_CREDITS.md).
+- The watchlist is read-only for public visitors. Signed-in market agents can add, update, and delete targets for the watchlist associated with their browser; the servlet rejects all public write requests.
+- Duplicate product and market names return clear conflict messages. A product with historical price reports is archived as inactive when removed, and markets linked to reports cannot be deleted; existing report history is preserved.
+- The markets directory and homepage market cards use locally bundled town and market photographs for each displayed seeded market (Gisenyi, Rubavu and Mahoko); the directory hero uses a Kigali produce-market photo. Authors, sources and licenses are listed in [PRODUCT_IMAGE_CREDITS.md](docs/PRODUCT_IMAGE_CREDITS.md).
+- The daily bulletin defaults to the latest report date and opens as formatted HTML at `/export/prices`; raw XML is available at `/export/prices?format=xml`. XPath examples run at `/export/prices?format=xpath`.
+- Market agents sign in with the seeded demonstration accounts. Successful login rotates the session and stores the agent identity; self-service registration and account approval are outside the scenario.
+
 ---
 
 ## 3. Database Setup & Dedicated User Setup
 
-### 3.1 Import Commands
-Execute the following commands in PowerShell or Command Prompt to initialize the database:
+### 3.1 Rebuild and seed a clean database
+
+**Warning:** `schema.sql` intentionally drops and recreates `agriprice`. Run it only against a clean/disposable assessment database. From the project root, open a MySQL client as an administrator and execute:
 
 ```powershell
-# 1. Recreate database, tables, constraints, and dedicated user
-& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p -e "source C:/Users/delph/AgriPrice/database/schema.sql"
-
-# 2. Populate demonstration seed data (4 agents, 4 markets, 6 commodities, 80 price reports across 16 days)
-& "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p -e "source C:/Users/delph/AgriPrice/database/seed.sql"
+SOURCE database/schema.sql;
+SOURCE database/seed.sql;
 ```
 
+For an existing installation, apply `database/upgrade_product_images.sql` before deploying the image-enabled product editor. It adds only a nullable product image path and preserves existing rows.
+
+The scripts create six related tables and seed four agent accounts, three displayed markets, six products and seeded price reports over 16 dates. Agent passwords are stored as PBKDF2 hashes with per-agent salts. All `.test` emails and phone placeholders are fictional.
+
 ### 3.2 Dedicated Application User Credentials
-Following the Principle of Least Privilege:
-- **Username:** `agriprice_user`
-- **Password:** `AgriPrice@2026`
-- **Host:** `localhost`
-- **Database:** `agriprice`
-- **Permissions:** `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`
+Following the Principle of Least Privilege, database settings are supplied at runtime through environment variables:
+
+- `AGRIPRICE_DB_URL` — e.g. `jdbc:mysql://localhost:3306/agriprice?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8`
+- `AGRIPRICE_DB_USERNAME` — e.g. `agriprice_user`
+- `AGRIPRICE_DB_PASSWORD` — set locally; never committed
+
+Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 
 ---
 
-## 4. Demonstration Agent Accounts
+## 4. Agent Accounts
 
-All passwords are encrypted with **PBKDF2WithHmacSHA256** (65,536 iterations with distinct random 16-byte cryptographic salts).
+Agent credentials are seeded in `database/seed.sql` and managed by the project team. Passwords are stored with **PBKDF2WithHmacSHA256** (65,536 iterations with distinct random 16-byte cryptographic salts).
 
-| Agent ID | Full Name | Email Address | Phone Number | Status | Default Password |
-|---|---|---|---|---|---|
-| 1 | Delphin Mugisha | `delphin@agriprice.rw` | `+250788123456` | ACTIVE | `Agent@123456` |
-| 2 | Jean Claude Bizimana | `bizimana@agriprice.rw` | `+250788234567` | ACTIVE | `Agent@123456` |
-| 3 | Aline Uwase | `uwase@agriprice.rw` | `+250788345678` | ACTIVE | `Agent@123456` |
-| 4 | Eric Habimana | `habimana@agriprice.rw` | `+250788456789` | ACTIVE | `Agent@123456` |
+Sign in with an agent account to submit and manage price reports.
 
 ---
 
@@ -78,16 +90,22 @@ All passwords are encrypted with **PBKDF2WithHmacSHA256** (65,536 iterations wit
 
 ### Option A: Eclipse IDE (Recommended for FAT Demonstration)
 1. Open Eclipse IDE for Enterprise Java Developers.
-2. Select File $\rightarrow$ Open Projects from File System $\rightarrow$ browse to `C:\Users\delph\AgriPrice`.
+2. Select **File â†’ Import â†’ General â†’ Existing Projects into Workspace**, then choose the extracted project folder.
 3. In the "Servers" view, right-click **Tomcat v9.0 Server at localhost** $\rightarrow$ Add and Remove... $\rightarrow$ add **AgriPriceRwanda**.
 4. Click **Start Server** (or `Ctrl+Alt+R`).
 5. Open browser at: `http://localhost:8080/AgriPriceRwanda/`
 
 ### Option B: Deploy Pre-built WAR File
-1. Copy `C:\Users\delph\AgriPrice\AgriPriceRwanda.war` into your Tomcat `webapps/` folder:
-   `C:\Users\delph\OneDrive\Desktop\web\apache-tomcat-9.0.123 - Copy\apache-tomcat-9.0.123 - Copy\apache-tomcat-9.0.123\webapps\`
+1. Copy `AgriPriceRwanda.war` into your Tomcat 9 `webapps/` folder.
 2. Start Tomcat using `bin\startup.bat`.
 3. Access the application at: `http://localhost:8080/AgriPriceRwanda/`
+
+### Option C: Static Hosted Demo on Vercel
+The `public/` directory contains the read-only static build served at `https://agripricerwanda.vercel.app`. Data is a snapshot in `public/data/`; sign-in and write operations are disabled in this hosted demo.
+
+1. Connect the GitHub repository to Vercel.
+2. Keep `vercel.json` at the repository root; it sets `public/` as the output directory.
+3. Deploy with `vercel --prod` or through the Vercel dashboard.
 
 ---
 
@@ -105,16 +123,18 @@ All passwords are encrypted with **PBKDF2WithHmacSHA256** (65,536 iterations wit
 | `POST` | `/api/markets` | Create, update, or delete market centers | Authenticated Agent |
 | `GET` | `/api/products` | Retrieve all agricultural commodities | Public |
 | `POST` | `/api/products` | Create, update, or delete agricultural products | Authenticated Agent |
-| `GET` | `/api/watchlist` | Get watched commodities with targetReached alerts | Public (Session-based) |
-| `POST` | `/api/watchlist` | Add item, update target buy price, or remove item | Public (Session-based) |
+| `GET` | `/api/watchlist` | View the browser-cookie watchlist and targetReached alerts | Public (Read-only) |
+| `POST` | `/api/watchlist` | Add item, update target price, or delete item | Authenticated Market Agent |
 | `GET` | `/api/dashboard` | Return aggregate metrics, latest reports &amp; distribution | Public / Agent |
 | `GET` | `/api/trends/history` | Return 14-day trailing prices for Line Chart | Public |
 | `GET` | `/api/trends/comparison` | Return cross-market prices on a date for Bar Chart | Public |
 | `GET` | `/api/trends/distribution` | Return market reporting distribution for Pie Chart | Public |
-| `GET` | `/export/prices` | Export daily XML bulletin (ETag / Last-Modified 304 Caching) | Public |
+| `GET` | `/export/prices` | View formatted daily price bulletin (HTML; ETag / Last-Modified caching) | Public |
+| `GET` | `/export/prices?format=xml` | Export raw daily bulletin XML | Public |
 | `GET` | `/export/prices?format=html` | XSLT transformed daily price bulletin in HTML | Public |
 | `GET` | `/export/prices?format=grouped`| XSLT transformed prices regrouped by market | Public |
 | `GET` | `/export/prices?format=sms` | XSLT transformed SMS plain-text bulletin | Public |
+| `GET` | `/export/prices?format=xpath` | Run and display five XPath expressions on the generated bulletin | Public |
 | `POST` | `/api/auth/login` | Authenticate agent via PBKDF2 hash comparison | Public |
 | `POST` | `/api/auth/logout` | Invalidate HttpSession | Authenticated Agent |
 | `GET` | `/api/auth/status` | Verify current session authentication state | Public |
@@ -138,8 +158,8 @@ All passwords are encrypted with **PBKDF2WithHmacSHA256** (65,536 iterations wit
 |---|---|---|
 | **00:00 - 01:15** | Architecture & DB | Point out Tomcat 9, MySQL Community 8.0, least-privilege `agriprice_user`, and the 6 relational tables. |
 | **01:15 - 02:45** | Public Price Search | Demonstrate live AJAX filtering by commodity and market on `prices.html`. Click the "Quick XHR Market Snapshot" button to verify the examination's XMLHttpRequest requirement. |
-| **02:45 - 04:00** | Client-Side MVC Watchlist | Add Kinigi Potatoes on `watchlist.html` at target price 450 RWF. Show dynamic alert banner trigger when market price meets target. Explain Model/View/Controller separation. |
-| **04:00 - 05:30** | Agent Dashboard & Outliers | Log in as `delphin@agriprice.rw`. Submit an outlier price (e.g. Maize at 1,500 RWF vs 500 RWF average). Show automated rejection via `PriceOutlierException`. Submit valid price and show audit log record. |
-| **05:30 - 06:45** | XML, XSD, XPath & XSLT | Open `/export/prices`. Show raw XML bulletin and schema validation. Open `/export/prices?format=html` and `?format=sms`. Demonstrate the 5 XPath queries. |
+| **02:45 - 04:00** | Client-Side MVC Watchlist | Show the visitor read-only view, then sign in as an agent to add, update and delete a target on `watchlist.html`. Show the target alert and explain Model/View/Controller separation. |
+| **04:00 - 05:30** | Agent Dashboard & Outliers | Log in with a seeded agent account. Submit an outlier price (e.g. Maize at 1,500 RWF vs 500 RWF average). Show automated rejection via `PriceOutlierException`. Submit valid price and show audit log record. |
+| **05:30 - 06:45** | XML, XSD, XPath & XSLT | Open `/export/prices` for the formatted bulletin and `/export/prices?format=xml` for raw XML. Show schema validation and the SMS format. Demonstrate the 5 XPath queries. |
 | **06:45 - 07:30** | HTTP DevTools & Caching | Open Network tab in DevTools. Refresh `/export/prices`. Demonstrate **HTTP 304 Not Modified** triggered by ETag and Last-Modified headers. Show cookies for preferred market and language. |
 | **07:30 - 08:00** | Automated QUnit Suite | Open `WebContent/js/tests/index.html`. Show all 12 unit tests passing across Module 1 and Module 2. Conclude. |

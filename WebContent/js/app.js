@@ -142,14 +142,29 @@ const App = {
         setTimeout(() => toast.remove(), 4000);
     },
 
-    // Automatic Price Polling every 12 seconds
+    marketPhoto(market) {
+        const name = String((market && market.marketName) || '').toLowerCase();
+        const photos = [
+            { test: /gisenyi/, src: 'assets/images/markets/gisenyi.jpg', alt: 'Gisenyi town on the shore of Lake Kivu' },
+            { test: /cross.?border/, src: 'assets/images/markets/rubavu.jpg', alt: 'Rubavu town centre near the DRC border' },
+            { test: /mahoko/, src: 'assets/images/markets/mahoko.jpg', alt: 'Produce stalls at a Rwandan market (illustrative)' }
+        ];
+        const found = photos.find(item => item.test.test(name));
+        if (found) return found;
+        return {
+            src: 'assets/images/kigali-market.jpg',
+            alt: (market && market.marketName) ? `${market.marketName} market` : 'Rwandan market'
+        };
+    },
+
+    // Automatic Price Polling every 5 seconds
     startAutoRefresh(callback) {
         if (this.pollIntervalId) clearInterval(this.pollIntervalId);
         this.pollIntervalId = setInterval(() => {
             if (!document.hidden && typeof callback === 'function') {
                 callback();
             }
-        }, 12000);
+        }, 5000);
     },
 
     stopAutoRefresh() {

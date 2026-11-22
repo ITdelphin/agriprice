@@ -8,13 +8,21 @@ const AgriCharts = {
     distributionChartInstance: null,
 
     // Chart 1: Price Trends (Line Chart)
-    async initTrendChart(canvasId, productId = 1, marketId = null) {
+    async initTrendChart(canvasId, productId = 1, marketId = null, days = 16, statusId = null) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
+        this.setChartState(statusId, 'Loading price history…');
 
         try {
-            const data = await AgriAPI.getTrendHistory(productId, marketId, 16);
+            const data = await AgriAPI.getTrendHistory(productId, marketId, days);
+            if (!Array.isArray(data)) throw new Error('Trend data response is invalid.');
+            if (!data.length) {
+                if (this.trendChartInstance) this.trendChartInstance.destroy();
+                this.trendChartInstance = null;
+                this.setChartState(statusId, 'No price history is available for this selection.');
+                return;
+            }
             const labels = data.map(d => d.date);
             const avgPrices = data.map(d => d.avgPrice);
             const minPrices = data.map(d => d.minPrice);
@@ -84,19 +92,29 @@ const AgriCharts = {
                     }
                 }
             });
+            this.setChartState(statusId, `${data.length} reporting dates shown.`);
         } catch (e) {
             console.error('Failed to load Trend Chart:', e);
+            this.setChartState(statusId, 'Price history could not be loaded.', 'error');
         }
     },
 
     // Chart 2: Market Comparison (Bar Chart)
-    async initComparisonChart(canvasId, productId = 1, date = '2026-11-09') {
+    async initComparisonChart(canvasId, productId = 1, date = null, statusId = null) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
+        this.setChartState(statusId, 'Loading market comparison…');
 
         try {
             const data = await AgriAPI.getMarketComparison(productId, date);
+            if (!Array.isArray(data)) throw new Error('Market comparison response is invalid.');
+            if (!data.length) {
+                if (this.comparisonChartInstance) this.comparisonChartInstance.destroy();
+                this.comparisonChartInstance = null;
+                this.setChartState(statusId, 'No market reports are available for this product and date.');
+                return;
+            }
             const labels = data.map(d => d.marketName);
             const prices = data.map(d => d.price);
 
@@ -141,19 +159,29 @@ const AgriCharts = {
                     }
                 }
             });
+            this.setChartState(statusId, `${data.length} market${data.length === 1 ? '' : 's'} compared.`);
         } catch (e) {
             console.error('Failed to load Comparison Chart:', e);
+            this.setChartState(statusId, 'Market comparison could not be loaded.', 'error');
         }
     },
 
     // Chart 3: Market Reporting Distribution (Pie / Doughnut Chart)
-    async initDistributionChart(canvasId) {
+    async initDistributionChart(canvasId, statusId = null) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
+        this.setChartState(statusId, 'Loading report distribution…');
 
         try {
             const data = await AgriAPI.getMarketDistribution();
+            if (!Array.isArray(data)) throw new Error('Distribution response is invalid.');
+            if (!data.length) {
+                if (this.distributionChartInstance) this.distributionChartInstance.destroy();
+                this.distributionChartInstance = null;
+                this.setChartState(statusId, 'No market reports are available yet.');
+                return;
+            }
             const labels = data.map(d => d.marketName);
             const counts = data.map(d => d.count);
 
@@ -184,8 +212,18 @@ const AgriCharts = {
                     }
                 }
             });
+            this.setChartState(statusId, `${data.length} markets represented.`);
         } catch (e) {
             console.error('Failed to load Distribution Chart:', e);
+            this.setChartState(statusId, 'Report distribution could not be loaded.', 'error');
+        }
+    },
+
+    setChartState(statusId, message, tone = '') {
+        const state = statusId && document.getElementById(statusId);
+        if (state) {
+            state.textContent = message;
+            state.className = `chart-state${tone === 'error' ? ' text-danger' : ''}`;
         }
     }
 };

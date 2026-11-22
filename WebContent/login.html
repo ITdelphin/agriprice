@@ -3,133 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Authentication — AgriPrice Rwanda</title>
+    <meta name="theme-color" content="#174c31">
+    <meta name="description" content="Sign in to the AgriPrice Rwanda agent workspace to submit and manage agricultural market price reports.">
+    <title>Agent sign in | AgriPrice Rwanda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-
-    <!-- Header Navigation -->
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="brand">
-                <div class="brand-icon">&#127793;</div>
-                <div class="brand-text">
-                    <h1>AgriPrice Rwanda</h1>
-                    <span>Rubavu &amp; Gisenyi Market System</span>
-                </div>
+<body class="public-home login-page">
+    <header class="public-header">
+        <div class="public-nav-wrap">
+            <a href="index.html" class="public-brand" aria-label="AgriPrice Rwanda home">
+                <span class="public-brand-icon" aria-hidden="true">A</span>
+                <span><strong>AgriPrice</strong><small>RWANDA</small></span>
             </a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.html" class="nav-link">Home</a></li>
-                    <li><a href="prices.html" class="nav-link">Market Prices</a></li>
-                    <li><a href="watchlist.html" class="nav-link">My Watchlist</a></li>
-                    <li><a href="products.html" class="nav-link">Products</a></li>
-                    <li><a href="markets.html" class="nav-link">Markets</a></li>
-                    <li><a href="login.html" class="nav-link active">Agent Login</a></li>
-                </ul>
+            <nav class="login-header-nav" aria-label="Main navigation">
+                <a href="prices.html">Market prices</a>
+                <a href="index.html">Back to home <span aria-hidden="true">→</span></a>
             </nav>
         </div>
     </header>
 
-    <main class="container" style="max-width: 520px; margin-top: 50px;">
-        <div class="card" style="box-shadow: var(--shadow-lg); border-top: 5px solid var(--primary);">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div class="brand-icon" style="margin: 0 auto 12px; width: 48px; height: 48px; font-size: 24px;">&#128272;</div>
-                <h2 style="color: var(--primary-dark);">Market Agent Portal</h2>
-                <p class="text-muted" style="font-size: 0.9rem;">Authenticate to submit and correct daily agricultural prices.</p>
+    <main class="login-main">
+        <section class="login-panel" aria-labelledby="loginTitle">
+            <div class="login-panel-heading">
+                <span class="login-lock-mark" aria-hidden="true"><span></span></span>
+                <span class="section-kicker">AGENT WORKSPACE</span>
+                <h1 id="loginTitle">Welcome back</h1>
+                <p>Sign in to submit market prices and manage your reports.</p>
             </div>
 
-            <!-- Login Feedback Alert Box -->
-            <div id="loginFeedback" class="alert-box" style="display: none;"></div>
+            <div id="loginFeedback" class="login-feedback" style="display:none" role="status" aria-live="polite"></div>
 
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="agentEmail" class="form-label">Enumerator Email Address:</label>
-                    <input type="email" id="agentEmail" class="form-control" placeholder="e.g. delphin@agriprice.rw" required autofocus>
+            <form id="loginForm" class="login-form">
+                <div class="login-field">
+                    <label for="agentEmail">Work email</label>
+                    <input type="email" id="agentEmail" name="email" placeholder="name@example.com" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
                 </div>
-
-                <div class="form-group">
-                    <label for="agentPassword" class="form-label">Password:</label>
-                    <input type="password" id="agentPassword" class="form-control" placeholder="Enter your password" required>
+                <div class="login-field">
+                    <div class="login-password-label"><label for="agentPassword">Password</label></div>
+                    <div class="login-password-input">
+                        <input type="password" id="agentPassword" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                        <button type="button" id="togglePassword" aria-label="Show password" aria-pressed="false">Show</button>
+                    </div>
                 </div>
-
-                <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">
-                    Sign In Securely
-                </button>
+                <button type="submit" id="btnLoginSubmit" class="login-submit"><span>Sign in securely</span><span aria-hidden="true">→</span></button>
+                <p class="login-security-note"><span aria-hidden="true">●</span> Your agent account is protected by a secure session.</p>
             </form>
 
-            <!-- Demonstration Credentials Helper Box for Academic Examination -->
-            <div style="margin-top: 24px; padding: 16px; background-color: var(--primary-soft); border-radius: var(--radius-sm); font-size: 0.85rem; border: 1px dashed var(--primary);">
-                <strong style="color: var(--primary-dark); display: block; margin-bottom: 6px;">&#128736; Academic Demonstration Accounts:</strong>
-                <p style="margin-bottom: 8px;"><strong>Shared Password:</strong> <code>Agent@123456</code></p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <div><a href="#" class="quick-fill" data-email="delphin@agriprice.rw">&#10148; delphin@agriprice.rw</a> (Rubavu)</div>
-                    <div><a href="#" class="quick-fill" data-email="bizimana@agriprice.rw">&#10148; bizimana@agriprice.rw</a> (Gisenyi)</div>
-                    <div><a href="#" class="quick-fill" data-email="uwase@agriprice.rw">&#10148; uwase@agriprice.rw</a> (Mahoko)</div>
-                    <div><a href="#" class="quick-fill" data-email="habimana@agriprice.rw">&#10148; habimana@agriprice.rw</a> (Nyabugogo)</div>
-                </div>
+            <p class="login-backlink">Looking for prices? <a href="prices.html">Browse the market reports</a></p>
+        </section>
+
+        <aside class="login-story" aria-label="About the agent workspace">
+            <div class="login-story-photo" role="img" aria-label="Agricultural tea fields in Rwanda"></div>
+            <div class="login-story-overlay"></div>
+            <div class="login-story-content">
+                <span class="login-story-label"><span></span> CONNECTED LOCAL MARKETS</span>
+                <h2>Good information<br>moves markets forward.</h2>
+                <p>Help farmers, buyers and traders make informed decisions by sharing timely, accurate market reports.</p>
+                <div class="login-story-links"><a href="submit-price.html">Submit a price report <span>→</span></a><a href="trends.html">Explore market trends <span>→</span></a></div>
             </div>
-        </div>
+            <div class="login-story-credit">Tea hills, Western Rwanda · <a href="https://commons.wikimedia.org/wiki/File:Tea_Hills_and_Blue_Skies.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons, CC BY-SA 4.0</a></div>
+        </aside>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container" style="margin: 0 auto;">
-            <p>&copy; 2026 AgriPrice Rwanda. All rights reserved. Developed for Advanced Web &amp; Internet Programming Final Assessment.</p>
-        </div>
-    </footer>
+    <footer class="login-footer"><span>© 2026 AgriPrice Rwanda</span><a href="index.html">Public market information</a></footer>
 
-    <!-- Scripts -->
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Quick fill demo links
-            document.querySelectorAll('.quick-fill').forEach(a => {
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.getElementById('agentEmail').value = a.getAttribute('data-email');
-                    document.getElementById('agentPassword').value = 'Agent@123456';
-                });
-            });
-
             const form = document.getElementById('loginForm');
             const feedback = document.getElementById('loginFeedback');
-            const btnSubmit = document.getElementById('btnLoginSubmit');
+            const submit = document.getElementById('btnLoginSubmit');
+            const emailInput = document.getElementById('agentEmail');
+            const passwordInput = document.getElementById('agentPassword');
 
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            document.getElementById('togglePassword').addEventListener('click', event => {
+                const visible = passwordInput.type === 'password';
+                passwordInput.type = visible ? 'text' : 'password';
+                event.currentTarget.textContent = visible ? 'Hide' : 'Show';
+                event.currentTarget.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+                event.currentTarget.setAttribute('aria-pressed', String(visible));
+            });
+
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                if (!form.reportValidity()) return;
                 feedback.style.display = 'none';
-                btnSubmit.disabled = true;
-                btnSubmit.textContent = 'Verifying PBKDF2 Hash...';
-
-                const email = document.getElementById('agentEmail').value.trim();
-                const password = document.getElementById('agentPassword').value;
-
+                submit.disabled = true;
+                submit.setAttribute('aria-busy', 'true');
+                submit.querySelector('span').textContent = 'Signing in…';
                 try {
-                    const res = await AgriAPI.login(email, password);
-                    if (res.status === 200 && res.data.success) {
-                        feedback.className = 'alert-box alert-success';
+                    const response = await AgriAPI.login(emailInput.value.trim(), passwordInput.value);
+                    if (response.status === 200 && response.data.success) {
+                        feedback.className = 'login-feedback is-success';
+                        feedback.textContent = `Welcome, ${response.data.fullName}. Opening your workspace…`;
                         feedback.style.display = 'block';
-                        feedback.innerHTML = `<strong>Welcome, ${res.data.fullName}!</strong> Redirecting to Agent Dashboard...`;
-                        setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 1000);
+                        window.setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
                     } else {
-                        feedback.className = 'alert-box alert-warning';
-                        feedback.style.display = 'block';
-                        feedback.innerHTML = `<strong>Login Failed:</strong> ${res.data.message || 'Invalid credentials'}`;
-                        btnSubmit.disabled = false;
-                        btnSubmit.textContent = 'Sign In Securely';
+                        showLoginError(response.data.message || 'The email or password was not recognized.');
                     }
-                } catch (err) {
-                    feedback.className = 'alert-box alert-warning';
-                    feedback.style.display = 'block';
-                    feedback.textContent = 'Server connection error during login.';
-                    btnSubmit.disabled = false;
-                    btnSubmit.textContent = 'Sign In Securely';
+                } catch (_) {
+                    showLoginError('We could not reach the sign-in service. Check your connection and try again.');
                 }
             });
+
+            function showLoginError(message) {
+                feedback.className = 'login-feedback is-error';
+                feedback.textContent = message;
+                feedback.style.display = 'block';
+                submit.disabled = false;
+                submit.removeAttribute('aria-busy');
+                submit.querySelector('span').textContent = 'Sign in securely';
+            }
         });
     </script>
 </body>

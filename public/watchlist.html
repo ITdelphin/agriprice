@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist &amp; Price Alerts — AgriPrice Rwanda</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="watchlist-page" data-app-shell="off">
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
+                <div class="brand-text">
+                    <h1>AgriPrice Rwanda</h1>
+                    <span>Rubavu &amp; Gisenyi Market System</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="prices.html" class="nav-link">Market Prices</a></li>
+                    <li><a href="watchlist.html" class="nav-link active">My Watchlist <span id="watchlistBadge" class="nav-badge" style="display:none;">0</span></a></li>
+                    <li><a href="products.html" class="nav-link">Products</a></li>
+                    <li><a href="markets.html" class="nav-link">Markets</a></li>
+                    <li><a href="export/prices?format=html" class="nav-link" target="_blank">Daily Bulletin</a></li>
+                    <li id="guestNavLinks"><a href="login.html" class="btn btn-sm btn-primary">Agent Login</a></li>
+                    <li id="agentNavLinks" style="display:none;">
+                        <a href="dashboard.html" class="btn btn-sm btn-primary">Dashboard</a>
+                        <button id="btnLogout" class="btn btn-sm btn-secondary" style="margin-left: 6px;">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="watchlist-page-heading">
+            <div>
+                <h2 id="watchlistTitle">My Agricultural Price Watchlist</h2>
+                <p class="text-muted" id="watchlistDescription">View saved product targets and see when a reported market price reaches them.</p>
+            </div>
+            <div class="watchlist-heading-actions">
+                <a id="watchlistAgentSignIn" class="btn btn-secondary" href="login.html">Agent sign in to manage</a>
+                <button id="btnQuickAddWatchlist" class="btn btn-primary" type="button" hidden>+ Add New Watch Target</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Alert Banner (Rendered by WatchlistView when target price is reached) -->
+        <div id="watchlistAlertBanner" style="display: none;"></div>
+
+        <!-- Watchlist Table Container (Rendered by WatchlistView) -->
+        <div class="card" style="border-top: 4px solid var(--primary);">
+            <div class="card-header">
+                <h3 class="card-title">&#128065; Monitored Commodities &amp; Buy Thresholds</h3>
+                <span class="badge badge-info" id="watchlistAccessBadge">Visitor view only</span>
+            </div>
+            <div id="watchlistContainer" class="table-responsive">
+                <p style="text-align: center; padding: 30px;">Loading your saved price targets...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Quick Add Modal -->
+    <div id="quickAddModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="card" style="width: 440px; max-width: 90%; background: white; margin: auto;">
+            <div class="card-header">
+                <h3 class="card-title">Add Commodity to Watchlist</h3>
+                <button id="btnCloseQuickAdd" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="quickAddForm">
+                <div class="form-group">
+                    <label class="form-label">Agricultural Product:</label>
+                    <select id="quickAddProduct" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Market (Optional):</label>
+                    <select id="quickAddMarket" class="form-control">
+                        <option value="">-- All Markets --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Buy Price (RWF / unit):</label>
+                    <input type="number" id="quickAddTarget" class="form-control" min="1" step="10" placeholder="e.g. 480" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                    <button type="button" id="btnCancelQuickAdd" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="margin: 0 auto;">
+            <p>&copy; 2026 AgriPrice Rwanda &middot; Daily market information for Rubavu and Gisenyi.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/watchlist-model.js"></script>
+    <script src="js/watchlist-view.js"></script>
+    <script src="js/watchlist-controller.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/shell.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Instantiate Client-Side MVC Triad
+            const model = new WatchlistModel();
+            const view = new WatchlistView();
+            let canManage = false;
+            try {
+                const auth = await AgriAPI.checkAuthStatus();
+                canManage = Boolean(auth && auth.authenticated);
+            } catch (_) { /* Public visitors can still read their own saved watchlist. */ }
+            view.setCanManage(canManage);
+            document.getElementById('btnQuickAddWatchlist').hidden = !canManage;
+            document.getElementById('watchlistAgentSignIn').hidden = canManage;
+            document.getElementById('watchlistAccessBadge').textContent = canManage ? 'Agent managed' : 'Visitor view only';
+            if (canManage) {
+                document.getElementById('watchlistTitle').textContent = 'Agent Watchlist Management';
+                document.getElementById('watchlistDescription').textContent = 'Update target prices and remove items from this browser’s watchlist.';
+            }
+            const controller = new WatchlistController(model, view);
+
+            // Populate Dropdowns for Modal
+            try {
+                const [products, markets] = await Promise.all([AgriAPI.getProducts(), AgriAPI.getMarkets()]);
+                const pSelect = document.getElementById('quickAddProduct');
+                const mSelect = document.getElementById('quickAddMarket');
+
+                products.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.productId;
+                    opt.textContent = `${p.productName} (${p.category})`;
+                    pSelect.appendChild(opt);
+                });
+
+                markets.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.marketId;
+                    opt.textContent = `${m.marketName} (${m.district})`;
+                    mSelect.appendChild(opt);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+
+            // Quick Add Modal handling
+            const modal = document.getElementById('quickAddModal');
+            document.getElementById('btnQuickAddWatchlist').addEventListener('click', () => {
+                if (canManage) modal.style.display = 'flex';
+            });
+            const closeModal = () => modal.style.display = 'none';
+            document.getElementById('btnCloseQuickAdd').addEventListener('click', closeModal);
+            document.getElementById('btnCancelQuickAdd').addEventListener('click', closeModal);
+
+            document.getElementById('quickAddForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!canManage) return;
+                const pId = document.getElementById('quickAddProduct').value;
+                const mId = document.getElementById('quickAddMarket').value;
+                const target = document.getElementById('quickAddTarget').value;
+                await controller.handleAddItem(pId, mId, target);
+                closeModal();
+            });
+
+            // Check URL query parameters if directed from another page (e.g. prices.html)
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryPid = urlParams.get('productId');
+            const queryTarget = urlParams.get('target');
+            if (queryPid && queryTarget) {
+                if (canManage) {
+                    await controller.handleAddItem(queryPid, null, queryTarget);
+                } else {
+                    const notice = document.getElementById('watchlistAlertBanner');
+                    notice.className = 'watchlist-readonly-notice';
+                    notice.textContent = 'This watchlist is view-only for visitors. Sign in as a market agent to add or change target prices.';
+                    notice.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

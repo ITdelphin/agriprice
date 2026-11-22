@@ -5,6 +5,7 @@ import com.agriprice.model.AuditLog;
 import com.agriprice.model.PriceReport;
 import com.agriprice.util.InvalidPriceException;
 import com.agriprice.util.PriceOutlierException;
+import com.agriprice.util.UnknownProductException;
 import com.agriprice.util.ValidationUtil;
 import java.sql.Connection;
 import java.sql.Date;
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 public class PriceDAO {
 
+    private static final int HIDDEN_MARKET_ID = 4;
     private final AuditLogDAO auditLogDAO = new AuditLogDAO();
 
     /**
@@ -31,10 +33,11 @@ public class PriceDAO {
      * Enforces price validation, duplicate checking, and 7-day outlier checks.
      */
     public int submitPriceWithAudit(PriceReport report, AuditLog audit) 
-            throws SQLException, InvalidPriceException, PriceOutlierException {
+            throws SQLException, InvalidPriceException, PriceOutlierException, UnknownProductException {
         
         // 1. Business Rule: Price must be > 0
         ValidationUtil.validatePrice(report.getPriceRwf());
+        requireProduct(report.getProductId());
 
         // 2. Business Rule: Check duplicate daily submission
         if (checkDuplicateSubmission(report.getMarketId(), report.getProductId(), report.getReportDate())) {
@@ -117,9 +120,10 @@ public class PriceDAO {
      * Updates an existing price report with an audit record in a single atomic transaction.
      */
     public boolean updatePriceWithAudit(PriceReport report, AuditLog audit) 
-            throws SQLException, InvalidPriceException, PriceOutlierException {
+            throws SQLException, InvalidPriceException, PriceOutlierException, UnknownProductException {
         
         ValidationUtil.validatePrice(report.getPriceRwf());
+        requireProduct(report.getProductId());
 
         double avg7Days = getRecentAveragePrice(report.getProductId(), report.getMarketId(), 7, report.getReportDate());
         double threshold = DatabaseConnection.getOutlierThreshold();
@@ -245,6 +249,17 @@ public class PriceDAO {
         return false;
     }
 
+    private void requireProduct(int productId) throws SQLException, UnknownProductException {
+        String sql = "SELECT 1 FROM products WHERE product_id = ? AND status = 'ACTIVE'";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) throw new UnknownProductException("The selected product is not available.");
+            }
+        }
+    }
+
     /**
      * Calculates the trailing average price over the previous N days prior to a target date.
      */
@@ -308,7 +323,7 @@ public class PriceDAO {
           + "JOIN products p ON r.product_id = p.product_id "
           + "JOIN markets m ON r.market_id = m.market_id "
           + "JOIN agents a ON r.agent_id = a.agent_id "
-          + "WHERE 1=1 "
+          + "WHERE 1=1 AND r.market_id <> " + HIDDEN_MARKET_ID + " "
         );
 
         List<Object> params = new ArrayList<>();
@@ -361,8 +376,9 @@ public class PriceDAO {
                    + "FROM price_reports r "
                    + "JOIN products p ON r.product_id = p.product_id "
                    + "JOIN markets m ON r.market_id = m.market_id "
-                   + "JOIN agents a ON r.agent_id = a.agent_id "
-                   + "ORDER BY r.report_date DESC, r.created_at DESC LIMIT ?";
+                    + "JOIN agents a ON r.agent_id = a.agent_id "
+                    + "WHERE r.market_id <> " + HIDDEN_MARKET_ID + " "
+                    + "ORDER BY r.report_date DESC, r.created_at DESC LIMIT ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, limit > 0 ? limit : 20);
@@ -385,9 +401,9 @@ public class PriceDAO {
                    + "FROM price_reports r "
                    + "JOIN products p ON r.product_id = p.product_id "
                    + "JOIN markets m ON r.market_id = m.market_id "
-                   + "JOIN agents a ON r.agent_id = a.agent_id "
-                   + "WHERE r.agent_id = ? "
-                   + "ORDER BY r.report_date DESC, r.created_at DESC LIMIT ?";
+                    + "JOIN agents a ON r.agent_id = a.agent_id "
+                    + "WHERE r.agent_id = ? AND r.market_id <> " + HIDDEN_MARKET_ID + " "
+                    + "ORDER BY r.report_date DESC, r.created_at DESC LIMIT ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, agentId);
@@ -402,10 +418,10 @@ public class PriceDAO {
     }
 
     public int getTotalReportsCount() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM price_reports";
+        String sql = "SELECT COUNT(*) FROM price_reports WHERE market_id <> " + HIDDEN_MARKET_ID;
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -418,14 +434,16 @@ public class PriceDAO {
      */
     public List<Map<String, Object>> getHistoricalTrends(int productId, Integer marketId, int days) throws SQLException {
         List<Map<String, Object>> list = new ArrayList<>();
+        int boundedDays = Math.max(1, Math.min(days, 365));
         StringBuilder sql = new StringBuilder(
             "SELECT report_date, AVG(price_rwf) AS avg_price, MIN(price_rwf) AS min_price, MAX(price_rwf) AS max_price "
-          + "FROM price_reports "
-          + "WHERE product_id = ? "
+          +             "FROM price_reports "
+          + "WHERE product_id = ? AND market_id <> " + HIDDEN_MARKET_ID + " "
         );
         if (marketId != null && marketId > 0) {
             sql.append(" AND market_id = ? ");
         }
+        sql.append(" AND report_date >= DATE_SUB(CURDATE(), INTERVAL ? DAY) ");
         sql.append("GROUP BY report_date ORDER BY report_date ASC");
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -434,6 +452,7 @@ public class PriceDAO {
             if (marketId != null && marketId > 0) {
                 ps.setInt(2, marketId);
             }
+            ps.setInt(marketId != null && marketId > 0 ? 3 : 2, boundedDays);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> map = new HashMap<>();
@@ -456,12 +475,15 @@ public class PriceDAO {
         String sql = "SELECT m.market_id, m.market_name, m.district, r.price_rwf, r.report_date, r.unit "
                    + "FROM price_reports r "
                    + "JOIN markets m ON r.market_id = m.market_id "
-                   + "WHERE r.product_id = ? AND r.report_date = ? "
+                   + "WHERE r.product_id = ? AND r.market_id <> " + HIDDEN_MARKET_ID
+                   + " AND r.report_date = COALESCE(?, "
+                   + "(SELECT MAX(report_date) FROM price_reports WHERE product_id = ? AND market_id <> " + HIDDEN_MARKET_ID + ")) "
                    + "ORDER BY r.price_rwf ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, productId);
             ps.setDate(2, date);
+            ps.setInt(3, productId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Map<String, Object> map = new HashMap<>();
@@ -485,11 +507,12 @@ public class PriceDAO {
         String sql = "SELECT m.market_name, COUNT(r.report_id) AS report_count "
                    + "FROM markets m "
                    + "LEFT JOIN price_reports r ON m.market_id = r.market_id "
+                   + "WHERE m.market_id <> " + HIDDEN_MARKET_ID + " "
                    + "GROUP BY m.market_id, m.market_name "
                    + "ORDER BY report_count DESC";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("marketName", rs.getString("market_name"));
@@ -498,6 +521,30 @@ public class PriceDAO {
             }
         }
         return list;
+    }
+
+    public Date getLatestReportDate() throws SQLException {
+        String sql = "SELECT MAX(report_date) FROM price_reports WHERE market_id <> " + HIDDEN_MARKET_ID;
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            return rs.next() ? rs.getDate(1) : null;
+        }
+    }
+
+    public long getLatestReportUpdatedAt(Date reportDate) throws SQLException {
+        String sql = "SELECT MAX(updated_at) FROM price_reports WHERE report_date = ? AND market_id <> " + HIDDEN_MARKET_ID;
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDate(1, reportDate);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    java.sql.Timestamp updated = rs.getTimestamp(1);
+                    return updated == null ? 0L : updated.getTime();
+                }
+            }
+        }
+        return 0L;
     }
 
     /**
@@ -515,8 +562,8 @@ public class PriceDAO {
                    + "FROM price_reports r "
                    + "JOIN products p ON r.product_id = p.product_id "
                    + "JOIN markets m ON r.market_id = m.market_id "
-                   + "JOIN agents a ON r.agent_id = a.agent_id "
-                   + "WHERE p.product_name = ?";
+                    + "JOIN agents a ON r.agent_id = a.agent_id "
+                    + "WHERE p.product_name = ? AND r.market_id <> " + HIDDEN_MARKET_ID;
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, attemptedInjectionPayload);

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markets Directory — AgriPrice Rwanda</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="markets-page" data-app-shell="off">
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
+                <div class="brand-text">
+                    <h1>AgriPrice Rwanda</h1>
+                    <span>Rubavu &amp; Gisenyi Market System</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="prices.html" class="nav-link">Market Prices</a></li>
+                    <li><a href="watchlist.html" class="nav-link">My Watchlist</a></li>
+                    <li><a href="products.html" class="nav-link">Products</a></li>
+                    <li><a href="markets.html" class="nav-link active">Markets</a></li>
+                    <li><a href="export/prices?format=html" class="nav-link" target="_blank">Daily Bulletin</a></li>
+                    <li id="guestNavLinks"><a href="login.html" class="btn btn-sm btn-primary">Agent Login</a></li>
+                    <li id="agentNavLinks" style="display:none;">
+                        <a href="dashboard.html" class="btn btn-sm btn-primary">Dashboard</a>
+                        <button id="btnLogout" class="btn btn-sm btn-secondary" style="margin-left: 6px;">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="market-directory-hero">
+            <div class="market-directory-copy"><span>MARKETS ACROSS RWANDA</span><h2>Where local trade comes together</h2><p>Explore market centers and compare the places where daily produce prices are reported.</p></div>
+            <button id="btnOpenAddMarket" class="btn btn-primary market-add-button" style="display:none;">+ Add market</button>
+            <small class="market-image-credit">Kigali Market · Zenith4237 · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Kigali_Market_(02).jpg" target="_blank" rel="noopener noreferrer">Source</a></small>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="card" style="padding: 14px 20px; margin-bottom: 20px;">
+            <div class="directory-search market-search-row">
+                <input type="text" id="marketSearchInput" class="form-control" placeholder="Search market by name, district, or description...">
+                <select id="marketDistrictFilter" class="form-control" aria-label="Filter markets by district"><option value="">All districts</option></select>
+                <select id="marketProvinceFilter" class="form-control" aria-label="Filter markets by province"><option value="">All provinces</option></select>
+                <button id="btnSearchMarkets" class="btn btn-secondary">Search</button>
+            </div>
+        </div>
+
+        <!-- Markets Grid / Cards -->
+        <div id="marketsListContainer" class="grid-2">
+            <p style="padding: 30px;">Loading markets...</p>
+        </div>
+
+    </main>
+
+    <!-- Modal: Add / Edit Market -->
+    <div id="marketModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="card" style="width: 480px; max-width: 90%; background: white; margin: auto;">
+            <div class="card-header">
+                <h3 id="modalMarketTitle" class="card-title">Add New Market</h3>
+                <button id="btnCloseMarketModal" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="marketForm">
+                <input type="hidden" id="modalMarketAction" value="create">
+                <input type="hidden" id="modalMarketId" value="0">
+                <div class="form-group">
+                    <label class="form-label">Market Name:</label>
+                    <input type="text" id="modalMarketName" class="form-control" required placeholder="e.g. Nyamyumba Local Market">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label class="form-label">District:</label>
+                        <input type="text" id="modalDistrict" class="form-control" required placeholder="e.g. Rubavu">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Province:</label>
+                        <input type="text" id="modalProvince" class="form-control" required placeholder="e.g. Western Province">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location Description &amp; Trading Specialization:</label>
+                    <textarea id="modalLocationDesc" class="form-control" rows="3" placeholder="Access roads, proximity to border, transport links..."></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                    <button type="button" id="btnCancelMarketModal" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Market</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="margin: 0 auto;">
+            <p>&copy; 2026 AgriPrice Rwanda &middot; Daily market information for Rubavu and Gisenyi.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/shell.js"></script>
+
+    <script>
+        let allMarkets = [];
+        let isAgent = false;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const auth = await AgriAPI.checkAuthStatus();
+            isAgent = auth && auth.authenticated;
+
+            if (isAgent) {
+                document.getElementById('btnOpenAddMarket').style.display = 'inline-block';
+            }
+
+            await loadMarkets();
+            setupMarketHandlers();
+        });
+
+        async function loadMarkets() {
+            try {
+                allMarkets = await AgriAPI.getMarkets();
+                document.getElementById('marketDistrictFilter').innerHTML = '<option value="">All districts</option>' + [...new Set(allMarkets.map(m => m.district).filter(Boolean))].sort().map(value => `<option>${escapeHtml(value)}</option>`).join('');
+                document.getElementById('marketProvinceFilter').innerHTML = '<option value="">All provinces</option>' + [...new Set(allMarkets.map(m => m.province).filter(Boolean))].sort().map(value => `<option>${escapeHtml(value)}</option>`).join('');
+                renderMarkets(allMarkets);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('marketsListContainer').innerHTML = '<p class="empty-state">Markets could not be loaded. Please try again.</p>';
+            }
+        }
+
+        function renderMarkets(list) {
+            const container = document.getElementById('marketsListContainer');
+            if (!list || list.length === 0) {
+                container.innerHTML = '<p style="padding: 25px;">No markets found.</p>';
+                return;
+            }
+
+            container.innerHTML = list.map(m => {
+                const photo = App.marketPhoto(m);
+                return `
+                <article class="market-directory-card">
+                    <div class="market-directory-photo">
+                        <img src="${photo.src}" alt="${escapeHtml(photo.alt)}" loading="lazy">
+                    </div>
+                    <div class="market-directory-body">
+                        <div class="market-directory-head">
+                            <h3>${escapeHtml(m.marketName)}</h3>
+                            <span class="badge badge-info">${escapeHtml(m.district)}</span>
+                        </div>
+                        <p class="market-directory-province"><strong>Province:</strong> ${escapeHtml(m.province)}</p>
+                        <p class="market-directory-desc">${escapeHtml(m.locationDescription || 'Major agricultural trading point.')}</p>
+                        <div class="market-directory-actions">
+                            <a href="prices.html?marketId=${m.marketId}" class="btn btn-sm btn-outline">View prices</a>
+                            ${isAgent ? `
+                                <div class="market-directory-manage">
+                                    <button class="btn btn-sm btn-secondary btn-edit-market"
+                                            data-id="${m.marketId}"
+                                            data-name="${escapeHtml(m.marketName)}"
+                                            data-dist="${escapeHtml(m.district)}"
+                                            data-prov="${escapeHtml(m.province)}"
+                                            data-desc="${escapeHtml(m.locationDescription || '')}">
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-delete-market" data-id="${m.marketId}">
+                                        Delete
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </article>
+            `;
+            }).join('');
+        }
+
+        function setupMarketHandlers() {
+            // Search
+            const applyMarketFilters = () => {
+                const term = document.getElementById('marketSearchInput').value.toLowerCase().trim();
+                const district = document.getElementById('marketDistrictFilter').value;
+                const province = document.getElementById('marketProvinceFilter').value;
+                const filtered = allMarkets.filter(m => 
+                    (!district || m.district === district) && (!province || m.province === province) && (!term || m.marketName.toLowerCase().includes(term) || m.district.toLowerCase().includes(term) || m.province.toLowerCase().includes(term) || (m.locationDescription && m.locationDescription.toLowerCase().includes(term)))
+                );
+                renderMarkets(filtered);
+            };
+            document.getElementById('btnSearchMarkets').addEventListener('click', applyMarketFilters);
+            document.getElementById('marketDistrictFilter').addEventListener('change', applyMarketFilters);
+            document.getElementById('marketProvinceFilter').addEventListener('change', applyMarketFilters);
+
+            document.getElementById('marketSearchInput').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') applyMarketFilters();
+            });
+
+            // Modal
+            const modal = document.getElementById('marketModal');
+            const openModal = () => {
+                document.getElementById('modalMarketTitle').textContent = 'Add New Market';
+                document.getElementById('modalMarketAction').value = 'create';
+                document.getElementById('modalMarketId').value = '0';
+                document.getElementById('marketForm').reset();
+                document.getElementById('modalProvince').value = 'Western Province';
+                document.getElementById('modalDistrict').value = 'Rubavu';
+                modal.style.display = 'flex';
+            };
+            const closeModal = () => modal.style.display = 'none';
+
+            document.getElementById('btnOpenAddMarket').addEventListener('click', openModal);
+            document.getElementById('btnCloseMarketModal').addEventListener('click', closeModal);
+            document.getElementById('btnCancelMarketModal').addEventListener('click', closeModal);
+
+            document.getElementById('marketsListContainer').addEventListener('click', async (e) => {
+                if (e.target && e.target.classList.contains('btn-edit-market')) {
+                    const btn = e.target;
+                    document.getElementById('modalMarketTitle').textContent = 'Edit Market';
+                    document.getElementById('modalMarketAction').value = 'update';
+                    document.getElementById('modalMarketId').value = btn.getAttribute('data-id');
+                    document.getElementById('modalMarketName').value = btn.getAttribute('data-name');
+                    document.getElementById('modalDistrict').value = btn.getAttribute('data-dist');
+                    document.getElementById('modalProvince').value = btn.getAttribute('data-prov');
+                    document.getElementById('modalLocationDesc').value = btn.getAttribute('data-desc');
+                    modal.style.display = 'flex';
+                }
+
+                if (e.target && e.target.classList.contains('btn-delete-market')) {
+                    const id = parseInt(e.target.getAttribute('data-id'), 10);
+                    if (confirm('Delete this market? Markets linked to saved price reports are protected so that historical data stays intact.')) {
+                        const res = await fetch('api/markets', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'delete', marketId: id })
+                        });
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            App.showToast(data.message || 'Market deleted.');
+                            await loadMarkets();
+                        } else {
+                            App.showToast(data.message || 'Deletion failed.', 'error');
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('marketForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payload = {
+                    action: document.getElementById('modalMarketAction').value,
+                    marketId: parseInt(document.getElementById('modalMarketId').value, 10),
+                    marketName: document.getElementById('modalMarketName').value.trim(),
+                    district: document.getElementById('modalDistrict').value.trim(),
+                    province: document.getElementById('modalProvince').value.trim(),
+                    locationDescription: document.getElementById('modalLocationDesc').value.trim()
+                };
+
+                const res = await fetch('api/markets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    App.showToast(data.message);
+                    closeModal();
+                    await loadMarkets();
+                } else {
+                    App.showToast(data.message || 'Operation failed.', 'error');
+                }
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

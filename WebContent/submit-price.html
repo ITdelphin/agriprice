@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Submit Market Price — AgriPrice Rwanda</title><link rel="stylesheet" href="css/style.css"></head>
+<body class="submit-price-page" data-app-shell="off">
+    <header class="navbar"><div class="nav-container"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="brand-text"><h1>AgriPrice Rwanda</h1><span>Market intelligence</span></span></a><nav class="page-utility-nav" aria-label="Workspace links"><a href="dashboard.html">Workspace</a><a href="prices.html">Price reports</a><a href="markets.html">Markets</a></nav></div></header>
+    <main class="container">
+        <div class="page-heading submit-price-heading"><div><span class="page-kicker">FIELD REPORTING</span><h2>Share today’s market price</h2><p class="text-muted">Capture what you see at the stall, while the market is in front of you.</p></div><span class="submit-date-chip" id="submitDateChip">TODAY · RWF</span></div>
+        <div class="submit-workspace-grid">
+        <section class="card submit-form-card">
+            <div id="submitAlert" class="alert-box" hidden role="status"></div>
+            <form id="priceSubmitForm">
+                <div class="form-group"><label class="form-label" for="submitProduct">Product</label><select id="submitProduct" class="form-control" required><option value="">Loading products…</option></select></div>
+                <div class="form-group"><label class="form-label" for="submitMarket">Market</label><select id="submitMarket" class="form-control" required><option value="">Loading markets…</option></select></div>
+                <div class="grid-2"><div class="form-group"><label class="form-label" for="submitPrice">Price (RWF)</label><input id="submitPrice" class="form-control" type="number" min="0.01" step="0.01" inputmode="decimal" required placeholder="Enter observed price"></div><div class="form-group"><label class="form-label" for="submitUnit">Unit</label><select id="submitUnit" class="form-control" required><option value="kg">Kilogram (kg)</option><option value="piece">Piece</option><option value="sack">Sack</option><option value="bunch">Bunch</option></select></div></div>
+                <div class="form-group"><label class="form-label" for="submitDate">Reporting date</label><input id="submitDate" class="form-control" type="date" required></div>
+                <p class="text-muted" style="margin-bottom:16px">A repeated product, market and date is rejected. Large differences from recent prices are flagged for review.</p>
+                <button class="btn btn-primary" id="btnSubmitPrice" type="submit">Submit price report</button>
+            </form>
+        </section>
+        <aside class="submit-guidance-card">
+            <span class="submit-guide-mark">✓</span><span class="page-kicker">A GOOD REPORT IS</span>
+            <h3>Clear, current, and checked.</h3>
+            <ol><li><b>Choose the stall</b><span>Select the market where you observed the price.</span></li><li><b>Use the right unit</b><span>Report per kg, piece, sack, or bunch.</span></li><li><b>Share the actual price</b><span>Outliers are flagged against recent market reports.</span></li></ol>
+            <div class="submit-guidance-note">One product, market, and date can be reported once. Corrections remain in your recent submissions.</div>
+        </aside>
+        </div>
+        <section class="card" aria-labelledby="submittedReportsTitle">
+            <div class="card-header"><div><h2 class="card-title" id="submittedReportsTitle">Your recent submissions</h2><p class="text-muted">This list refreshes after a report is submitted.</p></div><span id="submissionListStatus" class="chart-state" role="status" aria-live="polite">Loading reports…</span></div>
+            <div class="table-responsive"><table class="data-table"><thead><tr><th>Product</th><th>Market</th><th>Price</th><th>Report date</th></tr></thead><tbody id="agentSubmissionRows"><tr><td colspan="4">Loading your submissions…</td></tr></tbody></table></div>
+        </section>
+    </main>
+    <footer class="footer"><div class="container"><p>&copy; 2026 AgriPrice Rwanda &middot; Market data for Rubavu and Gisenyi.</p></div></footer>
+    <script src="js/pricing-rules.js"></script><script src="js/api.js"></script><script src="js/app.js"></script><script src="js/shell.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const alertBox = document.getElementById('submitAlert');
+            try {
+                const auth = await AgriAPI.checkAuthStatus(); if (!auth.authenticated) { location.href = 'login.html'; return; }
+                const [products, markets] = await Promise.all([AgriAPI.getProducts(), AgriAPI.getMarkets()]);
+                document.getElementById('submitProduct').innerHTML = '<option value="">Select product</option>' + products.filter(p => p.status === 'ACTIVE').map(p => `<option value="${p.productId}" data-unit="${p.defaultUnit}">${submitEscape(p.productName)} · ${submitEscape(p.category)}</option>`).join('');
+                document.getElementById('submitMarket').innerHTML = '<option value="">Select market</option>' + markets.map(m => `<option value="${m.marketId}">${submitEscape(m.marketName)} · ${submitEscape(m.district)}</option>`).join('');
+                document.getElementById('submitDate').value = submitLocalDate();
+                document.getElementById('submitProduct').addEventListener('change', event => { const unit = event.target.selectedOptions[0]?.dataset.unit; if (unit) document.getElementById('submitUnit').value = unit; });
+                await loadAgentSubmissions();
+            } catch (_) { showSubmitMessage('Product and market lists could not be loaded. Please refresh and try again.', 'warning'); }
+            document.getElementById('priceSubmitForm').addEventListener('submit', async event => {
+                event.preventDefault(); if (!event.currentTarget.reportValidity()) return;
+                try { AgriPricingRules.validatePrice(Number(document.getElementById('submitPrice').value)); }
+                catch (error) { showSubmitMessage(error.message, 'warning'); return; }
+                const button = document.getElementById('btnSubmitPrice'); button.disabled = true; button.textContent = 'Submitting…';
+                try {
+                    const result = await AgriAPI.submitPrice({ productId: Number(document.getElementById('submitProduct').value), marketId: Number(document.getElementById('submitMarket').value), price: Number(document.getElementById('submitPrice').value), unit: document.getElementById('submitUnit').value, reportDate: document.getElementById('submitDate').value });
+                    if (result.status === 201 && result.data.success) { showSubmitMessage(`Price report submitted successfully. Reference #${result.data.reportId}.`, 'success'); event.currentTarget.reset(); document.getElementById('submitDate').value = submitLocalDate(); await loadAgentSubmissions(); }
+                    else if (result.data.outlier) showSubmitMessage(`Outlier warning: ${result.data.message}`, 'warning');
+                    else showSubmitMessage(result.data.message || 'The price report could not be submitted.', 'warning');
+                } catch (error) { showSubmitMessage(error?.message ? `Submission failed: ${error.message}` : 'The server could not be reached. Your report was not submitted.', 'warning'); }
+                finally { button.disabled = false; button.textContent = 'Submit price report'; }
+            });
+            function showSubmitMessage(message, type) { alertBox.hidden = false; alertBox.className = `alert-box alert-${type}`; alertBox.textContent = message; }
+        });
+        async function loadAgentSubmissions() {
+            const rows = document.getElementById('agentSubmissionRows');
+            const status = document.getElementById('submissionListStatus');
+            try {
+                const reports = await AgriAPI.getAgentPrices();
+                if (!reports.length) { rows.innerHTML = '<tr><td colspan="4">No reports submitted by this account yet.</td></tr>'; status.textContent = 'No submissions'; return; }
+                rows.innerHTML = reports.slice(0, 8).map(report => `<tr><td><strong>${submitEscape(report.productName)}</strong></td><td>${submitEscape(report.marketName)}</td><td>${Number(report.priceRwf).toLocaleString()} RWF / ${submitEscape(report.unit)}</td><td>${submitEscape(report.reportDate)}</td></tr>`).join('');
+                status.textContent = `${reports.length} recent report${reports.length === 1 ? '' : 's'}`;
+            } catch (_) { rows.innerHTML = '<tr><td colspan="4">Your reports could not be loaded.</td></tr>'; status.textContent = 'Could not refresh'; }
+        }
+        function submitEscape(value) { const el = document.createElement('span'); el.textContent = value || ''; return el.innerHTML; }
+        function submitLocalDate() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    </script>
+</body>
+</html>

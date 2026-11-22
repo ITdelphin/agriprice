@@ -3,7 +3,6 @@ package com.agriprice.util;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -99,10 +98,13 @@ public class PasswordUtil {
     }
 
     public static void main(String[] args) {
-        String testPassword = "Agent@123456";
+        String testPassword = args.length > 0 ? args[0] : System.getenv("AGRIPRICE_TEST_PASSWORD");
+        if (testPassword == null || testPassword.isEmpty()) {
+            System.out.println("Provide a password argument or set AGRIPRICE_TEST_PASSWORD.");
+            return;
+        }
         String salt = generateSalt();
         String hash = hashPassword(testPassword, salt);
-        System.out.println("Password: " + testPassword);
         System.out.println("Salt: " + salt);
         System.out.println("Hash: " + hash);
         System.out.println("Verified: " + verifyPassword(testPassword, salt, hash));

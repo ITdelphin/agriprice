@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/export/prices", "destination": "/export.html" },
+    { "source": "/api/auth/status", "destination": "/data/auth-status.json" },
+    { "source": "/api/products", "destination": "/data/products.json" },
+    { "source": "/api/markets", "destination": "/data/markets.json" },
+    { "source": "/api/dashboard", "destination": "/data/dashboard.json" },
+    { "source": "/api/prices/agent", "destination": "/data/prices.json" },
+    { "source": "/api/prices", "destination": "/data/prices.json" },
+    { "source": "/api/trends/distribution", "destination": "/data/distribution.json" },
+    { "source": "/api/trends/history", "destination": "/data/prices.json" },
+    { "source": "/api/trends/comparison", "destination": "/data/prices.json" }
+  ],
+  "headers": [
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=300" }
+      ]
+    }
+  ]
+}

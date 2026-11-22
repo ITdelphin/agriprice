@@ -3,8 +3,10 @@ package com.agriprice.servlet;
 import com.agriprice.dao.PriceDAO;
 import com.agriprice.model.AuditLog;
 import com.agriprice.model.PriceReport;
+import com.agriprice.util.JsonFactory;
 import com.agriprice.util.InvalidPriceException;
 import com.agriprice.util.PriceOutlierException;
+import com.agriprice.util.UnknownProductException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,6 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +29,14 @@ import javax.servlet.http.HttpSession;
 public class PriceServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final PriceDAO priceDAO = new PriceDAO();
-    private final Gson gson = new Gson();
+    private final Gson gson = JsonFactory.create();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         PrintWriter out = response.getWriter();
 
         String pathInfo = request.getPathInfo();
@@ -41,14 +46,27 @@ public class PriceServlet extends HttpServlet {
             String marketParam = request.getParameter("marketId");
             String dateParam = request.getParameter("date");
             String search = request.getParameter("search");
+            boolean includeAll = "true".equalsIgnoreCase(request.getParameter("all"));
 
-            Integer productId = (prodParam != null && !prodParam.isEmpty()) ? Integer.parseInt(prodParam) : null;
-            Integer marketId = (marketParam != null && !marketParam.isEmpty()) ? Integer.parseInt(marketParam) : null;
-            Date reportDate = (dateParam != null && !dateParam.isEmpty()) ? Date.valueOf(dateParam) : null;
+            Integer productId;
+            Integer marketId;
+            Date reportDate;
+            try {
+                productId = (prodParam != null && !prodParam.isEmpty()) ? Integer.valueOf(prodParam) : null;
+                marketId = (marketParam != null && !marketParam.isEmpty()) ? Integer.valueOf(marketParam) : null;
+                reportDate = (dateParam != null && !dateParam.isEmpty()) ? parseIsoDate(dateParam) : null;
+                if ((productId != null && productId <= 0) || (marketId != null && marketId <= 0)) {
+                    throw new IllegalArgumentException("Identifiers must be positive.");
+                }
+            } catch (IllegalArgumentException | java.time.DateTimeException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print("{\"success\":false,\"message\":\"Invalid product, market or ISO date filter.\"}");
+                return;
+            }
 
             try {
                 List<PriceReport> reports;
-                if (productId != null || marketId != null || reportDate != null || (search != null && !search.isEmpty())) {
+                if (includeAll || productId != null || marketId != null || reportDate != null || (search != null && !search.isEmpty())) {
                     reports = priceDAO.getFilteredPrices(productId, marketId, reportDate, search);
                 } else {
                     reports = priceDAO.getLatestPrices(50);
@@ -113,6 +131,7 @@ public class PriceServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         PrintWriter out = response.getWriter();
 
         // 1. Check Authentication (Strict Rule: Agent must be authenticated)
@@ -124,7 +143,6 @@ public class PriceServlet extends HttpServlet {
             return;
         }
         int agentId = (Integer) session.getAttribute("agentId");
-        String agentName = (String) session.getAttribute("agentName");
 
         // Parse Request Body (JSON or Form)
         int productId = 0;
@@ -151,7 +169,7 @@ public class PriceServlet extends HttpServlet {
                 if (json.has("marketId")) marketId = json.get("marketId").getAsInt();
                 if (json.has("price")) price = json.get("price").getAsDouble();
                 if (json.has("unit")) unit = json.get("unit").getAsString();
-                if (json.has("reportDate")) reportDate = Date.valueOf(json.get("reportDate").getAsString());
+                if (json.has("reportDate")) reportDate = parseIsoDate(json.get("reportDate").getAsString());
                 if (json.has("reportId")) reportId = json.get("reportId").getAsInt();
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -167,7 +185,7 @@ public class PriceServlet extends HttpServlet {
                 if (request.getParameter("marketId") != null) marketId = Integer.parseInt(request.getParameter("marketId"));
                 if (request.getParameter("price") != null) price = Double.parseDouble(request.getParameter("price"));
                 if (request.getParameter("unit") != null) unit = request.getParameter("unit");
-                if (request.getParameter("reportDate") != null) reportDate = Date.valueOf(request.getParameter("reportDate"));
+                if (request.getParameter("reportDate") != null) reportDate = parseIsoDate(request.getParameter("reportDate"));
                 if (request.getParameter("reportId") != null) reportId = Integer.parseInt(request.getParameter("reportId"));
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -175,6 +193,12 @@ public class PriceServlet extends HttpServlet {
                 out.flush();
                 return;
             }
+        }
+
+        if (!java.util.Arrays.asList("kg", "piece", "sack", "bunch").contains(unit)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.print("{\"success\":false,\"message\":\"Unit must be kg, piece, sack or bunch.\"}");
+            return;
         }
 
         // Action: UPDATE
@@ -226,6 +250,12 @@ public class PriceServlet extends HttpServlet {
             } catch (PriceOutlierException e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\":false,\"outlier\":true,\"message\":\"" + e.getMessage() + "\"}");
+            } catch (UnknownProductException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                Map<String, Object> err = new HashMap<>();
+                err.put("success", false);
+                err.put("message", e.getMessage());
+                out.print(gson.toJson(err));
             } catch (SQLException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 out.print("{\"success\":false,\"message\":\"Database update error: " + e.getMessage() + "\"}");
@@ -310,14 +340,27 @@ public class PriceServlet extends HttpServlet {
             err.put("deviation", e.getDeviationPercentage());
             err.put("threshold", e.getThreshold());
             out.print(gson.toJson(err));
+        } catch (UnknownProductException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            Map<String, Object> err = new HashMap<>();
+            err.put("success", false);
+            err.put("message", e.getMessage());
+            out.print(gson.toJson(err));
         } catch (SQLException e) {
-            if (e.getMessage() != null && e.getMessage().contains("Duplicate")) {
+            if ((e.getMessage() != null && e.getMessage().contains("Duplicate")) || e.getErrorCode() == 1062) {
                 response.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflict
-                out.print("{\"success\":false,\"message\":\"" + e.getMessage() + "\"}");
+                out.print("{\"success\":false,\"message\":\"A report already exists for this product, market and date.\"}");
+            } else if (e.getErrorCode() == 1452) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print("{\"success\":false,\"message\":\"Select a valid product and market before submitting.\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
                 out.print("{\"success\":false,\"message\":\"Database error: " + e.getMessage() + "\"}");
             }
         }
+    }
+
+    private Date parseIsoDate(String value) {
+        return Date.valueOf(LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE));
     }
 }

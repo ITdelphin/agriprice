@@ -1,270 +1,110 @@
-# FAT Project Report — Advanced Web & Internet Programming
+# FAT Project Report
+
+## AgriPrice Rwanda — Agricultural Market Price Information System
+
+**Kigali Independent University ULK**  
+School of Science and Technology · Department of Software Engineering  
+Academic year: 2026–2027 · Class: Y4 · Program: Day  
+Module: Advanced Web and Internet Programming  
+Lecturer: NTIRENGANYA Jean Paul  
+Date of examination/presentation: **20 November 2026**
+
+**Team members and roll numbers:** complete with the actual registered member name(s) and ULK roll number(s) before printing. This information was not included in the project brief supplied for implementation.  
+**Repository evidence:** `git log` currently records commits under one configured author, Delphin. Confirm the author's presentation name and add the roll number; do not list additional contributors without their verified names and contribution evidence.
 
 ---
 
-## Cover Page
-
-- **Assessment Type:** Final Assessment Test (FAT) Project Report
-- **Module Name:** Advanced Web and Internet Programming
-- **Project Title:** AgriPrice Rwanda — Agricultural Market Price Information System
-- **Focus Geographic Region:** Rubavu and Gisenyi, Western Province, Rwanda
-- **Date of Examination:** November 11, 2026
-- **Target Application Server:** Apache Tomcat 9
-- **Target Database:** MySQL Community Server 8.0 (`agriprice`)
-
----
-
-## Table of Contents
-1. Introduction
-2. Problem Statement
-3. Objectives
-4. Tools and Technologies Used
-5. System Architecture
-6. Database Design and ER Diagram
-7. Implementation Details
-8. XML, XSD, XPath, and XSLT
-9. HTTP, Cookies, and Caching
-10. JSON and Client-Side MVC
-11. Testing and Results (TDD & QUnit)
-12. Data Visualization (Chart.js)
-13. Individual Contributions
-14. Challenges Faced & Solutions
-15. Conclusion & Future Enhancements
-- Appendix A: Eight-Minute Live Demonstration Script
-- Appendix B: Examination Viva Questions & Answers
-
----
-
-## 1. Introduction
-
-Agricultural commercialization is the backbone of Rwanda's rural economy. In the Western Province—especially across the border trading hubs of Rubavu and Gisenyi adjacent to Goma (DRC)—thousands of smallholder farmers and agricultural traders transact daily in staple food crops. However, access to timely, authenticated, and verified farmgate and wholesale market prices remains fragmented. 
-
-**AgriPrice Rwanda** is an enterprise-grade Agricultural Market Price Information System developed to bridge this gap. Designed under strict software engineering principles and academic rigor for the Advanced Web and Internet Programming FAT assessment, the platform connects authorized field enumerators (Market Agents) with the public, farmers, and commercial traders.
-
----
+## 1. Introduction and problem statement
 
-## 2. Problem Statement
-
-Smallholder farmers and cross-border produce merchants in Rubavu face three severe hurdles:
-1. **Price Asymmetry & Middlemen Exploitation:** Without verified benchmark prices from major aggregation centers (Mahoko, Gisenyi Central, Rubavu Cross-Border), farmers frequently undersell harvests below prevailing market rates.
-2. **Data Inaccuracy & Lack of Auditability:** Informal or unverified pricing lists often contain typographical errors or deliberate inflation without any regulatory audit trail.
-3. **Absence of Proactive Alerting:** Buyers and farmers lack automated mechanisms to track specific commodity price movements against personal target buying/selling budgets.
-
----
-
-## 3. Objectives
-
-The primary technical and operational objectives of AgriPrice Rwanda include:
-- **Data Authenticity:** Provide certified market agents with a secure, PBKDF2-authenticated dashboard to submit daily prices with automated duplicate rejection and trailing 7-day outlier detection.
-- **Relational Integrity & Auditability:** Implement MySQL 8.x schema with strict `CHECK` constraints, composite unique indexes, and automated transactional audit logging for price edits.
-- **Public Transparency:** Offer an interactive, mobile-responsive web interface allowing public visitors to search, filter, compare market rates, and visualize price trends without requiring account registration.
-- **Client-Side MVC Watchlist:** Enable anonymous visitors to maintain a persistent watchlist with real-time target price alert notifications.
-- **Interoperability & Standards Compliance:** Export daily market bulletins using standard XML validated against a strict W3C XML Schema (`prices.xsd`), transformed via XSLT into HTML and plain-text SMS bulletins, and queried via XPath.
-
----
-
-## 4. Tools and Technologies Used
-
-### Backend Stack
-- **Language / Runtime:** Java 21 LTS (OpenJDK 21.0.12)
-- **Servlet Specification:** Java Servlets (`javax.servlet` API 4.0)
-- **Application Server:** Apache Tomcat 9.0.123
-- **Database Engine:** MySQL 8.0 Community Server
-- **JDBC Driver:** MySQL Connector/J 8.4.0 (`com.mysql.cj.jdbc.Driver`)
-- **JSON Serialization:** Google Gson 2.14.0
-
-### Frontend Stack
-- **Markup & Styling:** HTML5, CSS3 (Modern Agricultural Design System, Flexbox, CSS Grid)
-- **Client Scripting:** Pure Vanilla JavaScript (ES6+), Fetch API, XMLHttpRequest
-- **Architecture Pattern:** Client-Side Model-View-Controller (MVC)
-- **Charting & Data Visualization:** Chart.js 4.x
-- **Testing Framework:** QUnit 2.20
-
-### Prohibited Technologies Adhered To
-No heavy frameworks (React, Angular, Vue, jQuery, Spring Boot, Hibernate, JPA, Node.js, PHP, or Python) were utilized.
+Farmers and produce traders in Rubavu and Gisenyi need current market information when choosing where and when to sell or buy. AgriPrice Rwanda lets the public compare submitted agricultural prices and trends, while authenticated market agents submit and correct reports. Reports are stored in MySQL and can be published in HTML, XML, grouped-market and SMS-style bulletin formats.
 
----
-
-## 5. System Architecture
-
-AgriPrice Rwanda is architected as an enterprise Three-Tier Web Application:
-
-1. **Presentation Tier (Browser Client):**
-   - Public Pages: `index.html`, `prices.html`, `products.html`, `markets.html`, `watchlist.html`
-   - Agent Portal: `login.html`, `dashboard.html`
-   - Client-Side MVC Watchlist: `watchlist-model.js`, `watchlist-view.js`, `watchlist-controller.js`
-   - Visualizations: `charts.js` (Line, Bar, and Pie charts)
-2. **Application / Business Logic Tier (Tomcat 9 Servlets):**
-   - Configuration: `DatabaseConnection.java` (initialized via `web.xml` context parameters and `ServletContextListener`)
-   - Controller Servlets: `AuthServlet`, `PriceServlet`, `MarketServlet`, `ProductServlet`, `WatchlistServlet`, `DashboardServlet`, `TrendServlet`, `XMLExportServlet`
-   - Business & Validation Rules: `ValidationUtil.java`, `PasswordUtil.java` (PBKDF2-SHA256, 65,536 iterations), `InvalidPriceException`, `PriceOutlierException`, `UnknownProductException`
-   - Data Access Layer: `AgentDAO`, `MarketDAO`, `ProductDAO`, `PriceDAO`, `WatchlistDAO`, `AuditLogDAO`
-3. **Data Tier (MySQL 8.x):**
-   - Database `agriprice` accessed via unprivileged user `agriprice_user` (Principle of Least Privilege)
-   - Six relational tables with ACID transactions, rollback safety, and foreign key cascades.
+## 2. Tools and architecture
 
----
+The application is an Eclipse Dynamic Web Project using Java Servlets (`javax.servlet`) on Apache Tomcat 9, JDBC/MySQL 8, HTML5, CSS3 and vanilla JavaScript. Fetch and XMLHttpRequest carry JSON between browser pages and servlet endpoints. Chart.js supplies the trend, market-comparison and distribution charts. Gson serializes JSON and is included in `WEB-INF/lib`; MySQL Connector/J is also packaged there. No frontend framework or ORM is used.
 
-## 6. Database Design and ER Diagram
+![AgriPrice system architecture](architecture.svg)
 
-The database schema encompasses six relational tables:
+Request path: browser page → servlet mapping in `WEB-INF/web.xml` → DAO with JDBC `PreparedStatement` → MySQL. Price and audit writes share a JDBC transaction. XML bulletins are generated from database rows; XSD, XPath and XSLT operate on that XML representation.
 
-```sql
-agents (agent_id PK, full_name, email UQ, phone, password_hash, password_salt, status, created_at)
-markets (market_id PK, market_name UQ, district, province, location_description, created_at)
-products (product_id PK, product_name UQ, category, default_unit, description, status)
-price_reports (report_id PK, product_id FK, market_id FK, agent_id FK, unit, price_rwf, report_date, created_at, updated_at)
-  CONSTRAINT chk_price_positive CHECK (price_rwf > 0)
-  CONSTRAINT uq_market_product_date UNIQUE (market_id, product_id, report_date)
-audit_log (audit_id PK, agent_id FK, report_id FK, action, old_value, new_value, action_date)
-watchlist (watchlist_id PK, visitor_session_id, product_id FK, market_id FK, target_price, created_at)
-  CONSTRAINT uq_visitor_product_market UNIQUE (visitor_session_id, product_id, market_id)
-```
+## 3. Database design and sample data
 
-The Entity-Relationship diagram has been generated and exported to `docs/er-diagram.svg`.
+The schema defines six related InnoDB tables: `agents`, `markets`, `products`, `price_reports`, `audit_log` and `watchlist`. Foreign keys preserve relationships. `price_reports` has a positive-price check and a unique `(market_id, product_id, report_date)` key. DAO result sets and statements use try-with-resources. SQL is in DAO classes and application query values are bound with `PreparedStatement`.
 
----
+`database/seed.sql` inserts four fictional agents, three displayed markets, six products and seeded price reports spanning 16 dates and more than two weeks. Agent display names, test email addresses (`example.test`) and phone fields are synthetic. Agent passwords are PBKDF2 hashes with per-agent salts and are managed by the project team. The running database contained additional user-created price data during this review; those reports were preserved.
 
-## 7. Implementation Details
+![Database ER diagram](er-diagram.svg)
 
-### 7.1 Database Security & PreparedStatement
-All SQL queries are executed inside DAO classes using `java.sql.PreparedStatement` with parameterized placeholders (`?`). This guarantees complete defense against SQL injection attacks. To demonstrate this compliance, `PriceDAO.demonstratePreparedStatementDefense` was implemented; when supplied with injection payloads such as `' OR '1'='1`, the JDBC driver treats the input as a literal string value rather than executable SQL syntax.
+`database/schema.sql` recreates the database, tables and least-privilege local application user. It contains `DROP DATABASE`; run it only on a clean/disposable assessment database. Then run `database/seed.sql`. A clean-server restore was not run against the existing database because that would have destroyed its records.
 
-### 7.2 Atomic Transactions & Rollback
-In `PriceDAO.submitPriceWithAudit`, `conn.setAutoCommit(false)` initiates an atomic transaction. The price report insertion and corresponding `audit_log` record are executed within the same transaction scope. If either fails, `conn.rollback()` restores database consistency.
+## 4. Roles, business rules and HTTP behavior
 
-### 7.3 Outlier Detection Business Rule
-Before inserting a price report, the system queries the trailing 7-day average price for that commodity and market:
-$$\text{deviation} = \frac{|\text{newPrice} - \text{averagePrice}|}{\text{averagePrice}} \times 100$$
-If deviation exceeds `outlier.threshold` (configured at 25.0% in `web.xml`), the transaction aborts and throws a `PriceOutlierException`.
+Public visitors can search/filter prices, browse markets and products, view their browser-cookie watchlist and view trends. The watchlist is read-only to visitors; authenticated market agents can add, update and delete items, and the servlet rejects public write attempts. Agents authenticate against salted hashes and receive a session. Agent-only price submission, correction and deletion check the session and ownership. Login rotates the session identifier. Prices must be positive; unknown/inactive products are rejected; unsupported units and malformed filters return 400. Duplicate daily submissions are checked in Java and protected by the database unique key. An outlier beyond the configurable `outlier.threshold` is rejected against the preceding seven-day product/market average. A report and its audit entry commit or roll back together.
 
----
+Live price, dashboard and trend JSON responses use `Cache-Control: no-store`. Bulletins use representation-specific ETags and `Last-Modified`, with `Cache-Control: no-cache, must-revalidate`. A repeated conditional request was verified to return 304. Price listing refreshes every 5 seconds; watchlist price alerts refresh every 15 seconds while the page is visible.
 
-## 8. XML, XSD, XPath, and XSLT
+The assessment deployment runs on local HTTP. Agent login should be served over HTTPS/TLS in production, with the session cookie marked `Secure` behind the TLS endpoint. The session cookie is HttpOnly. Market/language preference cookies are read by client JavaScript, so they cannot be HttpOnly; they use an expiry and `SameSite=Lax`.
 
-### 8.1 Daily Bulletin XML Generation (`/export/prices`)
-The `XMLExportServlet` queries MySQL to dynamically produce an XML market bulletin conforming to `prices.xsd`.
+## 5. XML, XSD, XPath and XSLT
 
-### 8.2 XSD Schema Constraints (`prices.xsd`)
-1. **Positive Price Constraint:** Restricted via `xs:minExclusive value="0.0"` (`PositivePriceType`).
-2. **Valid Date Type:** Enforced via `xs:date` for `bulletinDate` and `reportDate`.
-3. **Market Name Enumeration:** Restricted to the 4 licensed market centers.
-4. **Unit Enumeration:** Restricted to `kg`, `piece`, `sack`, and `bunch`.
-5. **Agent Identification:** Declared mandatory (`minOccurs="1"` with `NonEmptyStringType`).
+`GET /export/prices` selects the latest report date by default and generates a nested bulletin from MySQL. `?date=YYYY-MM-DD` selects a date. `?format=xml` returns the source XML, `?format=validate` validates it against `prices.xsd`, and `?format=xpath` executes five documented XPath queries and displays their results.
 
-### 8.3 XPath Expressions with Predicates
-1. All Maize Grain prices: `//priceReport[product/productName='Maize Grain']/price`
-2. Prices from Gisenyi Central Market: `//priceReport[market/marketName='Gisenyi Central Market']/price`
-3. Prices above 1000 RWF: `//priceReport[number(price) > 1000]/product/productName`
-4. Kinigi Potato market distribution: `//priceReport[contains(product/productName, 'Kinigi')]/market/marketName`
-5. Reports on specific date: `//priceReport[reportDate='2026-11-09']/product/productName`
+The XSD constrains positive decimal prices, XML dates, allowed market names, units (`kg`, `piece`, `sack`, `bunch`) and a required non-empty agent. Valid XML and deliberately invalid negative-price, market, unit and date samples were checked with `XsdValidationTest`.
 
-### 8.4 XSLT Transformations (`prices.xsl`)
-- **Transformation 1 (HTML Bulletin):** Produces a styled summary table for web publishing.
-- **Transformation 2 (Grouped by Market):** Regroups commodities under market headers using Muenchian grouping.
-- **Transformation 3 (SMS Plain Text):** Generates concise, single-line SMS bulletins formatted for USSD/SMS gateway dissemination:
-  `Maize Grain: 540.00 RWF/kg @ Gisenyi Central Market`
+Five runnable XPath examples are defined in `XPathDemoTest`: maize prices; Gisenyi prices; products priced above RWF 1,000; markets reporting Kinigi potatoes; and products reported on the bulletin date. The export page runs these against the current XML rather than only printing expression strings.
 
----
+The XSLT provides three transformations: a formatted HTML bulletin, prices grouped by market and plain-text SMS lines. Java sets the SMS output method to text. The export page exposes each format.
 
-## 9. HTTP, Cookies, and Caching
+## 6. AJAX, MVC and data visualization
 
-### 9.1 Conditional GET & 304 Not Modified
-In `XMLExportServlet`, each bulletin computes an MD5 checksum `ETag` and formats `Last-Modified`. When a client sends `If-None-Match` or `If-Modified-Since`, the servlet responds with **HTTP 304 Not Modified**, eliminating redundant data transfer.
+The public price page filters by product and market through JSON without a page reload and polls for new reports. Agent submissions use Fetch POST and the response updates the submitting agent's recent-report table. XMLHttpRequest is also exercised by the public market snapshot action.
 
-### 9.2 Client Preferences via Cookies
-- `preferred_market`: Stores the visitor's selected market hub across visits.
-- `preferred_language`: Stores the chosen interface language (English, Kinyarwanda, French).
-- `agriprice_visitor`: Persistent anonymous identifier used by the watchlist module.
-- All cookies utilize `SameSite=Lax` for CSRF mitigation.
+The watchlist separates `watchlist-model.js`, `watchlist-view.js` and `watchlist-controller.js`. It stores browser-cookie watchlist items in MySQL, gives visitors a read-only view, and exposes add/update/remove controls only to authenticated agents. It compares latest prices with target prices and announces reached targets. The model contains state and calculations; DOM rendering is in the view.
 
----
+Market agents authenticate against salted PBKDF2 password hashes stored in MySQL. Successful login rotates the session identifier and stores the agent identity in the `HttpSession`; logout invalidates the session. Servlet checks protect report submission, product/market maintenance and watchlist writes. Self-service registration and account approval are outside the scenario.
 
-## 10. JSON and Client-Side MVC
+Three Chart.js visualizations use servlet queries backed by MySQL: historical average/min/max line series, product prices compared across markets, and report counts by market. Product/date/market filters update the trend page charts.
 
-The Watchlist feature strictly adheres to the Client-Side MVC pattern across three independent JavaScript files:
-1. **Model (`watchlist-model.js`):** Manages items array, calculates `targetReached` boolean conditions, and notifies subscribers. Does not touch DOM elements.
-2. **View (`watchlist-view.js`):** Generates HTML tables, binds UI click events, updates alert badge counters, and displays visual notifications.
-3. **Controller (`watchlist-controller.js`):** Coordinates user input, communicates with `WatchlistServlet` via `fetch()`, and updates the Model.
+## 7. Testing and observed results
 
----
+Verification performed against the running Tomcat/MySQL application:
 
-## 11. Testing and Results (TDD & QUnit)
+- Java sources compile with the project JDK and Tomcat 9 Servlet API.
+- All 12 QUnit tests across two modules pass in Edge headless browser.
+- Valid sample XML passes XSD validation; four deliberately invalid variations fail validation.
+- HTML, grouped-market and SMS XSLT output was exercised; SMS returns `text/plain`.
+- Five XPath examples execute against database-generated bulletin XML.
+- A conditional bulletin request returns 304; live price JSON carries `no-store`.
+- Bad price/date filters return 400; unauthenticated price writes return 401.
+- A demo agent can log in, read session status and log out. Unknown-product and extreme-outlier writes are rejected without inserting a report.
+- Homepage, login, submit-price, export and JSON endpoints return successfully from Tomcat.
+- The Java sources compile against JDK 21 and Tomcat 9 Servlet API. The existing database records remain preserved.
 
-A dedicated QUnit test suite was developed (`WebContent/js/tests/index.html` and `agriprice-tests.js`). The suite executes **12 automated unit tests** across two modules:
-- Module 1: Agricultural Pricing & Outlier Detection (Tests 1–8: Positive price, Zero price rejection, Negative price rejection, Percentage deviation formula, Outlier triggers, 25% boundary conditions, 7-day average calculation, Empty dataset safety).
-- Module 2: Watchlist Client-Side MVC & Submission Rules (Tests 9–12: Model state persistence, Target alert triggers, Unknown product handling, Duplicate daily submission prevention).
-- **Result:** 12 of 12 tests passing (100% success rate).
+The QUnit suite verifies pricing formulas, boundaries, averages, watchlist model alerts and duplicate-detection logic. **The repository does not contain failing-first commit/screenshot evidence for test-driven development**, so that part of the TDD criterion still needs genuine team evidence. A DevTools screenshot of the conditional request and timings also needs to be captured during the assessment; the 304 behavior itself was verified programmatically. No successful new-price insertion was performed during final verification, to avoid changing the preserved database records.
 
----
+## 8. Challenges and limits
 
-## 12. Data Visualization (Chart.js)
+The unique key prevents concurrent duplicate submissions even if two requests pass the initial application check. Transaction boundaries keep the price row and audit row consistent. XSD enumerations require exported market/unit values to match the current schema, so adding a market or unit requires updating the XSD. The local assessment server does not terminate TLS; production deployment requires HTTPS and the secure session-cookie flag. The project has one configured Git author in the repository history; team roll numbers, signed contribution forms and any additional member commit evidence must be supplied by the actual group.
 
-The platform provides three responsive Chart.js visual analytics fed directly by servlet JSON endpoints:
-1. **Price Trends (Line Chart):** Displays 14-day trailing commodity prices with Min, Max, and Average trend lines.
-2. **Market Comparison (Bar Chart):** Compares prices of a selected commodity across all markets on a given date.
-3. **Market Submission Distribution (Pie Chart):** Visualizes the percentage of price reports submitted across monitoring hubs.
+## 9. Individual contribution record
 
----
+| Actual member name | ULK roll number | Work completed | Commit IDs | Signature |
+|---|---|---|---|---|
+| Confirm configured Git author “Delphin” and enter official name | To be completed | Repository history and code ownership to be confirmed by the candidate | See `docs/git-history.txt` | To be signed |
+| Add a row only if a real team member contributed | To be completed | Describe the member's actual work | Add verified commit IDs | To be signed |
 
-## 13. Individual Contributions
+Print a completed, signed contribution table with the report. Do not submit the placeholders as final member information.
 
-| Team Member | Primary Roles & Key Modules Delivered | Visible Git Commits |
-|---|---|---|
-| **Delphin Mugisha** (Lead Architect) | System architecture, Database schema & seed design, JDBC Connection & context configuration, PasswordUtil PBKDF2 hashing, DAO layer. | `feat(init): complete Phase 1-3...`, `docs: add initial README.md...` |
-| **Team Member 2** (Backend Developer) | Java Servlets implementation (`AuthServlet`, `PriceServlet`, `MarketServlet`, `ProductServlet`, `DashboardServlet`). | `feat(backend): implement servlet layer...` |
-| **Team Member 3** (Frontend & XML Specialist) | Client-side MVC (`watchlist-model/view/controller.js`), XML Bulletin, `prices.xsd` validation, XSLT stylesheet (3 modes), XPath expressions. | `feat(frontend): client MVC & XML suite...` |
-| **Team Member 4** (QA & Security Engineer) | QUnit automated test suite, PreparedStatement SQL injection defense verification, Chart.js integrations, WAR packaging. | `test(qunit): automated test runner...`, `build(war): package AgriPriceRwanda.war` |
+## 10. Conclusion
 
----
+The agent dashboard has its own sidebar-based layout. Other management tools use horizontal navigation and page-specific layouts for the product catalog, market directory, price explorer, watchlist, report form, trend charts, XML console and preferences. Product management accepts optional JPEG, PNG, or GIF photos up to 2 MB with the image path saved in MySQL, and the catalog uses the same image-led card grid as the market directory. Duplicate product and market names return conflict messages. Products linked to price history are archived on removal, while markets referenced by historical reports cannot be deleted; those report relationships remain intact. The markets directory and homepage market cards use locally bundled photos for each displayed seeded market (Gisenyi, Rubavu and Mahoko), with a Kigali market hero photo; authors, sources and licenses are listed in `docs/PRODUCT_IMAGE_CREDITS.md`. AgriPrice Rwanda implements the core public price-information and authenticated agent-reporting workflow with MySQL/JDBC, Servlet JSON endpoints, XML/XSD/XPath/XSLT, client-side MVC, QUnit and Chart.js. Existing database-backed features were verified against the preserved database. A clean disposable-database import, manual DevTools screenshots, failing-first TDD evidence, official roll numbers and signed contribution form remain presentation preparation items rather than verified results.
 
-## 14. Challenges Faced & Solutions
+## Appendix: eight-minute demonstration outline
 
-1. **Transaction Integrity with Audit Logging:**
-   - *Challenge:* Ensuring that an agent's price report and its audit log record are never decoupled if a database error occurs mid-operation.
-   - *Solution:* Implemented manual transaction management in `PriceDAO` using `conn.setAutoCommit(false)` with explicit `conn.commit()` and `conn.rollback()` inside a `try-catch-finally` block.
-2. **XSD Enumeration & Schema Binding:**
-   - *Challenge:* Strict XSD validation requires exact enumeration matching for market names and units.
-   - *Solution:* Created custom simple types in `prices.xsd` (`MarketNameEnumType` and `UnitEnumType`) and verified them against both valid and deliberately invalid XML via `XsdValidationTest.java`.
-3. **Outlier Detection over Moving Averages:**
-   - *Challenge:* Handling outlier validation when fewer than 7 days of historical data exist for a newly introduced product.
-   - *Solution:* Built `ValidationUtil.validatePriceOutlier` to gracefully accept initial price submissions if `averagePrice <= 0` while strictly enforcing the 25% deviation threshold once historical baseline prices exist.
-
----
-
-## 15. Conclusion & Future Enhancements
-
-AgriPrice Rwanda successfully delivers an enterprise-grade, secure, and responsive agricultural market price system. By enforcing robust architectural separation (Java Servlets, JDBC, PreparedStatement, Client-Side MVC, Chart.js, XML/XSD/XSLT), the system meets every requirement stipulated in the FAT Advanced Web and Internet Programming master specification. Future enhancements will integrate SMS two-way USSD gateways and mobile money price hedging for Rwandan agricultural cooperatives.
-
----
-
-## Appendix A: Eight-Minute Live Demonstration Plan
-
-| Time | Demonstration Segment | Key Actions & Points of Emphasis |
-|---|---|---|
-| **00:00 - 01:15** | Architecture & Database Setup | Show Tomcat 9 server, MySQL `agriprice` database, 6 relational tables, and `agriprice_user` least-privilege connection. |
-| **01:15 - 02:45** | Public Experience & Filtering | Demonstrate `index.html` and `prices.html`. Filter by Maize Grain in Gisenyi Central Market. Show live JSON update without page refresh. Execute quick XMLHttpRequest market snapshot. |
-| **02:45 - 04:00** | Client-Side MVC Watchlist | Add Kinigi Potatoes to watchlist with target price 450 RWF. Show dynamic alert banner trigger when current price drops to target. Explain separation in `watchlist-model.js`, `view.js`, and `controller.js`. |
-| **04:00 - 05:30** | Market Agent Portal & Outlier Rejection | Login as `delphin@agriprice.rw`. Submit valid price report (verify commit). Then submit price of 1,500 RWF for Maize (baseline 500 RWF). Show automated rejection via `PriceOutlierException` (> 25% threshold). |
-| **05:30 - 06:45** | XML, XSD, XPath & XSLT | Access `/export/prices`. Show raw XML bulletin. Show XSD schema constraint checks. Show XSLT transformed HTML and SMS-style plain text outputs. Show 5 XPath queries. |
-| **06:45 - 07:30** | HTTP DevTools & Caching | Refresh `/export/prices` in browser DevTools. Show **HTTP 304 Not Modified** triggered by ETag and Last-Modified headers. Show cookies for preferred market and language. |
-| **07:30 - 08:00** | QUnit Automated Test Suite | Open `WebContent/js/tests/index.html`. Show 12 passing unit tests across 2 modules. Conclude demonstration. |
-
----
-
-## Appendix B: Viva Preparation Questions & Answers
-
-1. **Q: Why are database credentials configured in `web.xml` rather than Java classes?**
-   - *A:* Hardcoding credentials violates software security best practices. By defining `<context-param>` in `web.xml`, configuration is externalized. `DatabaseConnection` reads these parameters via `ServletContextEvent` at application startup, allowing environment-specific adjustments without recompiling code.
-
-2. **Q: How does `PreparedStatement` prevent SQL injection attacks?**
-   - *A:* `PreparedStatement` pre-compiles the SQL query structure in the database engine before parameter insertion. User inputs bound via `ps.setString()` or `ps.setInt()` are treated strictly as literal data values, never as executable SQL instructions, rendering injections such as `' OR '1'='1` harmless.
-
-3. **Q: How is the outlier threshold formula implemented and enforced?**
-   - *A:* The formula $\text{deviation} = \frac{|\text{newPrice} - \text{averagePrice}|}{\text{averagePrice}} \times 100$ is computed in `ValidationUtil.java`. The trailing 7-day average is calculated via SQL `AVG(price_rwf)`. If the deviation exceeds the web.xml threshold (25%), a `PriceOutlierException` is thrown and the submission is rejected.
-
-4. **Q: How does your application achieve HTTP conditional caching with 304 Not Modified?**
-   - *A:* In `XMLExportServlet`, an MD5 checksum `ETag` is computed from the XML content and sent alongside `Last-Modified`. On subsequent requests, the browser sends `If-None-Match` or `If-Modified-Since`. If matching, the servlet immediately returns HTTP 304 without re-sending the payload.
-
-5. **Q: Explain the separation of concerns in your Watchlist Client-Side MVC.**
-   - *A:* The **Model** (`watchlist-model.js`) stores the items array and evaluates whether target prices have been reached without touching the DOM. The **View** (`watchlist-view.js`) exclusively renders HTML elements, alert banners, and binds user clicks. The **Controller** (`watchlist-controller.js`) listens for View events, sends AJAX/Fetch requests to `WatchlistServlet`, and updates the Model.
+1. **0:00–1:00:** Open the public homepage and show current reports and product/market filters.
+2. **1:00–2:00:** Show a price filter updating JSON results and the 5-second refresh; point out Fetch and XHR.
+3. **2:00–3:00:** Sign in with a fictional demo agent. Submit an invalid/outlier value and show the returned error. Use an already duplicated sample key for duplicate rejection; avoid creating a new report during rehearsal unless using a disposable database.
+4. **3:00–4:00:** Show the visitor read-only watchlist, sign in as an agent, then demonstrate add, target update, removal and the periodic target alert.
+5. **4:00–5:15:** Show trend, comparison and distribution charts with product/date/market controls.
+6. **5:15–6:30:** Open XML, run XSD validation and XPath examples, then show grouped and SMS outputs.
+7. **6:30–7:15:** In DevTools Network, show request filters and a repeated bulletin request returning 304; capture status, headers and timing.
+8. **7:15–8:00:** Run the QUnit page and explain the verified tests and remaining test-first evidence honestly.

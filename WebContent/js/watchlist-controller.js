@@ -18,6 +18,10 @@ class WatchlistController {
 
         // Load initial watchlist from database
         this.loadWatchlist();
+        this.refreshTimer = window.setInterval(() => {
+            if (!document.hidden) this.loadWatchlist();
+        }, 15000);
+        window.addEventListener('pagehide', () => window.clearInterval(this.refreshTimer), { once: true });
     }
 
     async loadWatchlist() {
@@ -39,6 +43,10 @@ class WatchlistController {
     }
 
     async handleAddItem(productId, marketId, targetPrice) {
+        if (!this.view.canManage) {
+            this.view.showToast('Sign in as a market agent to change watchlist items.', 'error');
+            return;
+        }
         if (!productId || isNaN(productId)) {
             this.view.showToast('Invalid product selected.', 'error');
             return;
@@ -77,6 +85,10 @@ class WatchlistController {
     }
 
     async handleUpdateTarget(watchlistId, newTargetPrice) {
+        if (!this.view.canManage) {
+            this.view.showToast('Only a market agent can change target prices.', 'error');
+            return;
+        }
         if (!newTargetPrice || isNaN(newTargetPrice) || newTargetPrice <= 0) {
             this.view.showToast('Target price must be a positive number.', 'error');
             return;
@@ -109,6 +121,10 @@ class WatchlistController {
     }
 
     async handleRemoveItem(watchlistId) {
+        if (!this.view.canManage) {
+            this.view.showToast('Only a market agent can delete watchlist items.', 'error');
+            return;
+        }
         try {
             const payload = {
                 action: 'delete',

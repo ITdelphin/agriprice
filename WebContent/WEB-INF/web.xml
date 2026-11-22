@@ -13,15 +13,15 @@
     <!-- =================================================================== -->
     <context-param>
         <param-name>db.url</param-name>
-        <param-value>jdbc:mysql://localhost:3306/agriprice?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC&amp;characterEncoding=UTF-8</param-value>
+        <param-value>${AGRIPRICE_DB_URL}</param-value>
     </context-param>
     <context-param>
         <param-name>db.username</param-name>
-        <param-value>agriprice_user</param-value>
+        <param-value>${AGRIPRICE_DB_USERNAME}</param-value>
     </context-param>
     <context-param>
         <param-name>db.password</param-name>
-        <param-value>AgriPrice@2026</param-value>
+        <param-value>${AGRIPRICE_DB_PASSWORD}</param-value>
     </context-param>
     <context-param>
         <param-name>outlier.threshold</param-name>

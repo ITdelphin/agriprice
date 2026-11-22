@@ -57,7 +57,7 @@
     <text x="15" y="135" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">phone : VARCHAR(20)</text>
     <text x="15" y="160" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">password_hash : VARCHAR(128)</text>
     <text x="15" y="185" font-family="'Segoe UI', sans-serif" font-size="12" fill="#1f2937">password_salt : VARCHAR(64)</text>
-    <text x="15" y="210" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6b7280">status : VARCHAR(20) &bull; created_at</text>
+    <text x="15" y="210" font-family="'Segoe UI', sans-serif" font-size="12" fill="#6b7280">created_at : TIMESTAMP</text>
   </g>
 
   <!-- TABLE: price_reports (Central Relational Hub) -->

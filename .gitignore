@@ -16,3 +16,8 @@ local.properties
 Thumbs.db
 [Dd]esktop.ini
 .DS_Store
+
+# Generated deployment artifacts
+*.war
+*.zip
+.vercel/

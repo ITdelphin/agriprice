@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class WatchlistServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -25,11 +26,6 @@ public class WatchlistServlet extends HttpServlet {
     private final Gson gson = new Gson();
 
     private String getOrCreateVisitorSessionId(HttpServletRequest request, HttpServletResponse response) {
-        String visitorId = request.getParameter("visitorSessionId");
-        if (visitorId != null && !visitorId.trim().isEmpty()) {
-            return visitorId.trim();
-        }
-
         // Check cookies
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -80,6 +76,14 @@ public class WatchlistServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("agentId") == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            out.print("{\"success\":false,\"message\":\"Sign in as a market agent to change watchlist items.\"}");
+            return;
+        }
+
+        // A manager may only edit the watchlist identified by this browser's cookie.
         String visitorSessionId = getOrCreateVisitorSessionId(request, response);
 
         String action = "add";
@@ -104,7 +108,6 @@ public class WatchlistServlet extends HttpServlet {
                     marketId = json.get("marketId").getAsInt();
                 }
                 if (json.has("targetPrice")) targetPrice = json.get("targetPrice").getAsDouble();
-                if (json.has("visitorSessionId")) visitorSessionId = json.get("visitorSessionId").getAsString();
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\":false,\"message\":\"Malformed JSON payload.\"}");

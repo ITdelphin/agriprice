@@ -47,7 +47,7 @@ public class MarketServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"success\":false,\"message\":\"Database query error: " + e.getMessage() + "\"}");
+            out.print("{\"success\":false,\"message\":\"Markets are temporarily unavailable. Please try again.\"}");
         }
     }
 
@@ -144,8 +144,19 @@ public class MarketServlet extends HttpServlet {
             out.print(gson.toJson(resp));
 
         } catch (SQLException e) {
+            if (e.getErrorCode() == 1062) {
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                out.print("{\"success\":false,\"message\":\"A market with this name already exists. Choose a different name.\"}");
+                return;
+            }
+            if (e.getErrorCode() == 1451 || "23000".equals(e.getSQLState())) {
+                response.setStatus(HttpServletResponse.SC_CONFLICT);
+                out.print("{\"success\":false,\"message\":\"This market is linked to saved price reports, so it cannot be deleted. The historical reports have been preserved.\"}");
+                return;
+            }
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"success\":false,\"message\":\"Database error: " + e.getMessage() + "\"}");
+            getServletContext().log("Market operation failed", e);
+            out.print("{\"success\":false,\"message\":\"We could not save this market change. Please try again.\"}");
         }
     }
 }

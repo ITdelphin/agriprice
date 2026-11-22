@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard — AgriPrice Rwanda</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="agent-dashboard" data-app-shell="off">
+    <aside class="agent-sidebar" aria-label="Agent navigation">
+        <a href="index.html" class="agent-sidebar-brand"><span class="agent-brand-mark">A</span><span>AgriPrice<small>RWANDA · AGENT</small></span></a>
+        <p class="agent-sidebar-label">WORKSPACE</p>
+        <nav class="agent-sidebar-nav">
+            <a class="is-active" href="dashboard.html"><span>▦</span>Overview</a>
+            <a href="submit-price.html"><span>＋</span>Submit price</a>
+            <a href="prices.html"><span>≡</span>Price reports</a>
+            <a href="products.html"><span>◈</span>Products</a>
+            <a href="markets.html"><span>⌖</span>Markets</a>
+            <a href="watchlist.html"><span>☆</span>Watchlist</a>
+            <a href="trends.html"><span>⌁</span>Price trends</a>
+            <a href="export.html"><span>⇩</span>XML bulletin</a>
+        </nav>
+        <div class="agent-sidebar-bottom"><a href="settings.html"><span>⚙</span>Settings</a><button id="btnLogout" type="button"><span>↪</span>Sign out</button></div>
+        <div class="agent-sidebar-footnote">LOCAL MARKETS · LIVE DATA</div>
+    </aside>
+
+    <main class="container agent-dashboard-main">
+        <div class="dashboard-topbar"><div><span class="dashboard-eyebrow">AGENT WORKSPACE</span><span class="dashboard-breadcrumb">/ Overview</span></div><a href="index.html" class="dashboard-public-link">View public site ↗</a></div>
+
+        <!-- Agent Welcome Header -->
+        <section class="dashboard-welcome">
+            <div>
+                <span class="dashboard-welcome-label">MARKET INTELLIGENCE</span>
+                <h1>Good day, <strong id="agentDisplayName">Agent</strong></h1>
+                <p><span id="agentDisplayEmail">Signed in</span><span class="dashboard-dot">·</span> Track reports and keep local prices up to date.</p>
+            </div>
+            <a href="submit-price.html" class="dashboard-hero-action">＋ Submit today’s price</a>
+            <div class="dashboard-hero-orbit" aria-hidden="true">RW</div>
+        </section>
+
+        <!-- Dashboard Stats Cards -->
+        <div class="grid-4 dashboard-stats">
+            <div class="card" style="text-align: center; padding: 18px;">
+                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Total System Reports</span>
+                <h3 id="statTotalReports" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
+                <span class="badge badge-success">Price reports</span>
+            </div>
+            <div class="card" style="text-align: center; padding: 18px;">
+                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Active Markets</span>
+                <h3 id="statTotalMarkets" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
+                <span class="badge badge-info">Reporting locations</span>
+            </div>
+            <div class="card" style="text-align: center; padding: 18px;">
+                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Monitored Products</span>
+                <h3 id="statTotalProducts" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
+                <span class="badge badge-warning">Commodities</span>
+            </div>
+            <div class="card" style="text-align: center; padding: 18px;">
+                <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase;">Total Agents</span>
+                <h3 id="statTotalAgents" style="font-size: 2rem; color: var(--primary-dark); margin: 6px 0;">--</h3>
+                <span class="badge badge-neutral">Active field team</span>
+            </div>
+        </div>
+
+        <section class="card dashboard-activity-card" aria-labelledby="agentNotificationsTitle">
+            <div class="card-header"><div><h3 class="card-title" id="agentNotificationsTitle">Market activity</h3><p class="text-muted">Recent verified reports from across the network.</p></div><a class="btn btn-sm btn-outline" href="prices.html">View all reports</a></div>
+            <div class="notification-list" id="dashboardNotifications" aria-live="polite"><p class="text-muted">Loading recent market activity…</p></div>
+        </section>
+
+        <div class="grid-2">
+            <section class="card trend-card"><div class="card-header"><h3 class="card-title">Price trend</h3><a class="btn btn-sm btn-outline" href="trends.html">Explore trends</a></div><p id="dashboardTrendStatus" class="chart-state" role="status">Loading trend…</p><div class="chart-wrapper"><canvas id="dashboardTrendCanvas"></canvas></div></section>
+            <section class="card trend-card"><div class="card-header"><h3 class="card-title">Market comparison</h3><a class="btn btn-sm btn-outline" href="trends.html">Compare markets</a></div><p id="dashboardComparisonStatus" class="chart-state" role="status">Loading comparison…</p><div class="chart-wrapper"><canvas id="dashboardComparisonCanvas"></canvas></div></section>
+        </div>
+
+        <!-- Main Submission & Chart Grid -->
+        <div class="grid-2">
+
+            <section class="card" style="border-top: 4px solid var(--primary);">
+                <div class="card-header"><h3 class="card-title">Quick actions</h3><span class="badge badge-success">Agent tools</span></div>
+                <p class="text-muted" style="margin-bottom:18px">Keep field reporting current and review your recent price submissions.</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <a href="submit-price.html" class="btn btn-primary">＋ Submit a price report</a>
+                    <a href="prices.html" class="btn btn-outline">Browse price reports</a>
+                    <a href="watchlist.html" class="btn btn-outline">Review watchlist</a>
+                    <a href="export.html" class="btn btn-secondary">Export bulletin</a>
+                </div>
+            </section>
+
+            <!-- Chart 3: Market Reporting Distribution (Pie Chart) -->
+            <section class="card">
+                <div class="card-header">
+                    <h3 class="card-title">&#127856; Market Submissions Distribution</h3>
+                    <span class="badge badge-info">Chart.js Pie</span>
+                </div>
+                <p id="marketDistStatus" class="chart-state" role="status">Loading market distribution…</p>
+                <div class="chart-wrapper">
+                    <canvas id="marketDistCanvas"></canvas>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- My Recent Submissions Table with Edit & Delete Operations -->
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">&#128394; My Submissions &amp; Permitted Corrections</h3>
+                    <p class="text-muted" style="font-size: 0.85rem;">Enforces permission checks: agents can only update or delete their own submissions.</p>
+                </div>
+                <button id="btnRefreshSubmissions" class="btn btn-sm btn-outline">&#8635; Refresh</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Product</th>
+                            <th>Market</th>
+                            <th>Unit</th>
+                            <th>Price (RWF)</th>
+                            <th>Date</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="agentSubmissionsTbody">
+                        <tr><td colspan="8" style="text-align:center; padding: 30px;">Loading your reports...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer dashboard-footer">
+        <div class="container" style="margin: 0 auto;">
+            <p>&copy; 2026 AgriPrice Rwanda &middot; Daily market information for Rubavu and Gisenyi.</p>
+        </div>
+    </footer>
+
+    <!-- Edit Price Modal -->
+    <div id="editPriceModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="card" style="width: 440px; max-width: 90%; background: white; margin: auto;">
+            <div class="card-header">
+                <h3 class="card-title">Correct Submitted Price</h3>
+                <button id="btnCloseEditModal" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="editPriceForm">
+                <input type="hidden" id="editReportId">
+                <div class="form-group">
+                    <label class="form-label">Commodity &amp; Market:</label>
+                    <input type="text" id="editDescription" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Corrected Price (RWF):</label>
+                    <input type="number" id="editPriceValue" class="form-control" min="1" step="0.5" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Unit:</label>
+                    <input type="text" id="editUnitValue" class="form-control" required>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                    <button type="button" id="btnCancelEdit" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Correction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/shell.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Session Authorization Check
+            const auth = await AgriAPI.checkAuthStatus();
+            if (!auth || !auth.authenticated) {
+                alert('Session expired or unauthorized. Please sign in as an agent.');
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('agentDisplayName').textContent = auth.fullName;
+            document.getElementById('agentDisplayEmail').textContent = auth.email || '';
+
+            // Load live aggregates, charts, notifications and the agent's reports.
+            await loadDashboardData();
+            document.getElementById('btnRefreshSubmissions').addEventListener('click', loadAgentSubmissions);
+            setupTableActions();
+        });
+
+        async function loadDashboardData() {
+            try {
+                const stats = await loadStats();
+                await loadAgentSubmissions();
+                AgriCharts.initDistributionChart('marketDistCanvas', 'marketDistStatus');
+                const latestDate = stats && stats.recentReports && stats.recentReports[0] ? stats.recentReports[0].reportDate : new Date().toISOString().slice(0, 10);
+                const products = await AgriAPI.getProducts();
+                const firstProductId = products.find(product => product.status === 'ACTIVE')?.productId || products[0]?.productId || 1;
+                AgriCharts.initTrendChart('dashboardTrendCanvas', firstProductId, null, 30, 'dashboardTrendStatus');
+                AgriCharts.initComparisonChart('dashboardComparisonCanvas', firstProductId, latestDate, 'dashboardComparisonStatus');
+                renderDashboardNotifications(stats && stats.recentReports || []);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('dashboardNotifications').innerHTML = '<p class="text-danger">Market activity could not be loaded.</p>';
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const stats = await AgriAPI.getDashboardStats();
+                document.getElementById('statTotalReports').textContent = stats.totalReports;
+                document.getElementById('statTotalMarkets').textContent = stats.totalMarkets;
+                document.getElementById('statTotalProducts').textContent = stats.totalProducts;
+                document.getElementById('statTotalAgents').textContent = stats.totalAgents;
+                return stats;
+            } catch (e) {
+                console.error(e);
+                ['statTotalReports','statTotalMarkets','statTotalProducts','statTotalAgents'].forEach(id => document.getElementById(id).textContent = '—');
+                return null;
+            }
+        }
+
+        function renderDashboardNotifications(reports) {
+            const panel = document.getElementById('dashboardNotifications');
+            if (!reports.length) { panel.innerHTML = '<p class="text-muted">No recent market reports are available.</p>'; return; }
+            panel.innerHTML = reports.slice(0, 4).map(report => `<div class="notification-item"><strong>${escapeHtml(report.productName)}</strong> reported at ${Number(report.priceRwf).toLocaleString()} RWF / ${escapeHtml(report.unit)}<small>${escapeHtml(report.marketName)} · ${escapeHtml(report.reportDate)} · ${escapeHtml(report.agentName)}</small></div>`).join('');
+        }
+
+        async function loadAgentSubmissions() {
+            try {
+                const res = await fetch('api/prices/agent');
+                const data = await res.json();
+                const tbody = document.getElementById('agentSubmissionsTbody');
+                if (!res.ok) throw new Error(data.message || 'Reports could not be loaded.');
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 25px;">No submissions found for your account.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.map(r => `
+                    <tr>
+                        <td>#${r.reportId}</td>
+                        <td><strong>${escapeHtml(r.productName)}</strong></td>
+                        <td>${escapeHtml(r.marketName)}</td>
+                        <td>${escapeHtml(r.unit)}</td>
+                        <td class="price-cell">${r.priceRwf.toLocaleString()} RWF</td>
+                        <td>${r.reportDate}</td>
+                        <td><small class="text-muted">${r.updatedAt || r.createdAt}</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline btn-edit-price" 
+                                    data-id="${r.reportId}" 
+                                    data-desc="${escapeHtml(r.productName)} @ ${escapeHtml(r.marketName)}" 
+                                    data-price="${r.priceRwf}" 
+                                    data-unit="${escapeHtml(r.unit)}">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-delete-price" data-id="${r.reportId}">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('agentSubmissionsTbody').innerHTML = '<tr><td colspan="8" class="empty-state">Your reports could not be loaded. Try refreshing.</td></tr>';
+            }
+        }
+
+        function setupTableActions() {
+            const editModal = document.getElementById('editPriceModal');
+            document.getElementById('agentSubmissionsTbody').addEventListener('click', async (e) => {
+                if (e.target && e.target.classList.contains('btn-edit-price')) {
+                    const btn = e.target;
+                    document.getElementById('editReportId').value = btn.getAttribute('data-id');
+                    document.getElementById('editDescription').value = btn.getAttribute('data-desc');
+                    document.getElementById('editPriceValue').value = btn.getAttribute('data-price');
+                    document.getElementById('editUnitValue').value = btn.getAttribute('data-unit');
+                    editModal.style.display = 'flex';
+                }
+                if (e.target && e.target.classList.contains('btn-delete-price')) {
+                    const id = parseInt(e.target.getAttribute('data-id'), 10);
+                    if (confirm(`Are you sure you want to delete price report #${id}? This will create an audit trail record.`)) {
+                        const res = await AgriAPI.deletePrice(id);
+                        if (res.success) {
+                            App.showToast('Price report deleted successfully.');
+                            await loadAgentSubmissions();
+                            await loadStats();
+                        } else {
+                            App.showToast(res.message || 'Deletion failed.', 'error');
+                        }
+                    }
+                }
+            });
+
+            const closeEdit = () => editModal.style.display = 'none';
+            document.getElementById('btnCloseEditModal').addEventListener('click', closeEdit);
+            document.getElementById('btnCancelEdit').addEventListener('click', closeEdit);
+
+            document.getElementById('editPriceForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const reportId = parseInt(document.getElementById('editReportId').value, 10);
+                const price = parseFloat(document.getElementById('editPriceValue').value);
+                const unit = document.getElementById('editUnitValue').value;
+
+                const res = await AgriAPI.updatePrice({ reportId, price, unit });
+                if (res.success) {
+                    App.showToast('Price corrected successfully.');
+                    closeEdit();
+                    await loadAgentSubmissions();
+                } else {
+                    alert(res.message || 'Update failed.');
+                }
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

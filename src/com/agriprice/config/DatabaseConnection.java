@@ -10,11 +10,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-/**
- * Manages JDBC Database Connections for AgriPrice Rwanda.
- * Reads connection settings dynamically from web.xml context parameters.
- * Implements ServletContextListener to automatically configure itself upon deployment.
- */
+
 @WebListener
 public class DatabaseConnection implements ServletContextListener {
 
@@ -38,7 +34,7 @@ public class DatabaseConnection implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         configureFromContext(context);
-        LOGGER.info("AgriPrice Rwanda DatabaseConnection initialized from web.xml context parameters.");
+        LOGGER.info("AgriPrice Rwanda DatabaseConnection initialized from environment or web.xml context parameters.");
     }
 
     @Override
@@ -50,29 +46,38 @@ public class DatabaseConnection implements ServletContextListener {
      * Configures database settings from ServletContext init-parameters.
      */
     public static synchronized void configureFromContext(ServletContext context) {
-        if (context != null) {
-            String url = context.getInitParameter("db.url");
-            String user = context.getInitParameter("db.username");
-            String pass = context.getInitParameter("db.password");
-            String thresholdStr = context.getInitParameter("outlier.threshold");
+        dbUrl = resolveSetting(context, "db.url", "AGRIPRICE_DB_URL");
+        dbUsername = resolveSetting(context, "db.username", "AGRIPRICE_DB_USERNAME");
+        dbPassword = resolveSetting(context, "db.password", "AGRIPRICE_DB_PASSWORD");
 
-            if (url != null && !url.trim().isEmpty()) {
-                dbUrl = url.trim();
-            }
-            if (user != null && !user.trim().isEmpty()) {
-                dbUsername = user.trim();
-            }
-            if (pass != null) {
-                dbPassword = pass.trim();
-            }
-            if (thresholdStr != null && !thresholdStr.trim().isEmpty()) {
-                try {
-                    outlierThreshold = Double.parseDouble(thresholdStr.trim());
-                } catch (NumberFormatException e) {
-                    LOGGER.warning("Invalid outlier.threshold parameter in web.xml, keeping default: " + outlierThreshold);
-                }
+        String thresholdStr = context != null ? context.getInitParameter("outlier.threshold") : null;
+        if (thresholdStr != null && !thresholdStr.trim().isEmpty()) {
+            try {
+                outlierThreshold = Double.parseDouble(thresholdStr.trim());
+            } catch (NumberFormatException e) {
+                LOGGER.warning("Invalid outlier.threshold parameter, keeping default: " + outlierThreshold);
             }
         }
+    }
+
+    private static String resolveSetting(ServletContext context, String paramName, String envName) {
+        String value = context != null ? context.getInitParameter(paramName) : null;
+        if (value == null || value.trim().isEmpty()) {
+            value = System.getenv(envName);
+        }
+        if (value == null || value.trim().isEmpty()) {
+            value = System.getProperty(envName);
+        }
+        String trimmed = value == null ? "" : value.trim();
+        if (trimmed.matches("\\$\\{[^}]+\\}")) {
+            String key = trimmed.substring(2, trimmed.length() - 1);
+            value = System.getenv(key);
+            if (value == null || value.trim().isEmpty()) {
+                value = System.getProperty(key);
+            }
+            trimmed = value == null ? "" : value.trim();
+        }
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     /**
@@ -86,36 +91,20 @@ public class DatabaseConnection implements ServletContextListener {
     }
 
     /**
-     * Resolves configuration with environment/system property fallbacks if not yet initialized.
-     */
-    private static void ensureConfigured() {
-        if (dbUrl == null) {
-            dbUrl = System.getProperty("db.url", 
-                "jdbc:mysql://localhost:3306/agriprice?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC");
-        }
-        if (dbUsername == null) {
-            dbUsername = System.getProperty("db.username", "agriprice_user");
-        }
-        if (dbPassword == null) {
-            dbPassword = System.getProperty("db.password", "AgriPrice@2026");
-        }
-    }
-
-    /**
      * Obtains an active connection from DriverManager using the configured parameters.
      */
     public static Connection getConnection() throws SQLException {
-        ensureConfigured();
+        if (dbUrl == null || dbUsername == null || dbPassword == null) {
+            throw new SQLException("Database settings are missing. Set AGRIPRICE_DB_URL, AGRIPRICE_DB_USERNAME and AGRIPRICE_DB_PASSWORD.");
+        }
         return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
 
     public static String getDbUrl() {
-        ensureConfigured();
         return dbUrl;
     }
 
     public static String getDbUsername() {
-        ensureConfigured();
         return dbUsername;
     }
 

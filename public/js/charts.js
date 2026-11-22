@@ -1,0 +1,229 @@
+/**
+ * AgriPrice Rwanda - Data Visualizations (Chart.js)
+ * Implements the 3 required interactive agricultural price charts.
+ */
+const AgriCharts = {
+    trendChartInstance: null,
+    comparisonChartInstance: null,
+    distributionChartInstance: null,
+
+    // Chart 1: Price Trends (Line Chart)
+    async initTrendChart(canvasId, productId = 1, marketId = null, days = 16, statusId = null) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        this.setChartState(statusId, 'Loading price history…');
+
+        try {
+            const data = await AgriAPI.getTrendHistory(productId, marketId, days);
+            if (!Array.isArray(data)) throw new Error('Trend data response is invalid.');
+            if (!data.length) {
+                if (this.trendChartInstance) this.trendChartInstance.destroy();
+                this.trendChartInstance = null;
+                this.setChartState(statusId, 'No price history is available for this selection.');
+                return;
+            }
+            const labels = data.map(d => d.date);
+            const avgPrices = data.map(d => d.avgPrice);
+            const minPrices = data.map(d => d.minPrice);
+            const maxPrices = data.map(d => d.maxPrice);
+
+            if (this.trendChartInstance) {
+                this.trendChartInstance.destroy();
+            }
+
+            this.trendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Average Price (RWF)',
+                            data: avgPrices,
+                            borderColor: '#2e7d32',
+                            backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#1b5e20'
+                        },
+                        {
+                            label: 'Min Price (RWF)',
+                            data: minPrices,
+                            borderColor: '#81c784',
+                            borderDash: [5, 5],
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Max Price (RWF)',
+                            data: maxPrices,
+                            borderColor: '#e65100',
+                            borderDash: [3, 3],
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toLocaleString()} RWF`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Price (RWF / unit)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Survey Date' }
+                        }
+                    }
+                }
+            });
+            this.setChartState(statusId, `${data.length} reporting dates shown.`);
+        } catch (e) {
+            console.error('Failed to load Trend Chart:', e);
+            this.setChartState(statusId, 'Price history could not be loaded.', 'error');
+        }
+    },
+
+    // Chart 2: Market Comparison (Bar Chart)
+    async initComparisonChart(canvasId, productId = 1, date = null, statusId = null) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        this.setChartState(statusId, 'Loading market comparison…');
+
+        try {
+            const data = await AgriAPI.getMarketComparison(productId, date);
+            if (!Array.isArray(data)) throw new Error('Market comparison response is invalid.');
+            if (!data.length) {
+                if (this.comparisonChartInstance) this.comparisonChartInstance.destroy();
+                this.comparisonChartInstance = null;
+                this.setChartState(statusId, 'No market reports are available for this product and date.');
+                return;
+            }
+            const labels = data.map(d => d.marketName);
+            const prices = data.map(d => d.price);
+
+            if (this.comparisonChartInstance) {
+                this.comparisonChartInstance.destroy();
+            }
+
+            this.comparisonChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Price (RWF / kg)',
+                        data: prices,
+                        backgroundColor: [
+                            'rgba(46, 125, 50, 0.85)',
+                            'rgba(56, 142, 60, 0.85)',
+                            'rgba(76, 175, 80, 0.85)',
+                            'rgba(129, 199, 132, 0.85)'
+                        ],
+                        borderColor: '#1b5e20',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `${ctx.parsed.y.toLocaleString()} RWF`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Price in RWF' }
+                        }
+                    }
+                }
+            });
+            this.setChartState(statusId, `${data.length} market${data.length === 1 ? '' : 's'} compared.`);
+        } catch (e) {
+            console.error('Failed to load Comparison Chart:', e);
+            this.setChartState(statusId, 'Market comparison could not be loaded.', 'error');
+        }
+    },
+
+    // Chart 3: Market Reporting Distribution (Pie / Doughnut Chart)
+    async initDistributionChart(canvasId, statusId = null) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        this.setChartState(statusId, 'Loading report distribution…');
+
+        try {
+            const data = await AgriAPI.getMarketDistribution();
+            if (!Array.isArray(data)) throw new Error('Distribution response is invalid.');
+            if (!data.length) {
+                if (this.distributionChartInstance) this.distributionChartInstance.destroy();
+                this.distributionChartInstance = null;
+                this.setChartState(statusId, 'No market reports are available yet.');
+                return;
+            }
+            const labels = data.map(d => d.marketName);
+            const counts = data.map(d => d.count);
+
+            if (this.distributionChartInstance) {
+                this.distributionChartInstance.destroy();
+            }
+
+            this.distributionChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#2e7d32',
+                            '#43a047',
+                            '#66bb6a',
+                            '#81c784'
+                        ],
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            this.setChartState(statusId, `${data.length} markets represented.`);
+        } catch (e) {
+            console.error('Failed to load Distribution Chart:', e);
+            this.setChartState(statusId, 'Report distribution could not be loaded.', 'error');
+        }
+    },
+
+    setChartState(statusId, message, tone = '') {
+        const state = statusId && document.getElementById(statusId);
+        if (state) {
+            state.textContent = message;
+            state.className = `chart-state${tone === 'error' ? ' text-danger' : ''}`;
+        }
+    }
+};

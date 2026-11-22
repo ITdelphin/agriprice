@@ -1,52 +1,104 @@
-/**
- * AgriPrice Rwanda - API Client Layer
- * Encapsulates Fetch API calls and demonstrates an explicit XMLHttpRequest call
- * as mandated by assessment specification Section 13.
- */
+const STATIC_HOSTED = /(^|\.)vercel\.app$/i.test(location.hostname) || new URLSearchParams(location.search).has('static');
+
 const AgriAPI = {
-    // 1. Fetch Prices with Optional Filters
+    _cache: {},
+
+    async _staticJson(name) {
+        if (!this._cache[name]) {
+            const res = await fetch(`data/${name}.json`);
+            if (!res.ok) throw new Error(`Static data unavailable: ${name}`);
+            this._cache[name] = await res.json();
+        }
+        return this._cache[name];
+    },
+
     async getPrices(params = {}) {
-        const query = new URLSearchParams(params).toString();
-        const url = `api/prices${query ? '?' + query : ''}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const query = new URLSearchParams(params).toString();
+            const url = `api/prices${query ? '?' + query : ''}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            return await res.json();
+        }
+        const all = params.all === true || params.all === 'true';
+        let reports = await this._staticJson('prices');
+        if (all) return reports;
+        const productId = params.productId ? Number(params.productId) : null;
+        const marketId = params.marketId ? Number(params.marketId) : null;
+        const date = params.date || '';
+        const search = String(params.search || '').toLowerCase();
+        if (productId || marketId || date || search) {
+            reports = reports.filter(report => {
+                if (productId && report.productId !== productId) return false;
+                if (marketId && report.marketId !== marketId) return false;
+                if (date && report.reportDate !== date) return false;
+                if (search) {
+                    const haystack = `${report.productName} ${report.marketName} ${report.marketDistrict}`.toLowerCase();
+                    if (!haystack.includes(search)) return false;
+                }
+                return true;
+            });
+        }
+        return reports;
     },
 
-    // 2. Fetch All Markets
     async getMarkets() {
-        const res = await fetch('api/markets');
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const res = await fetch('api/markets');
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            return await res.json();
+        }
+        return await this._staticJson('markets');
     },
 
-    // 3. Fetch All Products
     async getProducts() {
-        const res = await fetch('api/products');
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const res = await fetch('api/products');
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            return await res.json();
+        }
+        return await this._staticJson('products');
     },
 
-    // 4. Fetch Dashboard Aggregate Statistics
     async getDashboardStats() {
-        const res = await fetch('api/dashboard');
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const res = await fetch('api/dashboard');
+            if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+            return await res.json();
+        }
+        return await this._staticJson('dashboard');
     },
 
-    // 5. Submit Price Report (Agent authenticated POST)
+    async getAgentPrices() {
+        if (!STATIC_HOSTED) {
+            const res = await fetch('api/prices/agent', { headers: { Accept: 'application/json' } });
+            if (!res.ok) throw new Error(`Agent price request failed (${res.status}).`);
+            return await res.json();
+        }
+        return [];
+    },
+
     async submitPrice(data) {
+        if (STATIC_HOSTED) {
+            return { status: 403, data: { success: false, message: 'This hosted demo is read-only.' } };
+        }
         const res = await fetch('api/prices', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(data)
         });
-        const result = await res.json();
+        const text = await res.text();
+        let result;
+        try {
+            result = text ? JSON.parse(text) : { success: false, message: 'Empty response from server.' };
+        } catch (_) {
+            throw new Error(`Server returned an invalid response (HTTP ${res.status}).`);
+        }
         return { status: res.status, data: result };
     },
 
-    // 6. Update Price Report
     async updatePrice(data) {
+        if (STATIC_HOSTED) return { success: false, message: 'This hosted demo is read-only.' };
         data.action = 'update';
         const res = await fetch('api/prices', {
             method: 'POST',
@@ -56,8 +108,8 @@ const AgriAPI = {
         return await res.json();
     },
 
-    // 7. Delete Price Report
     async deletePrice(reportId) {
+        if (STATIC_HOSTED) return { success: false, message: 'This hosted demo is read-only.' };
         const res = await fetch('api/prices', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -66,8 +118,10 @@ const AgriAPI = {
         return await res.json();
     },
 
-    // 8. Auth Operations
     async login(email, password) {
+        if (STATIC_HOSTED) {
+            return { status: 403, data: { success: false, message: 'Sign-in is disabled in the hosted demo.' } };
+        }
         const res = await fetch('api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -78,42 +132,83 @@ const AgriAPI = {
     },
 
     async logout() {
+        if (STATIC_HOSTED) return { success: true, message: 'Logged out successfully' };
         const res = await fetch('api/auth/logout', { method: 'POST' });
         return await res.json();
     },
 
     async checkAuthStatus() {
+        if (STATIC_HOSTED) return { authenticated: false };
         const res = await fetch('api/auth/status');
         return await res.json();
     },
 
-    // 9. Trend Data for Visualizations
     async getTrendHistory(productId, marketId, days = 14) {
-        const url = `api/trends/history?productId=${productId}&marketId=${marketId || ''}&days=${days}`;
-        const res = await fetch(url);
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const url = `api/trends/history?productId=${productId}&marketId=${marketId || ''}&days=${days}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`Trend request failed (${res.status}).`);
+            return await res.json();
+        }
+        const reports = (await this._staticJson('prices')).filter(report =>
+            (!productId || report.productId === Number(productId)) &&
+            (!marketId || report.marketId === Number(marketId))
+        );
+        const groups = {};
+        for (const report of reports) {
+            if (!groups[report.reportDate]) groups[report.reportDate] = [];
+            groups[report.reportDate].push(Number(report.priceRwf));
+        }
+        const limit = Math.max(1, Number(days) || 14);
+        return Object.keys(groups).sort().slice(-limit).map(date => {
+            const values = groups[date];
+            return {
+                date,
+                avgPrice: values.reduce((sum, value) => sum + value, 0) / values.length,
+                minPrice: Math.min(...values),
+                maxPrice: Math.max(...values)
+            };
+        });
     },
 
     async getMarketComparison(productId, date) {
-        const url = `api/trends/comparison?productId=${productId}&date=${date || '2026-11-09'}`;
-        const res = await fetch(url);
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const url = `api/trends/comparison?productId=${encodeURIComponent(productId)}${date ? '&date=' + encodeURIComponent(date) : ''}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`Comparison request failed (${res.status}).`);
+            return await res.json();
+        }
+        const reports = await this._staticJson('prices');
+        const target = reports.filter(report =>
+            report.productId === Number(productId) && (!date || report.reportDate === date)
+        );
+        const latestDate = date || target.reduce((max, report) => report.reportDate > max ? report.reportDate : max, '');
+        return reports
+            .filter(report => report.productId === Number(productId) && report.reportDate === latestDate)
+            .map(report => ({
+                marketId: report.marketId,
+                marketName: report.marketName,
+                district: report.marketDistrict,
+                price: Number(report.priceRwf),
+                unit: report.unit
+            }))
+            .sort((a, b) => a.price - b.price);
     },
 
     async getMarketDistribution() {
-        const res = await fetch('api/trends/distribution');
-        return await res.json();
+        if (!STATIC_HOSTED) {
+            const res = await fetch('api/trends/distribution');
+            if (!res.ok) throw new Error(`Distribution request failed (${res.status}).`);
+            return await res.json();
+        }
+        const dashboard = await this._staticJson('dashboard');
+        return dashboard.marketDistribution;
     },
 
-    /**
-     * MANDATORY ASSESSMENT REQUIREMENT (Section 13):
-     * Implements functional communication using legacy XMLHttpRequest (XHR)
-     * to satisfy the specific examination requirement.
-     * Fetches quick market snapshot asynchronously using XMLHttpRequest.
-     */
     fetchMarketSnapshotXHR(callback, errorCallback) {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'api/dashboard', true);
+        const url = STATIC_HOSTED ? 'data/dashboard.json' : 'api/dashboard';
+        xhr.open('GET', url, true);
         xhr.setRequestHeader('Accept', 'application/json');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {

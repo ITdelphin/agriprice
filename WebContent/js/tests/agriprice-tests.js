@@ -4,43 +4,8 @@
  * Covers 12 comprehensive unit tests across 2 distinct modules.
  */
 
-// Helper Functions Implementing AgriPrice Business Logic for Client-Side Evaluation
-const AgriTestUtils = {
-    // Business Rule 1: Price strictly positive
-    validatePrice(price) {
-        if (typeof price !== 'number' || isNaN(price) || !isFinite(price) || price <= 0) {
-            throw new Error('Agricultural price must be strictly greater than 0 RWF.');
-        }
-        return true;
-    },
-
-    // Business Rule 6: Percentage deviation formula: ABS(newPrice - averagePrice) / averagePrice * 100
-    calculateDeviation(newPrice, averagePrice) {
-        if (!averagePrice || averagePrice <= 0) return 0.0;
-        return (Math.abs(newPrice - averagePrice) / averagePrice) * 100.0;
-    },
-
-    // Business Rule 6 & 7: Outlier check with threshold
-    isPriceOutlier(newPrice, averagePrice, threshold = 25.0) {
-        if (!averagePrice || averagePrice <= 0) return false;
-        const dev = this.calculateDeviation(newPrice, averagePrice);
-        return dev > threshold;
-    },
-
-    // Calculate average over dataset
-    calculateAverage(prices) {
-        if (!prices || prices.length === 0) return 0.0;
-        const sum = prices.reduce((acc, p) => acc + p, 0);
-        return sum / prices.length;
-    },
-
-    // Duplicate submission check logic
-    isDuplicateSubmission(existingSubmissions, marketId, productId, dateStr) {
-        return existingSubmissions.some(s => 
-            s.marketId === marketId && s.productId === productId && s.reportDate === dateStr
-        );
-    }
-};
+// The tests exercise the same client pricing rules used by the submit-price form.
+const AgriTestUtils = AgriPricingRules;
 
 // =============================================================================
 // MODULE 1: Agricultural Pricing & Outlier Detection Algorithms
@@ -55,7 +20,7 @@ QUnit.module('Module 1: Agricultural Pricing & Outlier Detection', function() {
     QUnit.test('Test 2: Price validation strictly rejects zero price', function(assert) {
         assert.throws(
             function() { AgriTestUtils.validatePrice(0.0); },
-            /greater than 0 RWF/,
+            /greater than (?:0|zero) RWF/i,
             'Zero price (0.0 RWF) throws validation error.'
         );
     });
@@ -63,7 +28,7 @@ QUnit.module('Module 1: Agricultural Pricing & Outlier Detection', function() {
     QUnit.test('Test 3: Price validation strictly rejects negative prices', function(assert) {
         assert.throws(
             function() { AgriTestUtils.validatePrice(-250.0); },
-            /greater than 0 RWF/,
+            /greater than (?:0|zero) RWF/i,
             'Negative price (-250.0 RWF) throws validation error.'
         );
     });

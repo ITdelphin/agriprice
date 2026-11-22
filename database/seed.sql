@@ -1,8 +1,8 @@
 -- =============================================================================
--- AgriPrice Rwanda - Demonstration Seed Data
+-- AgriPrice Rwanda - Seed Data
 -- Academic Purpose: Final Assessment Test (FAT) - Advanced Web & Internet Programming
--- NOTICE: All records represent realistic fictional demonstration data.
--- Default Password for all demonstration agents: Agent@123456
+-- NOTICE: All records represent realistic fictional data.
+-- Individual agent passwords are stored as PBKDF2WithHmacSHA256 hashes.
 -- Hashing Algorithm: PBKDF2WithHmacSHA256 (65,536 iterations, 16-byte random salt)
 -- =============================================================================
 
@@ -11,19 +11,19 @@ USE agriprice;
 -- -----------------------------------------------------------------------------
 -- 1. Insert Market Agents (At least 4 agents)
 -- -----------------------------------------------------------------------------
-INSERT INTO agents (agent_id, full_name, email, phone, password_hash, password_salt, status, created_at) VALUES
-(1, 'Delphin Mugisha', 'delphin@agriprice.rw', '+250788123456', 
-    '2ce31fb183a1f2c7a3d6aa8fecf5ebce96b7f759f2309da5f6568505b70afe6c', 
-    'a12aa70e43891d0b025062c84fcb80b8', 'ACTIVE', '2026-10-20 08:00:00'),
-(2, 'Jean Claude Bizimana', 'bizimana@agriprice.rw', '+250788234567', 
-    'f3c974010573048a998c7af3b8d61cfe587d4c8f3260ba3d04b1c8e3879dbf34', 
-    '78163c5cb38b75942c5e8cd8fc34abc1', 'ACTIVE', '2026-10-20 08:30:00'),
-(3, 'Aline Uwase', 'uwase@agriprice.rw', '+250788345678', 
-    'f26c041f4330a8fefb811da8b5496babae3f7ef487700832f13baea42dc5678f', 
-    '5f334c4d1952649accf73a1a3476d32b', 'ACTIVE', '2026-10-21 09:00:00'),
-(4, 'Eric Habimana', 'habimana@agriprice.rw', '+250788456789', 
-    'f4d714e583936c25fbb3169b82a51bcc9a91e7cc1ea18af8bb16f09c7db5cf14', 
-    '6069ffd4aa1a13b8f6f5b1c68c97210b', 'ACTIVE', '2026-10-21 09:15:00');
+INSERT INTO agents (agent_id, full_name, email, phone, password_hash, password_salt, created_at) VALUES
+(1, 'Delphi', 'delphinngarambe@gmail.com', 'TEST-AGENT-001', 
+    '99d07647ea1866582a3dbc9a283a3e70d041da06eefb9ef997cfdccd9b94c11a', 
+    '30bedd5ebc727016def42a2b47e16909', '2026-10-20 08:00:00'),
+(2, 'Fanny', 'fannyumwari@gmail.com', 'TEST-AGENT-002', 
+    '33153adde728b614788561aec5a9df85f2c9b1976bb586775464891fc481e60f', 
+    '98855f73089981d27d45e62d67a03d3b', '2026-10-20 08:30:00'),
+(3, 'Uwase', 'uwaseevelyne@gmail.com', 'TEST-AGENT-003', 
+    '3dd241161081c8b8dd5b17001d030df317a84f78c8ba6066bb21da3f1249a539', 
+    '31a8a8ed589c9c96c40ce8c18c978c4e', '2026-10-21 09:00:00'),
+(4, 'Patience', 'mugishapatience@gmail.com', 'TEST-AGENT-004', 
+    '3f0ac78b5b3df4910df3f5795b19f00160a7ebf0827cbd17e4f6baa1ff3de834', 
+    '356cd001c236180c5d2b20b4ab737934', '2026-10-21 09:15:00');
 
 -- -----------------------------------------------------------------------------
 -- 2. Insert Markets (At least 3 markets; 4 included covering Rubavu & Kigali)
@@ -34,9 +34,7 @@ INSERT INTO markets (market_id, market_name, district, province, location_descri
 (2, 'Rubavu Cross-Border Market', 'Rubavu', 'Western Province', 
     'Petite Barriere commercial zone, specializes in high-volume regional cross-border produce trade.', '2026-10-20 08:15:00'),
 (3, 'Mahoko Modern Market', 'Rubavu', 'Western Province', 
-    'Mahoko Commercial Center along Kigali-Rubavu highway, agricultural aggregation hub direct from farmers.', '2026-10-20 08:30:00'),
-(4, 'Nyabugogo Central Market', 'Nyarugenge', 'Kigali City', 
-    'National logistics hub and commercial market terminal connecting provincial harvests to the capital city.', '2026-10-20 09:00:00');
+    'Mahoko Commercial Center along Kigali-Rubavu highway, agricultural aggregation hub direct from farmers.', '2026-10-20 08:30:00');
 
 -- -----------------------------------------------------------------------------
 -- 3. Insert Agricultural Products (At least 5 products; 6 included)
@@ -85,8 +83,6 @@ INSERT INTO price_reports (report_id, product_id, market_id, agent_id, unit, pri
 -- Day 5: 2026-10-29
 (21, 2, 1, 1, 'kg', 440.00, '2026-10-29', '2026-10-29 08:30:00'),
 (22, 5, 2, 2, 'kg', 1180.00, '2026-10-29', '2026-10-29 08:50:00'),
-(23, 1, 4, 4, 'kg', 540.00, '2026-10-29', '2026-10-29 09:30:00'),
-(24, 2, 4, 4, 'kg', 490.00, '2026-10-29', '2026-10-29 09:35:00'),
 
 -- Day 6: 2026-10-30
 (25, 3, 1, 1, 'kg', 980.00, '2026-10-30', '2026-10-30 08:15:00'),
@@ -97,7 +93,6 @@ INSERT INTO price_reports (report_id, product_id, market_id, agent_id, unit, pri
 (28, 1, 1, 1, 'kg', 510.00, '2026-10-31', '2026-10-31 08:10:00'),
 (29, 2, 2, 2, 'kg', 420.00, '2026-10-31', '2026-10-31 08:40:00'),
 (30, 5, 3, 3, 'kg', 1160.00, '2026-10-31', '2026-10-31 09:10:00'),
-(31, 3, 4, 4, 'kg', 1080.00, '2026-10-31', '2026-10-31 09:40:00'),
 
 -- Day 8: 2026-11-01
 (32, 1, 2, 2, 'kg', 470.00, '2026-11-01', '2026-11-01 08:20:00'),
@@ -114,7 +109,6 @@ INSERT INTO price_reports (report_id, product_id, market_id, agent_id, unit, pri
 (39, 1, 1, 1, 'kg', 510.00, '2026-11-03', '2026-11-03 08:10:00'),
 (40, 2, 2, 2, 'kg', 430.00, '2026-11-03', '2026-11-03 08:35:00'),
 (41, 4, 3, 3, 'kg', 600.00, '2026-11-03', '2026-11-03 09:00:00'),
-(42, 5, 4, 4, 'kg', 1350.00, '2026-11-03', '2026-11-03 09:30:00'),
 
 -- Day 11: 2026-11-04
 (43, 3, 2, 2, 'kg', 970.00, '2026-11-04', '2026-11-04 08:30:00'),
@@ -131,8 +125,6 @@ INSERT INTO price_reports (report_id, product_id, market_id, agent_id, unit, pri
 -- Day 13: 2026-11-06
 (51, 4, 1, 1, 'kg', 640.00, '2026-11-06', '2026-11-06 08:20:00'),
 (52, 5, 2, 2, 'kg', 1230.00, '2026-11-06', '2026-11-06 08:45:00'),
-(53, 2, 4, 4, 'kg', 510.00, '2026-11-06', '2026-11-06 09:25:00'),
-(54, 6, 4, 4, 'kg', 420.00, '2026-11-06', '2026-11-06 09:30:00'),
 
 -- Day 14: 2026-11-07
 (55, 1, 1, 1, 'kg', 530.00, '2026-11-07', '2026-11-07 08:10:00'),
@@ -145,7 +137,6 @@ INSERT INTO price_reports (report_id, product_id, market_id, agent_id, unit, pri
 (60, 2, 1, 1, 'kg', 470.00, '2026-11-08', '2026-11-08 08:10:00'),
 (61, 4, 2, 2, 'kg', 620.00, '2026-11-08', '2026-11-08 08:35:00'),
 (62, 5, 3, 3, 'kg', 1190.00, '2026-11-08', '2026-11-08 09:00:00'),
-(63, 1, 4, 4, 'kg', 560.00, '2026-11-08', '2026-11-08 09:20:00'),
 
 -- Day 16: 2026-11-09 (Latest prices for current display)
 (64, 1, 1, 1, 'kg', 540.00, '2026-11-09', '2026-11-09 08:00:00'),
@@ -163,11 +154,7 @@ INSERT INTO price_reports (report_id, product_id, market_id, agent_id, unit, pri
 (74, 1, 3, 3, 'kg', 480.00, '2026-11-09', '2026-11-09 09:00:00'),
 (75, 2, 3, 3, 'kg', 420.00, '2026-11-09', '2026-11-09 09:05:00'),
 (76, 4, 3, 3, 'kg', 610.00, '2026-11-09', '2026-11-09 09:10:00'),
-(77, 6, 3, 3, 'kg', 360.00, '2026-11-09', '2026-11-09 09:15:00'),
-
-(78, 1, 4, 4, 'kg', 570.00, '2026-11-09', '2026-11-09 09:20:00'),
-(79, 2, 4, 4, 'kg', 520.00, '2026-11-09', '2026-11-09 09:25:00'),
-(80, 3, 4, 4, 'kg', 1100.00, '2026-11-09', '2026-11-09 09:30:00');
+(77, 6, 3, 3, 'kg', 360.00, '2026-11-09', '2026-11-09 09:15:00');
 
 -- -----------------------------------------------------------------------------
 -- 5. Insert Sample Audit Log Records (Demonstrating traceability and corrections)

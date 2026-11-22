@@ -2,7 +2,7 @@ package com.agriprice.servlet;
 
 import com.agriprice.dao.PriceDAO;
 import com.agriprice.model.PriceReport;
-import java.io.ByteArrayOutputStream;
+import com.agriprice.util.XPathDemoTest;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,7 +14,9 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,12 +40,31 @@ public class XMLExportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
-        String dateParam = request.getParameter("date");
-        Date bulletinDate = (dateParam != null && !dateParam.isEmpty()) 
-            ? Date.valueOf(dateParam) 
-            : Date.valueOf("2026-11-09");
-
         String format = request.getParameter("format"); // "xml", "html", "grouped", "sms", "validate"
+        format = (format == null || format.trim().isEmpty()) ? "html" : format.trim().toLowerCase(Locale.ROOT);
+        if (!"xml".equals(format) && !"html".equals(format) && !"grouped".equals(format)
+                && !"sms".equals(format) && !"validate".equals(format) && !"xpath".equals(format)) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported bulletin format.");
+            return;
+        }
+
+        Date bulletinDate;
+        String dateParam = request.getParameter("date");
+        try {
+            if (dateParam != null && !dateParam.trim().isEmpty()) {
+                if (!dateParam.matches("\\d{4}-\\d{2}-\\d{2}")) throw new IllegalArgumentException("Date must use YYYY-MM-DD.");
+                bulletinDate = Date.valueOf(LocalDate.parse(dateParam, DateTimeFormatter.ISO_LOCAL_DATE));
+            } else {
+                bulletinDate = priceDAO.getLatestReportDate();
+                if (bulletinDate == null) bulletinDate = new Date(System.currentTimeMillis());
+            }
+        } catch (IllegalArgumentException | java.time.DateTimeException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid bulletin date. Use YYYY-MM-DD.");
+            return;
+        } catch (SQLException e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Could not determine the latest bulletin date.");
+            return;
+        }
 
         try {
             List<PriceReport> reports = priceDAO.getFilteredPrices(null, null, bulletinDate, null);
@@ -60,13 +81,33 @@ public class XMLExportServlet extends HttpServlet {
                 return;
             }
 
-            // HTTP Conditional Caching: ETag & Last-Modified (Demonstrates 304 Not Modified)
-            String etag = computeETag(xmlContent);
-            long lastModifiedMillis = bulletinDate.getTime();
+            String responseContent = xmlContent;
+            String responseType = "application/xml";
+            long lastModifiedMillis = Math.max(bulletinDate.getTime(), priceDAO.getLatestReportUpdatedAt(bulletinDate));
+
+            // Render the browser-facing bulletin before calculating validators so an HTML
+            // response never reuses the ETag of the raw XML representation.
+            if ("html".equals(format) || "grouped".equals(format) || "sms".equals(format)) {
+                String xslPath = getServletContext().getRealPath("/xml/prices.xsl");
+                File xslFile = xslPath == null ? null : new File(xslPath);
+                if (xslFile == null || !xslFile.isFile()) {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Bulletin layout is unavailable.");
+                    return;
+                }
+                responseContent = applyXslt(xmlContent, xslFile, format);
+                responseType = "sms".equals(format) ? "text/plain" : "text/html";
+                lastModifiedMillis = Math.max(lastModifiedMillis, xslFile.lastModified());
+            } else if ("xpath".equals(format)) {
+                responseContent = renderXPathResults(xmlContent);
+                responseType = "text/html";
+            }
+
+            // HTTP Conditional Caching uses the rendered representation, including its format.
+            String etag = computeETag(responseContent);
 
             response.setHeader("ETag", etag);
             response.setDateHeader("Last-Modified", lastModifiedMillis);
-            response.setHeader("Cache-Control", "public, max-age=300"); // 5 minutes cache
+            response.setHeader("Cache-Control", "no-cache, must-revalidate");
 
             String ifNoneMatch = request.getHeader("If-None-Match");
             long ifModifiedSince = request.getDateHeader("If-Modified-Since");
@@ -77,34 +118,32 @@ public class XMLExportServlet extends HttpServlet {
                 return;
             }
 
-            // XSLT Transformations: HTML, Regrouped by Market, SMS Plain Text
-            if ("html".equalsIgnoreCase(format) || "grouped".equalsIgnoreCase(format) || "sms".equalsIgnoreCase(format)) {
-                String xslPath = getServletContext().getRealPath("/xml/prices.xsl");
-                File xslFile = new File(xslPath);
-                if (xslFile.exists()) {
-                    String transformed = applyXslt(xmlContent, xslFile, format);
-                    if ("sms".equalsIgnoreCase(format)) {
-                        response.setContentType("text/plain");
-                    } else {
-                        response.setContentType("text/html");
-                    }
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(transformed);
-                    return;
-                }
-            }
-
-            // Default: Raw XML Output
-            response.setContentType("application/xml");
+            // Raw XML is available explicitly through ?format=xml.
+            response.setContentType(responseType);
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
             PrintWriter out = response.getWriter();
-            out.write(xmlContent);
+            out.write(responseContent);
             out.flush();
 
         } catch (SQLException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("<error>Database query failed: " + e.getMessage() + "</error>");
+            response.setCharacterEncoding("UTF-8");
+            if ("html".equals(format) || "grouped".equals(format)) {
+                response.setContentType("text/html");
+                response.getWriter().write("<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Bulletin unavailable - AgriPrice Rwanda</title></head><body style=\"font-family:Arial,sans-serif;background:#f5f7f5;color:#202b24;margin:0;padding:48px 20px\"><main style=\"max-width:640px;margin:auto;background:#fff;padding:32px;border-radius:12px\"><h1>Daily bulletin unavailable</h1><p>We couldn't load the market prices right now. Please try again shortly.</p><p><a href=\"../index.html\">Return to AgriPrice Rwanda</a></p></main></body></html>");
+            } else if ("sms".equals(format)) {
+                response.setContentType("text/plain");
+                response.getWriter().write("AgriPrice Rwanda bulletin unavailable. Please try again shortly.");
+            } else if ("validate".equals(format)) {
+                response.setContentType("application/json");
+                response.getWriter().write("{\"success\":false,\"message\":\"Bulletin validation is unavailable.\"}");
+            } else {
+                response.setContentType("application/xml");
+                response.getWriter().write("<?xml version=\"1.0\" encoding=\"UTF-8\"?><error>Daily bulletin unavailable.</error>");
+            }
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The requested bulletin transformation could not be completed.");
         }
     }
 
@@ -167,6 +206,9 @@ public class XMLExportServlet extends HttpServlet {
     private boolean validateXmlAgainstXsd(String xml, String xsdPath) {
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             Schema schema = factory.newSchema(new File(xsdPath));
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(new StringReader(xml)));
@@ -176,19 +218,37 @@ public class XMLExportServlet extends HttpServlet {
         }
     }
 
-    private String applyXslt(String xml, File xslFile, String mode) {
-        try {
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Source xslSource = new StreamSource(xslFile);
-            Transformer transformer = factory.newTransformer(xslSource);
-            transformer.setParameter("viewMode", mode); // "html", "grouped", "sms"
+    private String applyXslt(String xml, File xslFile, String mode) throws Exception {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        Source xslSource = new StreamSource(xslFile);
+        Transformer transformer = factory.newTransformer(xslSource);
+        transformer.setParameter("viewMode", mode);
+        if ("sms".equals(mode)) transformer.setOutputProperty(javax.xml.transform.OutputKeys.METHOD, "text");
 
-            StringWriter writer = new StringWriter();
-            transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(writer));
-            return writer.toString();
-        } catch (Exception e) {
-            return "<html><body><h3>XSLT Transformation Error</h3><pre>" + e.getMessage() + "</pre></body></html>";
+        StringWriter writer = new StringWriter();
+        transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(writer));
+        return writer.toString();
+    }
+
+    private String renderXPathResults(String xml) throws Exception {
+        StringBuilder html = new StringBuilder("<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>XPath bulletin queries - AgriPrice Rwanda</title><style>body{font:15px Arial,sans-serif;max-width:980px;margin:40px auto;padding:0 20px;color:#20382a;background:#f6f8f6}h1{color:#174c31}.query{background:white;border:1px solid #dfe8e0;border-radius:10px;padding:18px;margin:14px 0}.query code{display:block;white-space:pre-wrap;overflow-wrap:anywhere;color:#315e3e;background:#f1f6f1;padding:10px;border-radius:6px}.query ul{margin-bottom:0}a{color:#286542}</style></head><body><p><a href=\"../export.html\">← Back to XML exports</a></p><h1>XPath results for the latest daily bulletin</h1><p>Each query below runs against the XML generated from the current database bulletin.</p>");
+        for (java.util.Map<String, Object> query : XPathDemoTest.runExamples(xml)) {
+            html.append("<section class=\"query\"><h2>").append(escapeHtml(String.valueOf(query.get("label")))).append("</h2><code>")
+                .append(escapeHtml(String.valueOf(query.get("expression")))).append("</code><ul>");
+            @SuppressWarnings("unchecked") List<String> results = (List<String>) query.get("results");
+            if (results.isEmpty()) html.append("<li>No matching reports in this bulletin.</li>");
+            for (String result : results) html.append("<li>").append(escapeHtml(result)).append("</li>");
+            html.append("</ul></section>");
         }
+        return html.append("</body></html>").toString();
+    }
+
+    private String escapeHtml(String value) {
+        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                    .replace("\"", "&quot;").replace("'", "&#39;");
     }
 
     private String escapeXml(String text) {

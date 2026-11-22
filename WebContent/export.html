@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML Bulletin Export — AgriPrice Rwanda</title><link rel="stylesheet" href="css/style.css">
+</head>
+<body class="xml-export-page" data-app-shell="off">
+    <header class="navbar"><div class="nav-container"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="brand-text"><h1>AgriPrice Rwanda</h1><span>Market intelligence</span></span></a><nav class="page-utility-nav" aria-label="Workspace links"><a href="dashboard.html">Workspace</a><a href="prices.html">Price reports</a><a href="markets.html">Markets</a></nav></div></header>
+    <main class="container">
+        <div class="page-heading export-page-heading"><div><span class="page-kicker">DATA EXCHANGE</span><h2>Take the bulletin with you.</h2><p class="text-muted">Validate the daily feed, inspect XML, or transform it for another channel.</p></div><button type="button" class="btn btn-primary" id="downloadXml">Download XML</button></div>
+        <div class="grid-2">
+            <section class="card"><h3 class="card-title">Bulletin formats</h3><p class="text-muted" style="margin:8px 0 18px">The formatted bulletin opens by default. Raw XML remains available for integrations and validation.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-outline" target="_blank" rel="noopener" href="export/prices">Formatted HTML</a><a class="btn btn-secondary" href="export/prices?format=grouped" target="_blank" rel="noopener">Grouped by market</a><a class="btn btn-secondary" href="export/prices?format=sms" target="_blank" rel="noopener">SMS text</a><a class="btn btn-secondary" href="export/prices?format=xpath">Run XPath examples</a><button class="btn btn-outline" type="button" id="validateXml">Validate XML against XSD</button></div><p id="exportStatus" class="chart-state" role="status" style="margin-top:16px"></p></section>
+            <section class="card"><div class="card-header"><h3 class="card-title">XML source</h3><button class="btn btn-sm btn-secondary" type="button" id="refreshXml">Refresh</button></div><pre id="xmlOutput" style="max-height:420px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f7f5;border:1px solid var(--border-color);border-radius:10px;padding:16px;color:#234532;font-size:.82rem">Loading XML bulletin…</pre></section>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>&copy; 2026 AgriPrice Rwanda &middot; Market data for Rubavu and Gisenyi.</p></div></footer>
+    <script src="js/api.js"></script><script src="js/app.js"></script><script src="js/shell.js"></script>
+    <script>
+        const xmlOutput = document.getElementById('xmlOutput');
+        const exportStatus = document.getElementById('exportStatus');
+        async function loadXml() {
+            xmlOutput.textContent = 'Loading XML bulletin…';
+            try { const response = await fetch('export/prices?format=xml', { headers: { Accept: 'application/xml' } }); if (!response.ok) throw new Error(`Request failed (${response.status})`); xmlOutput.textContent = await response.text(); }
+            catch (error) { xmlOutput.textContent = 'The XML bulletin could not be loaded.'; exportStatus.textContent = error.message; exportStatus.className = 'chart-state text-danger'; }
+        }
+        document.getElementById('refreshXml').addEventListener('click', loadXml);
+        document.getElementById('downloadXml').addEventListener('click', async () => {
+            try { const response = await fetch('export/prices?format=xml'); if (!response.ok) throw new Error(); const blob = await response.blob(); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'agriprice-daily-bulletin.xml'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); exportStatus.textContent = 'XML bulletin downloaded.'; exportStatus.className = 'chart-state text-success'; }
+            catch (_) { exportStatus.textContent = 'Download failed. Please try again.'; exportStatus.className = 'chart-state text-danger'; }
+        });
+        document.getElementById('validateXml').addEventListener('click', async event => {
+            const button = event.currentTarget; button.disabled = true; exportStatus.textContent = 'Validating bulletin…';
+            try { const response = await fetch('export/prices?format=validate'); const result = await response.json(); exportStatus.textContent = result.valid ? 'XML is valid against prices.xsd.' : (result.message || 'XML validation failed.'); exportStatus.className = `chart-state ${result.valid ? 'text-success' : 'text-danger'}`; }
+            catch (_) { exportStatus.textContent = 'Validation could not be completed.'; exportStatus.className = 'chart-state text-danger'; }
+            finally { button.disabled = false; }
+        });
+        document.addEventListener('DOMContentLoaded', loadXml);
+    </script>
+</body>
+</html>
