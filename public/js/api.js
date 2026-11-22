@@ -1,4 +1,4 @@
-const STATIC_HOSTED = /(^|\.)vercel\.app$/i.test(location.hostname) || new URLSearchParams(location.search).has('static');
+const STATIC_HOSTED = new URLSearchParams(location.search).has('static');
 
 const AgriAPI = {
     _cache: {},
