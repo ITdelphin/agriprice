@@ -32,12 +32,7 @@ public final class GmailApiEmailUtil {
         }
 
         String accessToken = requestAccessToken();
-        String html = "<p>Hello,</p>"
-                + "<p>A password reset was requested for your AgriPrice Rwanda agent account.</p>"
-                + "<p>Use this verification link within " + expiryMinutes + " minutes:</p>"
-                + "<p><a href=\"" + escapeHtml(resetUrl) + "\">Reset my password</a></p>"
-                + "<p>If you did not request this, ignore this email and your password will stay unchanged.</p>"
-                + "<p>AgriPrice Rwanda</p>";
+        String html = ResetEmailTemplate.html(resetUrl, expiryMinutes);
         String raw = buildRawMessage(to, html);
 
         JsonObject payload = new JsonObject();
@@ -136,11 +131,4 @@ public final class GmailApiEmailUtil {
         return value.replace("\r", "").replace("\n", "");
     }
 
-    private static String escapeHtml(String value) {
-        return value.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#39;");
-    }
 }

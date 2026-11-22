@@ -41,13 +41,8 @@ public final class SmtpEmailUtil {
             throw new IOException("SMTP is not configured.");
         }
 
-        String subject = "Reset your AgriPrice Rwanda password";
-        String body = "Hello,\n\n"
-                + "A password reset was requested for your AgriPrice Rwanda agent account.\n\n"
-                + "Use this verification link within " + expiryMinutes + " minutes:\n"
-                + resetUrl + "\n\n"
-                + "If you did not request this, ignore this email and your password will stay unchanged.\n\n"
-                + "AgriPrice Rwanda";
+        String subject = ResetEmailTemplate.SUBJECT;
+        String body = ResetEmailTemplate.text(resetUrl, expiryMinutes);
 
         Socket socket = connect(host, port, ssl);
         try {

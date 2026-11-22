@@ -24,19 +24,9 @@ public final class BrevoEmailUtil {
             throw new IOException("Brevo email is not configured.");
         }
 
-        String subject = "Reset your AgriPrice Rwanda password";
-        String text = "Hello,\n\n"
-                + "A password reset was requested for your AgriPrice Rwanda agent account.\n\n"
-                + "Use this verification link within " + expiryMinutes + " minutes:\n"
-                + resetUrl + "\n\n"
-                + "If you did not request this, ignore this email and your password will stay unchanged.\n\n"
-                + "AgriPrice Rwanda";
-        String html = "<p>Hello,</p>"
-                + "<p>A password reset was requested for your AgriPrice Rwanda agent account.</p>"
-                + "<p>Use this verification link within " + expiryMinutes + " minutes:</p>"
-                + "<p><a href=\"" + escapeHtml(resetUrl) + "\">Reset my password</a></p>"
-                + "<p>If you did not request this, ignore this email and your password will stay unchanged.</p>"
-                + "<p>AgriPrice Rwanda</p>";
+        String subject = ResetEmailTemplate.SUBJECT;
+        String text = ResetEmailTemplate.text(resetUrl, expiryMinutes);
+        String html = ResetEmailTemplate.html(resetUrl, expiryMinutes);
 
         JsonObject sender = new JsonObject();
         sender.addProperty("name", "AgriPrice Rwanda");
@@ -87,11 +77,4 @@ public final class BrevoEmailUtil {
         return value == null || value.trim().isEmpty() ? null : value.trim();
     }
 
-    private static String escapeHtml(String value) {
-        return value.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#39;");
-    }
 }
