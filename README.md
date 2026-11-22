@@ -76,6 +76,17 @@ Following the Principle of Least Privilege, database settings are supplied at ru
 
 Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 
+### 3.3 Reset Email Settings
+Password reset links are delivered over SMTP SSL. Configure these runtime variables:
+
+- `AGRIPRICE_SMTP_HOST` — defaults to `smtp.gmail.com`
+- `AGRIPRICE_SMTP_PORT` — defaults to `465`
+- `AGRIPRICE_SMTP_USER` — mailbox used to authenticate
+- `AGRIPRICE_SMTP_PASSWORD` — mailbox app password; never committed
+- `AGRIPRICE_SMTP_FROM` — optional sender address; defaults to `AGRIPRICE_SMTP_USER`
+- `AGRIPRICE_PUBLIC_BASE_URL` — e.g. `https://agripricerwanda.vercel.app`
+- `AGRIPRICE_RESET_PREVIEW` — development-only `true` value that returns the link in the API response; never enable in production
+
 ---
 
 ## 4. Agent Accounts
@@ -86,9 +97,9 @@ Sign in with an agent account to submit and manage price reports.
 
 ### Password recovery
 1. On the sign-in page, select **Forgot password?** and enter the registered agent email.
-2. The recovery page displays a single-use token valid for 30 minutes (email delivery can be added when SMTP credentials are available).
-3. Open the reset link, paste the token, choose a new password of at least 8 characters and confirm it.
-4. Sign in again with the same email and the new password. Expired or used tokens are rejected.
+2. The server emails a single-use verification link valid for 15 minutes; the token is never returned in the API response.
+3. Open the emailed link, choose a new password of at least 8 characters and confirm it.
+4. Sign in again with the same email and the new password. Expired or used links are rejected.
 
 For existing installations, apply `database/upgrade_password_reset.sql` before using this flow.
 

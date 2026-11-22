@@ -3,12 +3,14 @@ package com.agriprice.servlet;
 import com.agriprice.dao.AgentDAO;
 import com.agriprice.model.Agent;
 import com.agriprice.util.PasswordUtil;
+import com.agriprice.util.SmtpEmailUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +27,7 @@ import javax.servlet.http.HttpSession;
 
 public class AuthServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final long RESET_TOKEN_MINUTES = 30;
+    private static final long RESET_TOKEN_MINUTES = 15;
     private final AgentDAO agentDAO = new AgentDAO();
     private final Gson gson = new Gson();
 
@@ -90,7 +92,7 @@ public class AuthServlet extends HttpServlet {
         }
 
         if ("/forgot-password".equalsIgnoreCase(pathInfo)) {
-            handleForgotPassword(response, out, getString(payload, "email"));
+            handleForgotPassword(request, response, out, getString(payload, "email"));
             return;
         }
 
@@ -150,7 +152,7 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
-    private void handleForgotPassword(HttpServletResponse response, PrintWriter out, String email) throws IOException {
+    private void handleForgotPassword(HttpServletRequest request, HttpServletResponse response, PrintWriter out, String email) throws IOException {
         if (email == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.print("{\"success\":false,\"message\":\"Enter your registered email address.\"}");
@@ -163,7 +165,7 @@ public class AuthServlet extends HttpServlet {
             if (agent == null) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("success", true);
-                data.put("message", "If the account exists, a reset token has been created.");
+                data.put("message", "If the account exists, a password reset link has been sent.");
                 response.setStatus(HttpServletResponse.SC_OK);
                 out.print(gson.toJson(data));
                 out.flush();
@@ -175,12 +177,30 @@ public class AuthServlet extends HttpServlet {
             Timestamp expiresAt = new Timestamp(System.currentTimeMillis() + RESET_TOKEN_MINUTES * 60L * 1000L);
             agentDAO.createPasswordResetToken(agent.getAgentId(), tokenHash, expiresAt);
 
+            String resetUrl = buildPublicBaseUrl(request)
+                    + "/reset-password.html?token=" + URLEncoder.encode(token, StandardCharsets.UTF_8.name())
+                    + "&email=" + URLEncoder.encode(agent.getEmail(), StandardCharsets.UTF_8.name());
+
             Map<String, Object> data = new HashMap<>();
             data.put("success", true);
-            data.put("message", "Reset token created. It expires in " + RESET_TOKEN_MINUTES + " minutes.");
-            data.put("token", token);
-            data.put("email", agent.getEmail());
-            data.put("resetUrl", "reset-password.html?token=" + token + "&email=" + agent.getEmail());
+            data.put("message", "If the account exists, a password reset link has been sent.");
+
+            if (!SmtpEmailUtil.isConfigured() && !isPreviewEnabled()) {
+                response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                data.put("success", false);
+                data.put("message", "Password reset email is not configured. Contact the administrator.");
+                out.print(gson.toJson(data));
+                out.flush();
+                return;
+            }
+
+            if (SmtpEmailUtil.isConfigured()) {
+                SmtpEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);
+            } else {
+                data.put("previewToken", token);
+                data.put("previewUrl", resetUrl);
+            }
+
             response.setStatus(HttpServletResponse.SC_OK);
             out.print(gson.toJson(data));
             out.flush();
@@ -189,7 +209,42 @@ public class AuthServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"success\":false,\"message\":\"Could not create a reset token: " + e.getMessage() + "\"}");
             out.flush();
+        } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            out.print("{\"success\":false,\"message\":\"Could not send the reset email. Try again later.\"}");
+            out.flush();
         }
+    }
+
+    private String buildPublicBaseUrl(HttpServletRequest request) {
+        String configured = setting("AGRIPRICE_PUBLIC_BASE_URL");
+        if (configured != null) {
+            return configured.endsWith("/") ? configured.substring(0, configured.length() - 1) : configured;
+        }
+        String scheme = first(request.getHeader("X-Forwarded-Proto"), request.getScheme());
+        String host = first(request.getHeader("X-Forwarded-Host"), request.getHeader("Host"));
+        if (host == null) {
+            int port = request.getServerPort();
+            boolean defaultPort = ("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443);
+            host = request.getServerName() + (defaultPort ? "" : ":" + port);
+        }
+        return scheme + "://" + host + request.getContextPath();
+    }
+
+    private boolean isPreviewEnabled() {
+        return "true".equalsIgnoreCase(setting("AGRIPRICE_RESET_PREVIEW"));
+    }
+
+    private String setting(String name) {
+        String value = System.getProperty(name);
+        if (value == null || value.trim().isEmpty()) {
+            value = System.getenv(name);
+        }
+        return value == null || value.trim().isEmpty() ? null : value.trim();
+    }
+
+    private String first(String primary, String fallback) {
+        return primary == null || primary.trim().isEmpty() ? fallback : primary.trim();
     }
 
     private void handleResetPassword(HttpServletResponse response, PrintWriter out, String token, String newPassword) throws IOException {
