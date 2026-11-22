@@ -6,6 +6,7 @@ import com.agriprice.util.BrevoEmailUtil;
 import com.agriprice.util.GmailApiEmailUtil;
 import com.agriprice.util.PasswordUtil;
 import com.agriprice.util.SmtpEmailUtil;
+import com.agriprice.util.WebhookEmailUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -187,10 +188,11 @@ public class AuthServlet extends HttpServlet {
             data.put("success", true);
             data.put("message", "If the account exists, a password reset link has been sent.");
 
+            boolean webhookConfigured = WebhookEmailUtil.isConfigured();
             boolean gmailConfigured = GmailApiEmailUtil.isConfigured();
             boolean brevoConfigured = BrevoEmailUtil.isConfigured();
             boolean smtpConfigured = SmtpEmailUtil.isConfigured();
-            if (!gmailConfigured && !brevoConfigured && !smtpConfigured && !isPreviewEnabled()) {
+            if (!webhookConfigured && !gmailConfigured && !brevoConfigured && !smtpConfigured && !isPreviewEnabled()) {
                 response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 data.put("success", false);
                 data.put("message", "Password reset email is not configured. Contact the administrator.");
@@ -199,7 +201,9 @@ public class AuthServlet extends HttpServlet {
                 return;
             }
 
-            if (gmailConfigured) {
+            if (webhookConfigured) {
+                WebhookEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);
+            } else if (gmailConfigured) {
                 GmailApiEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);
             } else if (brevoConfigured) {
                 BrevoEmailUtil.sendPasswordResetEmail(agent.getEmail(), resetUrl, (int) RESET_TOKEN_MINUTES);

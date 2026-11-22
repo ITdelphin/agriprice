@@ -77,25 +77,38 @@ Following the Principle of Least Privilege, database settings are supplied at ru
 Database user permissions: `SELECT, INSERT, UPDATE, DELETE` on `agriprice.*`.
 
 ### 3.3 Reset Email Settings
-Password reset links are delivered over the Gmail API over HTTPS when `AGRIPRICE_GMAIL_CLIENT_ID`, `AGRIPRICE_GMAIL_CLIENT_SECRET`, and `AGRIPRICE_GMAIL_REFRESH_TOKEN` are set. This works on Railway Free/Trial/Hobby plans, where outbound SMTP is blocked. Brevo API and SMTP are secondary fallbacks.
+Password reset links are delivered through a Google Apps Script webhook over HTTPS when `AGRIPRICE_EMAIL_WEBHOOK_URL` and `AGRIPRICE_EMAIL_WEBHOOK_SECRET` are set. This sends from your Gmail account without SMTP or OAuth client setup, so it works on Railway Free/Trial/Hobby plans.
 
-Primary Gmail API settings:
+Create a new Google Apps Script, paste this, then deploy it as a web app with **Execute as: Me** and **Who has access: Anyone**:
 
-- `AGRIPRICE_GMAIL_CLIENT_ID` — Google OAuth client id; never committed
-- `AGRIPRICE_GMAIL_CLIENT_SECRET` — Google OAuth client secret; never committed
-- `AGRIPRICE_GMAIL_REFRESH_TOKEN` — OAuth refresh token with `https://www.googleapis.com/auth/gmail.send`; never committed
-- `AGRIPRICE_SMTP_FROM` — Gmail sender address; defaults to `AGRIPRICE_SMTP_USER`
+```javascript
+const SECRET = 'REPLACE_WITH_A_LONG_RANDOM_SECRET';
+
+function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  if (data.secret !== SECRET) {
+    return ContentService.createTextOutput('unauthorized');
+  }
+  GmailApp.sendEmail(data.to, data.subject, data.text, {
+    htmlBody: data.html,
+    name: 'AgriPrice Rwanda'
+  });
+  return ContentService.createTextOutput('ok');
+}
+```
+
+Railway variables:
+
+- `AGRIPRICE_EMAIL_WEBHOOK_URL` — deployed Apps Script web app URL
+- `AGRIPRICE_EMAIL_WEBHOOK_SECRET` — same secret used in the script; never committed
 - `AGRIPRICE_PUBLIC_BASE_URL` — e.g. `https://agripricerwanda.vercel.app`
 - `AGRIPRICE_RESET_PREVIEW` — development-only `true` value that returns the link in the API response; never enable in production
 
-Fallback settings:
+Advanced fallbacks:
 
-- `AGRIPRICE_BREVO_API_KEY` — Brevo API key; never committed
-- `AGRIPRICE_SMTP_HOST` — defaults to `smtp.gmail.com`
-- `AGRIPRICE_SMTP_PORT` — defaults to `587`
-- `AGRIPRICE_SMTP_SECURITY` — `starttls` or `ssl`; auto-detected from the port when omitted
-- `AGRIPRICE_SMTP_USER` — mailbox used to authenticate
-- `AGRIPRICE_SMTP_PASSWORD` — mailbox app password; never committed
+- `AGRIPRICE_GMAIL_CLIENT_ID`, `AGRIPRICE_GMAIL_CLIENT_SECRET`, `AGRIPRICE_GMAIL_REFRESH_TOKEN` — Gmail API OAuth
+- `AGRIPRICE_BREVO_API_KEY` — Brevo API key
+- `AGRIPRICE_SMTP_HOST`, `AGRIPRICE_SMTP_PORT`, `AGRIPRICE_SMTP_SECURITY`, `AGRIPRICE_SMTP_USER`, `AGRIPRICE_SMTP_PASSWORD` — SMTP only where outbound SMTP is allowed
 
 ---
 
