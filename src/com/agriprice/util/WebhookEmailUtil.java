@@ -47,7 +47,6 @@ public final class WebhookEmailUtil {
         connection.setConnectTimeout(15000);
         connection.setReadTimeout(15000);
         connection.setDoOutput(true);
-        connection.setFixedLengthStreamingMode(body.length);
         connection.setRequestProperty("accept", "text/plain");
         connection.setRequestProperty("content-type", "application/json; charset=UTF-8");
 
