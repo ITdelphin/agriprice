@@ -2,6 +2,12 @@
  * AgriPrice Rwanda - Data Visualizations (Chart.js)
  * Implements the 3 required interactive agricultural price charts.
  */
+if (typeof Chart !== 'undefined') {
+    Chart.defaults.color = '#142B4A';
+    Chart.defaults.borderColor = 'rgba(20, 43, 74, 0.10)';
+    Chart.defaults.font.family = 'Segoe UI, Roboto, Helvetica, Arial, sans-serif';
+}
+
 const AgriCharts = {
     trendChartInstance: null,
     comparisonChartInstance: null,
@@ -40,18 +46,18 @@ const AgriCharts = {
                         {
                             label: 'Average Price (RWF)',
                             data: avgPrices,
-                            borderColor: '#2e7d32',
-                            backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                            borderColor: '#4B5320',
+                            backgroundColor: 'rgba(75, 83, 32, 0.12)',
                             borderWidth: 3,
                             fill: true,
                             tension: 0.3,
                             pointRadius: 4,
-                            pointBackgroundColor: '#1b5e20'
+                            pointBackgroundColor: '#142B4A'
                         },
                         {
                             label: 'Min Price (RWF)',
                             data: minPrices,
-                            borderColor: '#81c784',
+                            borderColor: '#87CEEB',
                             borderDash: [5, 5],
                             borderWidth: 2,
                             fill: false,
@@ -60,7 +66,7 @@ const AgriCharts = {
                         {
                             label: 'Max Price (RWF)',
                             data: maxPrices,
-                            borderColor: '#e65100',
+                            borderColor: '#DC2626',
                             borderDash: [3, 3],
                             borderWidth: 2,
                             fill: false,
@@ -130,12 +136,12 @@ const AgriCharts = {
                         label: 'Price (RWF / kg)',
                         data: prices,
                         backgroundColor: [
-                            'rgba(46, 125, 50, 0.85)',
-                            'rgba(56, 142, 60, 0.85)',
-                            'rgba(76, 175, 80, 0.85)',
-                            'rgba(129, 199, 132, 0.85)'
+                            'rgba(135, 206, 235, 0.92)',
+                            'rgba(75, 83, 32, 0.88)',
+                            'rgba(20, 43, 74, 0.88)',
+                            'rgba(98, 179, 216, 0.92)'
                         ],
-                        borderColor: '#1b5e20',
+                        borderColor: '#142B4A',
                         borderWidth: 1.5,
                         borderRadius: 6
                     }]
@@ -196,10 +202,11 @@ const AgriCharts = {
                     datasets: [{
                         data: counts,
                         backgroundColor: [
-                            '#2e7d32',
-                            '#43a047',
-                            '#66bb6a',
-                            '#81c784'
+                            '#87CEEB',
+                            '#4B5320',
+                            '#142B4A',
+                            '#62B3D8',
+                            '#EBE3D3'
                         ],
                         hoverOffset: 6
                     }]

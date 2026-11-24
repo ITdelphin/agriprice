@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#174c31">
+    <meta name="theme-color" content="#142B4A">
     <meta name="description" content="Check current agricultural market prices across Rwanda. Compare produce prices by market, track trends, and make informed buying and selling decisions.">
     <title>AgriPrice Rwanda | Agricultural Market Prices</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,18 +28,18 @@
             padding: 14px 22px;
             border: 0;
             border-radius: 10px;
-            color: #fff;
-            background: #2c7d4f;
+            color:var(--white);
+            background:var(--army-green);
             font: inherit;
             font-size: 13px;
             font-weight: 700;
             text-decoration: none;
             cursor: pointer;
             transition: background .18s, transform .18s;
-            box-shadow: 0 6px 18px rgba(10,42,26,.2);
+            box-shadow: 0 6px 18px rgba(20, 43, 74, .2);
         }
-        .btn-hero-primary:hover { background: #1f6338; transform: translateY(-2px); }
-        .btn-hero-primary span { color: #c7e6a7; }
+        .btn-hero-primary:hover { background:var(--navy); transform: translateY(-2px); }
+        .btn-hero-primary span { color:var(--muted); }
         .btn-hero-secondary {
             display: inline-flex;
             align-items: center;
@@ -47,7 +47,7 @@
             padding: 13px 20px;
             border: 1.5px solid rgba(255,255,255,.45);
             border-radius: 10px;
-            color: #fff;
+            color:var(--white);
             background: rgba(255,255,255,.1);
             font: inherit;
             font-size: 13px;
@@ -60,8 +60,8 @@
 
         /* Commodity strip */
         .home-commodity-strip {
-            background: #fff;
-            border-bottom: 1px solid #e9eee9;
+            background:var(--white);
+            border-bottom:1px solid var(--border-color);
             padding: 0 32px;
         }
         .home-commodity-strip-inner {
@@ -76,19 +76,19 @@
             margin-bottom: 18px;
         }
         .home-commodity-strip-label h2 {
-            color: #21372a;
+            color:var(--navy);
             font-size: 18px;
             font-weight: 800;
             letter-spacing: -.5px;
             margin: 0;
         }
         .home-commodity-strip-label a {
-            color: #25613e;
+            color:var(--navy);
             font-size: 11px;
             font-weight: 700;
             text-decoration: none;
         }
-        .home-commodity-strip-label a:hover { color: #174b2e; }
+        .home-commodity-strip-label a:hover { color:var(--navy); }
         .home-commodity-row {
             display: grid;
             grid-template-columns: repeat(2, minmax(0,1fr));
@@ -115,7 +115,7 @@
         }
         .section-header-left .section-eyebrow {
             display: block;
-            color: #4a845d;
+            color:var(--army-green);
             font-size: 9px;
             font-weight: 800;
             letter-spacing: 1.4px;
@@ -124,34 +124,34 @@
         }
         .section-header-left h2 {
             margin: 0 0 2px;
-            color: #1e3628;
+            color:var(--navy);
             font-size: clamp(19px,2.5vw,24px);
             font-weight: 800;
             letter-spacing: -.6px;
         }
         .section-header-left p {
             margin: 0;
-            color: #7a8880;
+            color:var(--muted);
             font-size: 11px;
         }
         .section-view-link {
             flex: 0 0 auto;
-            color: #25613e;
+            color:var(--navy);
             font-size: 11px;
             font-weight: 700;
             text-decoration: none;
             white-space: nowrap;
             padding-bottom: 2px;
         }
-        .section-view-link:hover { color: #174b2e; }
+        .section-view-link:hover { color:var(--navy); }
 
         /* Prices table card */
         .prices-card {
-            border: 1px solid #e5ece6;
+            border:1px solid var(--border-color);
             border-radius: 14px;
-            background: #fff;
+            background:var(--white);
             overflow: hidden;
-            box-shadow: 0 6px 22px rgba(22,52,34,.05);
+            box-shadow: 0 6px 22px rgba(20, 43, 74, .05);
         }
         .prices-card-header {
             display: flex;
@@ -159,12 +159,12 @@
             justify-content: space-between;
             gap: 14px;
             padding: 16px 20px 14px;
-            border-bottom: 1px solid #edf1ed;
-            background: #f9fbf9;
+            border-bottom:1px solid var(--border-color);
+            background:var(--beige);
         }
         .prices-card-header h3 {
             margin: 0;
-            color: #1e3628;
+            color:var(--navy);
             font-size: 13px;
             font-weight: 800;
         }
@@ -174,8 +174,8 @@
             gap: 5px;
             padding: 3px 8px;
             border-radius: 20px;
-            background: #e8f4ea;
-            color: #2d7449;
+            background:var(--beige);
+            color:var(--army-green);
             font-size: 9px;
             font-weight: 700;
         }
@@ -184,29 +184,29 @@
             align-items: center;
             gap: 10px;
             padding: 10px 20px;
-            border-bottom: 1px solid #edf1ed;
-            background: #fbfcfb;
+            border-bottom:1px solid var(--border-color);
+            background:var(--beige);
             flex-wrap: wrap;
         }
         .prices-card-filter-row label {
             display: flex;
             align-items: center;
             gap: 7px;
-            color: #718077;
+            color:var(--muted);
             font-size: 10px;
             font-weight: 600;
         }
         .prices-card-filter-row select {
             padding: 6px 24px 6px 9px;
-            border: 1px solid #dde6de;
+            border:1px solid var(--border-color);
             border-radius: 7px;
-            color: #2d3f33;
+            color:var(--navy);
             background: white;
             font: inherit;
             font-size: 10px;
             min-width: 140px;
         }
-        .prices-card-filter-row span { margin-left: auto; color: #89948c; font-size: 10px; }
+        .prices-card-filter-row span { margin-left: auto; color:var(--muted); font-size: 10px; }
 
         /* Charts row */
         .home-charts-row {
@@ -216,22 +216,22 @@
         }
         @media(max-width:720px) { .home-charts-row { grid-template-columns: 1fr; } }
         .chart-card-pro {
-            border: 1px solid #e5ece6;
+            border:1px solid var(--border-color);
             border-radius: 14px;
-            background: #fff;
+            background:var(--white);
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(22,52,34,.04);
+            box-shadow: 0 4px 16px rgba(20, 43, 74, .04);
         }
         .chart-card-pro-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 15px 18px 12px;
-            border-bottom: 1px solid #edf1ed;
-            background: #f9fbf9;
+            border-bottom:1px solid var(--border-color);
+            background:var(--beige);
         }
-        .chart-card-pro-header h3 { margin: 0; color: #1e3628; font-size: 13px; font-weight: 800; }
-        .chart-card-pro-header p { margin: 3px 0 0; color: #87938a; font-size: 10px; }
+        .chart-card-pro-header h3 { margin: 0; color:var(--navy); font-size: 13px; font-weight: 800; }
+        .chart-card-pro-header p { margin: 3px 0 0; color:var(--muted); font-size: 10px; }
         .chart-card-pro-mark {
             width: 34px;
             height: 34px;
@@ -239,7 +239,7 @@
             place-items: center;
             overflow: hidden;
             border-radius: 10px;
-            background: #eef5ef;
+            background:var(--beige);
             flex: 0 0 auto;
         }
         .chart-card-pro-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -253,15 +253,15 @@
             gap: 32px;
             align-items: center;
             padding: 36px 40px;
-            border: 1px solid #e5ece6;
+            border:1px solid var(--border-color);
             border-radius: 16px;
-            background: #fff;
-            box-shadow: 0 4px 18px rgba(22,52,34,.04);
+            background:var(--white);
+            box-shadow: 0 4px 18px rgba(20, 43, 74, .04);
         }
         @media(max-width:720px) { .home-about-grid { grid-template-columns: 1fr; padding: 24px 22px; gap: 22px; } }
         .home-about-text .section-eyebrow {
             display: block;
-            color: #4a845d;
+            color:var(--army-green);
             font-size: 9px;
             font-weight: 800;
             letter-spacing: 1.4px;
@@ -270,14 +270,14 @@
         }
         .home-about-text h2 {
             margin: 0 0 14px;
-            color: #1e3628;
+            color:var(--navy);
             font-size: clamp(20px,2.6vw,26px);
             font-weight: 800;
             letter-spacing: -.7px;
             line-height: 1.25;
         }
         .home-about-text p {
-            color: #627568;
+            color:var(--muted);
             font-size: 12px;
             line-height: 1.8;
             margin: 0 0 20px;
@@ -288,23 +288,23 @@
             align-items: center;
             gap: 8px;
             padding: 10px 16px;
-            border: 1px solid #c8dece;
+            border:1px solid var(--border-color);
             border-radius: 9px;
-            color: #236440;
-            background: #f2faf4;
+            color:var(--navy);
+            background:var(--beige);
             font: inherit;
             font-size: 11px;
             font-weight: 700;
             text-decoration: none;
             transition: background .16s, border-color .16s;
         }
-        .about-link-btn:hover { background: #e5f4e9; border-color: #9fcab0; }
+        .about-link-btn:hover { background:var(--beige); border-color:var(--sky-border); }
         .home-about-photo {
             position: relative;
             border-radius: 14px;
             overflow: hidden;
             aspect-ratio: 4/3;
-            background: #cde0d4;
+            background:var(--beige);
         }
         .home-about-photo img {
             width: 100%;
@@ -318,7 +318,7 @@
             left: 0;
             right: 0;
             padding: 10px 14px;
-            background: linear-gradient(0deg, rgba(13,42,27,.72), transparent);
+            background: linear-gradient(0deg, rgba(20, 43, 74, .72), transparent);
             color: rgba(255,255,255,.9);
             font-size: 9px;
         }
@@ -331,21 +331,21 @@
             gap: 24px;
             padding: 28px 36px;
             border-radius: 16px;
-            background: linear-gradient(90deg, #174b31 0%, #236441 100%);
-            color: #fff;
-            box-shadow: 0 8px 28px rgba(14,44,28,.18);
+            background:linear-gradient(90deg, var(--navy) 0%, var(--navy) 100%);
+            color:var(--white);
+            box-shadow: 0 8px 28px rgba(20, 43, 74, .18);
         }
         @media(max-width:600px) { .home-watchlist-cta { flex-direction: column; align-items: flex-start; padding: 24px 22px; } }
         .home-watchlist-cta-left .section-eyebrow {
             display: block;
-            color: #a9d9b8;
+            color:var(--muted);
             font-size: 9px;
             font-weight: 800;
             letter-spacing: 1.4px;
             text-transform: uppercase;
             margin-bottom: 8px;
         }
-        .home-watchlist-cta-left h2 { margin: 0 0 6px; color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -.5px; }
+        .home-watchlist-cta-left h2 { margin: 0 0 6px; color:var(--white); font-size: 20px; font-weight: 800; letter-spacing: -.5px; }
         .home-watchlist-cta-left p { margin: 0; color: rgba(255,255,255,.75); font-size: 11px; line-height: 1.65; max-width: 480px; }
         .btn-cta-white {
             flex: 0 0 auto;
@@ -355,8 +355,8 @@
             padding: 13px 20px;
             border: 0;
             border-radius: 10px;
-            color: #174b31;
-            background: #fff;
+            color:var(--navy);
+            background:var(--white);
             font: inherit;
             font-size: 12px;
             font-weight: 800;
@@ -366,7 +366,7 @@
             transition: transform .18s, box-shadow .18s;
         }
         .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.13); }
-        .btn-cta-white span { color: #3e9e60; }
+        .btn-cta-white span { color:var(--army-green); }
 
         /* Markets grid */
         .home-markets-grid {
@@ -380,21 +380,21 @@
             flex-direction: column;
             padding: 0;
             overflow: hidden;
-            border: 1px solid #e5ece6;
+            border:1px solid var(--border-color);
             border-radius: 14px;
-            background: #fff;
+            background:var(--white);
             text-decoration: none;
             color: inherit;
             transition: border-color .18s, transform .18s, box-shadow .18s;
-            box-shadow: 0 3px 12px rgba(22,52,34,.035);
+            box-shadow: 0 3px 12px rgba(20, 43, 74, .035);
         }
-        .market-card-pro:hover { transform: translateY(-2px); border-color: #b8d6c0; box-shadow: 0 10px 26px rgba(22,52,34,.09); }
+        .market-card-pro:hover { transform: translateY(-2px); border-color:var(--border-color); box-shadow: 0 10px 26px rgba(20, 43, 74, .09); }
         .market-card-photo {
             display: block;
             width: 100%;
             aspect-ratio: 16 / 9;
             overflow: hidden;
-            background: #eef4ee;
+            background:var(--beige);
         }
         .market-card-photo img {
             display: block;
@@ -406,9 +406,9 @@
         .market-card-pro:hover .market-card-photo img { transform: scale(1.04); }
         .market-card-body { display: flex; align-items: center; gap: 12px; padding: 15px 17px 17px; min-width: 0; }
         .market-card-text { flex: 1; min-width: 0; }
-        .market-card-body strong { display: block; color: #1e3628; font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .market-card-body small { display: block; margin-top: 5px; color: #849087; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .market-card-arrow { flex: 0 0 auto; color: #7fa98b; font-size: 16px; }
+        .market-card-body strong { display: block; color:var(--navy); font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .market-card-body small { display: block; margin-top: 5px; color:var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .market-card-arrow { flex: 0 0 auto; color:var(--army-green); font-size: 16px; }
 
         /* Stats pills inside hero */
         .hero-stat-pills {
@@ -432,7 +432,7 @@
             backdrop-filter: blur(4px);
         }
         .hero-stat-pill .pill-icon { font-size: 14px; }
-        .hero-stat-pill strong { color: #fff; }
+        .hero-stat-pill strong { color:var(--white); }
         .hero-stat-pill span.pill-label { color: rgba(255,255,255,.65); font-weight: 500; font-size: 10px; }
 
         /* Inline image icons replace decorative emoji throughout the home page */
@@ -442,7 +442,7 @@
         .hero-stat-pill .pill-icon { display: inline-flex; align-items: center; }
         .hero-stat-pill .pill-icon svg { width: 14px; height: 14px; }
         .home-commodity-strip-label h2 { display: flex; align-items: center; gap: 6px; }
-        .home-commodity-strip-label h2 .home-ic { width: 18px; height: 18px; color: #2c7d4f; }
+        .home-commodity-strip-label h2 .home-ic { width: 18px; height: 18px; color:var(--army-green); }
 
         @media(max-width:760px) {
             .home-layout { padding: 36px 18px 50px; }
@@ -464,12 +464,12 @@
         }
         .home-product-card {
             border-radius: 18px;
-            border-color: #e2ebe3;
-            box-shadow: 0 8px 24px rgba(22,52,34,.055);
+            border-color:var(--border-color);
+            box-shadow: 0 8px 24px rgba(20, 43, 74, .055);
         }
         .home-product-art {
             aspect-ratio: 5 / 4;
-            background: #edf4ee;
+            background:var(--beige);
         }
         .home-product-art img { object-fit: cover; }
         .home-product-info {
@@ -478,14 +478,14 @@
             padding: 19px 20px 21px;
         }
         .home-product-text strong {
-            color: #193b28;
+            color:var(--navy);
             font-size: 18px;
             white-space: normal;
             line-height: 1.3;
         }
         .home-product-text small {
             margin-top: 7px;
-            color: #3f8055;
+            color:var(--army-green);
             font-size: 10px;
             font-weight: 800;
             letter-spacing: .09em;
@@ -495,7 +495,7 @@
             display: -webkit-box;
             min-height: 42px;
             overflow: hidden;
-            color: #68796e;
+            color:var(--muted);
             font-size: 12px;
             line-height: 1.7;
             -webkit-box-orient: vertical;
@@ -507,10 +507,10 @@
             justify-content: space-between;
             gap: 10px;
             padding-top: 12px;
-            border-top: 1px solid #edf2ed;
+            border-top:1px solid var(--border-color);
         }
         .home-product-unit {
-            color: #77877c;
+            color:var(--muted);
             font-size: 11px;
             font-weight: 600;
         }
@@ -518,7 +518,7 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            color: #236640;
+            color:var(--navy);
             font-size: 12px;
             font-weight: 800;
         }
@@ -531,7 +531,22 @@
             .home-product-art { aspect-ratio: 16 / 10; }
             .home-product-info { padding: 17px; }
         }
-
+        /* Brand polish: sky-blue primary action, navy text, beige surfaces */
+        .btn-hero-primary { background: var(--sky-blue); color: var(--navy); border: 1px solid var(--sky-blue); }
+        .btn-hero-primary:hover { background: var(--army-green); color: var(--white); border-color: var(--army-green); }
+        .btn-hero-primary span { color: var(--navy); }
+        .btn-hero-secondary { border-color: var(--sky-blue); color: var(--white); }
+        .btn-hero-secondary:hover { border-color: var(--sky-blue); background: rgba(135,206,235,.2); }
+        .home-hero-cta-row a:focus-visible, .home-search button:focus-visible { outline: 3px solid var(--sky-blue); outline-offset: 3px; }
+        .home-commodity-strip, .home-section-pro, .prices-card-pro, .chart-card-pro,
+        .about-card-pro, .market-card-pro { background: var(--white); border-color: var(--border-color); }
+        .home-ic, .section-view-link, .prices-card-value, .market-card-arrow { color: var(--army-green); }
+        .home-about-strip, .watchlist-cta-pro { background: var(--sky-soft); border-color: var(--sky-border); color: var(--navy); }
+        .home-about-strip h2, .watchlist-cta-pro h2 { color: var(--navy); }
+        .chart-card-pro-header h3, .market-card-body strong, .home-product-card strong { color: var(--navy); }
+        .chart-card-pro-header p, .market-card-body small, .home-product-info small { color: var(--muted); }
+        .home-commodity-strip-label h2 { color: var(--navy); }
+        .section-view-link:hover { color: var(--sky-deep); }
     </style>
 </head>
 <body class="public-home">

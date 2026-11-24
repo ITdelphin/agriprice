@@ -33,14 +33,16 @@
           <head>
             <title>AgriPrice Rwanda - Prices Regrouped by Market</title>
             <style>
-              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4fbf7; margin: 30px; color: #1e3a29; }
-              .header { background: #1b5e20; color: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
-              .market-card { background: white; border: 1px solid #c8e6c9; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-              .market-title { background: #2e7d32; color: white; margin: 0; padding: 12px 20px; border-radius: 8px 8px 0 0; }
+              :root { --sky-blue:#87CEEB; --army-green:#4B5320; --beige:#F5F0E6; --navy:#142B4A; --white:#FFFFFF; --red:#DC2626; --black:#171717; --border-color:#DCE3EA; --sky-soft:#E8F6FD; }
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:var(--beige); margin: 30px; color:var(--black); }
+              .header { background:var(--navy); color: var(--white); padding: 20px; border-radius: 12px; margin-bottom: 25px; border-left: 6px solid var(--sky-blue); }
+              .market-card { background: var(--white); border:1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(20,43,74,.08); }
+              .market-title { background:var(--army-green); color: var(--white); margin: 0; padding: 12px 20px; border-radius: 12px 12px 0 0; }
               table { width: 100%; border-collapse: collapse; }
-              th, td { padding: 10px 20px; text-align: left; border-bottom: 1px solid #e8f5e9; }
-              th { background: #e8f5e9; color: #1b5e20; font-weight: 600; }
-              .price-cell { font-weight: bold; color: #2e7d32; }
+              th, td { padding: 10px 20px; text-align: left; border-bottom:1px solid var(--border-color); }
+              th { background:var(--sky-soft); color:var(--navy); font-weight: 700; }
+              tr:hover td { background: var(--beige); }
+              .price-cell { font-weight: bold; color:var(--navy); }
             </style>
           </head>
           <body>
@@ -88,18 +90,20 @@
           <head>
             <title>AgriPrice Rwanda - Official Daily Market Bulletin</title>
             <style>
-              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fafdfb; color: #212529; margin: 40px; }
-              .bulletin-box { max-width: 960px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 6px solid #2e7d32; }
-              .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; background: #e8f5e9; padding: 15px; border-radius: 6px; }
+              :root { --sky-blue:#87CEEB; --army-green:#4B5320; --beige:#F5F0E6; --navy:#142B4A; --white:#FFFFFF; --red:#DC2626; --black:#171717; --border-color:#DCE3EA; --sky-soft:#E8F6FD; }
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:var(--beige); color:var(--black); margin: 40px; }
+              .bulletin-box { max-width: 960px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 14px; box-shadow: 0 8px 24px rgba(20,43,74,.10); border-top:6px solid var(--sky-blue); }
+              h2 { color: var(--navy); }
+              .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; background:var(--sky-soft); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); }
               .meta-item { font-size: 0.9em; }
-              .meta-label { font-weight: bold; color: #1b5e20; display: block; font-size: 0.8em; text-transform: uppercase; }
+              .meta-label { font-weight: bold; color:var(--army-green); display: block; font-size: 0.8em; text-transform: uppercase; }
               table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-              th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; }
-              th { background: #2e7d32; color: white; font-weight: 600; }
-              tr:hover { background-color: #f1f8e9; }
-              .price-val { font-weight: bold; color: #1b5e20; }
-              .badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
-              .footer { margin-top: 25px; font-size: 0.85em; color: #666; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
+              th, td { padding: 12px 15px; text-align: left; border-bottom:1px solid var(--border-color); }
+              th { background:var(--navy); color: var(--white); font-weight: 700; }
+              tr:hover { background-color:var(--beige); }
+              .price-val { font-weight: bold; color:var(--navy); }
+              .badge { background:var(--sky-soft); color:var(--navy); padding: 4px 8px; border-radius: 6px; font-size: 0.85em; }
+              .footer { margin-top: 25px; font-size: 0.85em; color:var(--muted, #4E5D70); text-align: center; border-top:1px solid var(--border-color); padding-top: 15px; }
             </style>
           </head>
           <body>
