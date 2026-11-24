@@ -177,8 +177,7 @@ body {
    ========================================================================== */
 .hero {
     position: relative;
-    background: linear-gradient(110deg, rgba(20, 43, 74, 0.94), rgba(20, 43, 74, 0.84)),
-                url('../assets/images/tea-hills-rwanda.jpg') center 48%/cover no-repeat;
+    background: var(--navy);
     color: white;
     padding: 72px 20px 64px;
     text-align: center;
@@ -785,7 +784,7 @@ body.public-home { display:block; background:var(--beige); font-family:"DM Sans"
 .public-menu-toggle { display:none; }
 .home-hero { min-height:515px; position:relative; display:flex; align-items:center; overflow:hidden; isolation:isolate; color:white; background:var(--navy); }
 .home-hero-photo,.home-hero-shade { position:absolute; inset:0; z-index:-1; }
-.home-hero-photo { background:url('../assets/images/kigali-market.jpg') center 52%/cover no-repeat; }
+.home-hero-photo { background: var(--navy); }
 .home-hero-shade { background:linear-gradient(90deg,rgba(20, 43, 74, .93) 0%,rgba(20, 43, 74, .85) 45%,rgba(20, 43, 74, .36) 100%),linear-gradient(0deg,rgba(20, 43, 74, .25),transparent 36%); }
 .home-hero-content { width:min(1216px,100%); margin:0 auto; padding:66px 32px 76px; }
 .home-eyebrow,.section-kicker { display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; }
@@ -930,7 +929,7 @@ body.public-home { display:block; background:var(--beige); font-family:"DM Sans"
 .login-backlink a { color:var(--navy); font-weight:700; text-decoration:none; }
 .login-story { min-height:620px; position:relative; display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; color:white; background:var(--navy); }
 .login-story-photo,.login-story-overlay { position:absolute; inset:0; z-index:-1; }
-.login-story-photo { background:url('../assets/images/tea-hills-rwanda.jpg') center/cover no-repeat; }
+.login-story-photo { background: var(--navy); }
 .login-story-overlay { background:linear-gradient(0deg,rgba(20, 43, 74, .94),rgba(20, 43, 74, .48) 58%,rgba(20, 43, 74, .08)); }
 .login-story-content { max-width:480px; padding:44px 42px; }
 .login-story-label { display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:9px; font-weight:700; letter-spacing:1.3px; }
@@ -1042,7 +1041,7 @@ body.public-home { display:block; background:var(--beige); font-family:"DM Sans"
 .product-image-picker small { display: block; margin-top: 6px; line-height: 1.45; }
 .product-modal-card { max-height: 90vh; overflow-y: auto; }
 .form-feedback { min-height: 1.2em; margin: 0; color:var(--red); font-size: .88rem; }
-.market-directory-hero { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 250px; margin: 26px 0 24px; padding: 38px 42px; overflow: hidden; border-radius: 20px; color:var(--white); background: linear-gradient(90deg,rgba(20, 43, 74, .94) 0%,rgba(20, 43, 74, .72) 58%,rgba(20, 43, 74, .24) 100%),url('../assets/images/kigali-market.jpg') center 48%/cover; box-shadow: 0 16px 34px rgba(20, 43, 74, .14); }
+.market-directory-hero { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 250px; margin: 26px 0 24px; padding: 38px 42px; overflow: hidden; border-radius: 20px; color:var(--white); background: var(--navy); box-shadow: 0 16px 34px rgba(20, 43, 74, .14); }
 .market-directory-copy { position: relative; z-index: 1; max-width: 580px; }
 .market-directory-copy > span { color:var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .14em; }
 .market-directory-copy h2 { max-width: 540px; margin: 12px 0; color: white; font-size: clamp(1.8rem,3.2vw,2.8rem); line-height: 1.1; }
@@ -1300,7 +1299,7 @@ body.public-home { display:block; background:var(--beige); font-family:"DM Sans"
 .catalog-user-popover a:hover,.catalog-user-popover button:hover { background:var(--beige); }
 .catalog-main { width:min(1500px,100%); min-width:0; margin:0 auto; padding:26px clamp(22px,3.1vw,48px) 0; }
 .catalog-hero { position:relative; display:flex; min-height:230px; align-items:center; justify-content:space-between; gap:24px; padding:32px clamp(24px,3vw,42px); overflow:hidden; border-radius:16px; color:var(--white); background:var(--navy); box-shadow:0 12px 28px rgba(20, 43, 74, .12); isolation:isolate; }
-.catalog-hero-photo { position:absolute; z-index:-2; inset:0 0 0 31%; background-image:url('../assets/images/kigali-market.jpg'); background-position:center 52%; background-size:cover; }
+.catalog-hero-photo { position:absolute; z-index:-2; inset:0 0 0 31%; background: var(--navy); background-position:center 52%; background-size:cover; }
 .catalog-hero::before { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,var(--navy) 0%,rgba(20, 43, 74, .97) 32%,rgba(20, 43, 74, .69) 65%,rgba(20, 43, 74, .44) 100%); content:""; }
 .catalog-hero-content { max-width:620px; }
 .catalog-eyebrow { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:.61rem; font-weight:850; letter-spacing:.16em; }
@@ -1753,7 +1752,7 @@ img { max-width: 100%; }
     overflow: hidden;
     border-radius: 14px;
     color: var(--white);
-    background: linear-gradient(rgba(20, 43, 74, .88), rgba(20, 43, 74, .88)), url('../assets/images/kigali-market.jpg') center 52%/cover no-repeat;
+    background: var(--navy);
 }
 .price-search-hero h2 { margin: 0 0 8px; color: var(--white); font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.03em; }
 .price-search-hero p { margin: 0; color: rgba(255, 255, 255, .82) !important; }
@@ -1768,3 +1767,38 @@ img { max-width: 100%; }
     .price-search-hero { align-items: flex-start; flex-direction: column; padding: 28px 22px 38px; }
     .price-hero-credit { right: 12px; bottom: 8px; font-size: 9px; }
 }
+
+img:not([src$="logo.svg"]) { display: none !important; }
+.home-hero { background: var(--navy) !important; }
+.home-hero-photo,
+.login-story-photo,
+.catalog-hero-photo,
+.home-about-photo,
+.chart-card-pro-mark,
+.home-product-art,
+.catalog-product-photo,
+.market-card-photo,
+.market-directory-photo { display: none !important; }
+.price-search-hero,
+.market-directory-hero { background: var(--navy) !important; background-image: none !important; }
+.home-about-grid,
+.home-product-card,
+.market-card-pro,
+.market-directory-card { grid-template-columns: 1fr !important; }
+.brand-icon img,
+.public-brand-icon img,
+.agent-brand-mark img,
+.catalog-brand-mark img,
+.side-brand-mark img,
+.home-about-mark img { display: block !important; width: 100%; height: 100%; object-fit: contain; background: transparent !important; }
+.public-brand-icon,
+.agent-brand-mark,
+.catalog-brand-mark,
+.side-brand-mark,
+.home-about-mark { background: transparent !important; border: 0 !important; box-shadow: none !important; color: inherit !important; }
+.home-hero-shade,
+.login-story-overlay,
+.home-watchlist-cta,
+.dashboard-welcome,
+.catalog-photo-placeholder { background: var(--navy) !important; background-image: none !important; }
+.catalog-hero::before { background: var(--navy) !important; background-image: none !important; }

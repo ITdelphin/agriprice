@@ -568,7 +568,7 @@
     <header class="public-header">
         <div class="public-nav-wrap">
             <a href="index.html" class="public-brand" aria-label="AgriPrice Rwanda home">
-                <span class="public-brand-icon" aria-hidden="true">A</span>
+                <span class="public-brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt="AgriPrice Rwanda logo"></span>
                 <span><strong>AgriPrice</strong><small>RWANDA</small></span>
             </a>
             <button class="public-menu-toggle" id="publicMenuToggle" type="button" aria-expanded="false" aria-controls="publicNav">Menu</button>
@@ -722,7 +722,7 @@
                                 <h3>Maize grain — 14-day trend</h3>
                                 <p>Recent reported prices</p>
                             </div>
-                            <span class="chart-card-pro-mark"><img src="assets/images/catalog/maize.jpg" alt="Maize grain" loading="lazy" width="34" height="34"></span>
+                            <span class="chart-card-pro-mark"></span>
                         </div>
                         <div class="chart-card-pro-body">
                             <p id="homeTrendStatus" class="chart-state" role="status">Loading price history…</p>
@@ -737,7 +737,7 @@
                                 <h3>Potatoes — market comparison</h3>
                                 <p>Current prices by market</p>
                             </div>
-                            <span class="chart-card-pro-mark"><img src="assets/images/catalog/potatoes.jpg" alt="Potatoes" loading="lazy" width="34" height="34"></span>
+                            <span class="chart-card-pro-mark"></span>
                         </div>
                         <div class="chart-card-pro-body">
                             <p id="homeComparisonStatus" class="chart-state" role="status">Loading comparison…</p>
@@ -776,10 +776,6 @@
                             <a href="markets.html" class="about-link-btn"><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-10a6 6 0 1 1 12 0c0 4.6-6 10-6 10Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2.2" fill="currentColor"/></svg> Explore markets →</a>
                         </div>
                     </div>
-                    <div class="home-about-photo">
-                        <img src="assets/images/kigali-market.jpg" alt="Fresh produce on display at Kigali Market" loading="lazy">
-                        <div class="home-about-photo-caption"><svg class="home-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-2h6l2 2h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/></svg> Market day at Kigali Market, Rwanda</div>
-                    </div>
                 </div>
             </section>
 
@@ -806,7 +802,7 @@
         <div class="home-footer-inner">
             <div class="home-footer-brand">
                 <a href="index.html" class="public-brand">
-                    <span class="public-brand-icon" aria-hidden="true">A</span>
+                    <span class="public-brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt="AgriPrice Rwanda logo"></span>
                     <span><strong>AgriPrice</strong><small>RWANDA</small></span>
                 </a>
                 <p>Market information for a more connected and transparent agricultural economy in Rwanda.</p>
@@ -841,16 +837,16 @@
         let homeCanManageWatchlist = false;
 
         /* ─── Helpers ───────────────────────────────────────────── */
-        const productArtwork = name => {
+        const productCategory = name => {
             const v = (name || '').toLowerCase();
-            if (v.includes('maize') || v.includes('corn')) return ['maize.jpg', 'Cereals'];
-            if (v.includes('sweet') && v.includes('potato')) return ['sweet-potatoes.jpg', 'Roots & tubers'];
-            if (v.includes('potato'))  return ['potatoes.jpg', 'Roots & tubers'];
-            if (v.includes('bean') || v.includes('pea') || v.includes('legume')) return ['beans.jpg', 'Legumes'];
-            if (v.includes('cassava') || v.includes('manioc')) return ['cassava.jpg', 'Roots & tubers'];
-            if (v.includes('onion'))   return ['onions.jpg', 'Vegetables'];
-            if (v.includes('banana') || v.includes('plantain')) return ['bananas.jpg', 'Fruits'];
-            return ['maize.jpg', 'Agricultural products'];
+            if (v.includes('maize') || v.includes('corn')) return 'Cereals';
+            if (v.includes('sweet') && v.includes('potato')) return 'Roots & tubers';
+            if (v.includes('potato')) return 'Roots & tubers';
+            if (v.includes('bean') || v.includes('pea') || v.includes('legume')) return 'Legumes';
+            if (v.includes('cassava') || v.includes('manioc')) return 'Roots & tubers';
+            if (v.includes('onion')) return 'Vegetables';
+            if (v.includes('banana') || v.includes('plantain')) return 'Fruits';
+            return 'Agricultural products';
         };
         function escapeHome(value) {
             const node = document.createElement('span');
@@ -993,11 +989,10 @@
                     products.map(p => `<option value="${encodeURIComponent(p.productId)}">${escapeHome(p.productName)}</option>`).join('');
 
                 container.innerHTML = products.slice(0, 6).map(p => {
-                const [photo, cat] = productArtwork(p.productName);
+                const cat = productCategory(p.productName);
                 const description = p.description || `Explore current market prices and reports for ${p.productName} from participating markets across Rwanda.`;
                 const unit = p.defaultUnit || p.unit || 'Standard market unit';
                 return `<a href="prices.html?productId=${encodeURIComponent(p.productId)}" class="home-product-card" aria-label="View market prices for ${escapeHome(p.productName)}">
-                    <span class="home-product-art"><img src="assets/images/catalog/${photo}" alt="${escapeHome(p.productName)}" loading="lazy"></span>
                     <span class="home-product-info">
                         <span class="home-product-text">
                             <strong>${escapeHome(p.productName)}</strong>
@@ -1031,10 +1026,9 @@
                 document.getElementById('homeMarketFilter').innerHTML = opts;
 
                 container.innerHTML = markets.slice(0, 4).map(m => {
-                    const photo = App.marketPhoto(m);
                     return `
                     <a class="market-card-pro" href="prices.html?marketId=${encodeURIComponent(m.marketId)}">
-                        <span class="market-card-photo"><img src="${photo.src}" alt="${escapeHome(photo.alt)}" loading="lazy"></span>
+                        <span class="market-card-photo"></span>
                         <span class="market-card-body">
                             <span class="market-card-text">
                                 <strong>${escapeHome(m.marketName)}</strong>

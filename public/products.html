@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#142B4A">
@@ -54,14 +55,14 @@
                 <div class="catalog-table-heading"><div><span class="catalog-section-kicker">PRODUCT REGISTER</span><h2 id="productTableTitle">Produce and staples</h2></div><span class="catalog-result-note" id="catalogResultNote" aria-live="polite"></span></div>
                 <div class="catalog-table-scroll">
                     <table class="catalog-table">
-                        <thead><tr><th scope="col">No.</th><th scope="col">Photograph</th><th scope="col">Product name</th><th scope="col">Category</th><th scope="col">Standard unit</th><th scope="col">Description</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
-                        <tbody id="productsTableBody"><tr class="catalog-state-row"><td colspan="8"><div class="catalog-state"><span class="catalog-spinner" aria-hidden="true"></span><strong>Loading product catalog</strong><small>Connecting to the market database…</small></div></td></tr></tbody>
+                        <thead><tr><th scope="col">No.</th><th scope="col">Product name</th><th scope="col">Category</th><th scope="col">Standard unit</th><th scope="col">Description</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+                        <tbody id="productsTableBody"><tr class="catalog-state-row"><td colspan="7"><div class="catalog-state"><span class="catalog-spinner" aria-hidden="true"></span><strong>Loading product catalog</strong><small>Connecting to the market database…</small></div></td></tr></tbody>
                     </table>
                 </div>
                 <div class="catalog-pagination"><span id="productPaginationInfo">Showing products</span><div class="catalog-page-controls"><button type="button" id="productPrevPage" aria-label="Previous page">←</button><div id="productPageNumbers"></div><button type="button" id="productNextPage" aria-label="Next page">→</button></div></div>
             </section>
 
-            <footer class="catalog-footer"><a class="catalog-footer-brand" href="index.html"><span class="catalog-brand-mark">A</span> AgriPrice Rwanda</a><span>Daily market information for Rubavu and Gisenyi.</span><span>© 2026 AgriPrice Rwanda</span></footer>
+            <footer class="catalog-footer"><a class="catalog-footer-brand" href="index.html"><span class="catalog-brand-mark"><img src="assets/images/logo.svg" alt="AgriPrice Rwanda logo"></span> AgriPrice Rwanda</a><span>Daily market information for Rubavu and Gisenyi.</span><span>© 2026 AgriPrice Rwanda</span></footer>
         </main>
     </div>
     <div class="catalog-toast-region" id="catalogToastRegion" aria-live="polite" aria-atomic="true"></div>
@@ -70,14 +71,13 @@
         <section class="catalog-modal" role="dialog" aria-modal="true" aria-labelledby="modalProductTitle">
             <div class="catalog-modal-heading"><div><span class="catalog-section-kicker">PRODUCT CATALOG</span><h2 id="modalProductTitle">Add New Product</h2><p>Enter the product details used in price reports.</p></div><button type="button" id="btnCloseProductModal" class="catalog-modal-close" aria-label="Close">×</button></div>
             <form id="productForm">
-                <input type="hidden" id="modalAction" value="create"><input type="hidden" id="modalProductId" value="0"><input type="hidden" id="modalProductImageUrl" value="">
+                <input type="hidden" id="modalAction" value="create"><input type="hidden" id="modalProductId" value="0">
                 <div class="catalog-form-grid">
                     <label class="catalog-field catalog-field-wide">Product name<input type="text" id="modalProductName" required maxlength="100" placeholder="For example, Dry Beans"></label>
                     <label class="catalog-field">Category<input type="text" id="modalProductCategory" required maxlength="60" list="productCategoryOptions" placeholder="Legumes"></label>
                     <label class="catalog-field">Standard unit<select id="modalProductUnit" required><option value="kg">Kilogram (kg)</option><option value="piece">Piece</option><option value="sack">Sack</option><option value="bunch">Bunch</option></select></label>
                     <label class="catalog-field">Status<select id="modalProductStatus"><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option></select></label>
                     <label class="catalog-field catalog-field-wide">Description<textarea id="modalProductDesc" rows="3" maxlength="500" placeholder="Short description or commonly traded variety"></textarea></label>
-                    <label class="catalog-field catalog-field-wide">Product photograph <span class="catalog-field-hint">Optional · JPEG, PNG or GIF · max 2 MB</span><span class="catalog-upload-control"><span class="catalog-preview-placeholder" id="productImagePlaceholder" aria-hidden="true">Photo<br>preview</span><img id="productImagePreview" alt="Selected product photograph preview" hidden><span><input type="file" id="modalProductImage" accept="image/jpeg,image/png,image/gif"><small>Existing photograph remains when no new file is selected.</small></span></span></label>
                 </div>
                 <datalist id="productCategoryOptions"><option value="Cereals"><option value="Legumes"><option value="Tubers"><option value="Vegetables"><option value="Fruits"></datalist>
                 <p id="productFormMessage" class="catalog-form-message" role="status" aria-live="polite"></p>

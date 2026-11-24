@@ -21,7 +21,7 @@
             <button class="sidebar-mobile-toggle" id="sidebarMobileToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
             <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
             <aside class="app-sidebar" id="appSidebar" aria-label="Application navigation">
-                <a class="side-brand" href="index.html" aria-label="AgriPrice Rwanda home"><span class="side-brand-mark" aria-hidden="true">✳</span><span class="side-label"><strong>AgriPrice</strong><small>RWANDA MARKET INTELLIGENCE</small></span></a>
+                <a class="side-brand" href="index.html" aria-label="AgriPrice Rwanda home"><span class="side-brand-mark" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="side-label"><strong>AgriPrice</strong><small>RWANDA MARKET INTELLIGENCE</small></span></a>
                 <div class="side-section-label">WORKSPACE</div>
                 <nav class="side-nav">${nav}</nav>
                 <div class="side-bottom">

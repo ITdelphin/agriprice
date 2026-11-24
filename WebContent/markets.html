@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markets Directory — AgriPrice Rwanda</title>
@@ -145,12 +146,8 @@
             }
 
             container.innerHTML = list.map(m => {
-                const photo = App.marketPhoto(m);
                 return `
                 <article class="market-directory-card">
-                    <div class="market-directory-photo">
-                        <img src="${photo.src}" alt="${escapeHtml(photo.alt)}" loading="lazy">
-                    </div>
                     <div class="market-directory-body">
                         <div class="market-directory-head">
                             <h3>${escapeHtml(m.marketName)}</h3>

@@ -5,15 +5,6 @@
     const pageSize = 8;
     const state = { products: [], filtered: [], page: 1, isAgent: false, currentUser: null, loading: false };
     const byId = id => document.getElementById(id);
-    const photoByProduct = [
-        { match: /maize|corn/i, src: 'assets/images/catalog/maize.jpg', alt: 'Freshly harvested maize cobs' },
-        { match: /beans|pea|legume/i, src: 'assets/images/catalog/beans.jpg', alt: 'Dry beans ready for market' },
-        { match: /sweet\s*potato/i, src: 'assets/images/catalog/sweet-potatoes.jpg', alt: 'Sweet potatoes fresh from harvest' },
-        { match: /potato/i, src: 'assets/images/catalog/potatoes.jpg', alt: 'Potato harvest in a farm field' },
-        { match: /cassava|manioc/i, src: 'assets/images/catalog/cassava.jpg', alt: 'Cassava roots harvested from the field' },
-        { match: /onion/i, src: 'assets/images/catalog/onions.jpg', alt: 'Onions displayed at a produce market' },
-        { match: /banana|plantain/i, src: 'assets/images/catalog/bananas.jpg', alt: 'Fresh bananas from a local harvest' }
-    ];
 
     document.addEventListener('DOMContentLoaded', init);
 
@@ -185,14 +176,11 @@
         const id = Number(product.productId) || 0;
         const name = String(product.productName || 'Unnamed product');
         const status = String(product.status || 'INACTIVE').toUpperCase();
-        const photo = getProductPhoto(product);
-        const imageMarkup = photo ? `<img src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt)}" loading="lazy" width="56" height="56">` : '<span class="catalog-photo-placeholder" role="img" aria-label="No product photograph available"></span>';
         const actionMarkup = state.isAgent
             ? `<div class="catalog-row-actions"><button type="button" class="catalog-edit-button" data-action="edit" data-product-id="${id}">Edit</button><button type="button" class="catalog-delete-button" data-action="delete" data-product-id="${id}">Delete</button></div>`
             : `<a class="catalog-view-button" href="prices.html?productId=${encodeURIComponent(id)}">View prices</a>`;
         return `<tr>
             <td data-label="No."><span class="catalog-product-number">${String(product.productId || rowNumber).padStart(3, '0')}</span></td>
-            <td data-label="Photograph"><span class="catalog-product-photo">${imageMarkup}</span></td>
             <td data-label="Product name"><strong class="catalog-product-name">${escapeHtml(name)}</strong><small class="catalog-product-id">PRD-${String(id).padStart(4, '0')}</small></td>
             <td data-label="Category"><span class="catalog-category-pill">${escapeHtml(product.category || 'Uncategorized')}</span></td>
             <td data-label="Standard unit"><span class="catalog-unit">${escapeHtml(product.defaultUnit || '—')}</span></td>
@@ -202,14 +190,6 @@
         </tr>`;
     }
 
-    function getProductPhoto(product) {
-        const imageUrl = product.imageUrl;
-        if (typeof imageUrl === 'string' && /^assets\/images\/(?:catalog\/[a-z-]+\.jpg|products\/[a-f0-9-]+\.(?:jpg|png|gif))$/i.test(imageUrl)) {
-            const known = photoByProduct.find(item => item.src === imageUrl);
-            return { src: imageUrl, alt: known ? known.alt : `${product.productName || 'Product'} photograph` };
-        }
-        return photoByProduct.find(item => item.match.test(product.productName || '')) || null;
-    }
 
     function renderPageControls(totalPages) {
         const controls = byId('productPageNumbers');
@@ -281,7 +261,6 @@
         byId('btnCloseProductModal').addEventListener('click', closeModal);
         byId('btnCancelProductModal').addEventListener('click', closeModal);
         byId('productModal').addEventListener('click', event => { if (event.target === byId('productModal')) closeModal(); });
-        byId('modalProductImage').addEventListener('change', previewSelectedImage);
         byId('productForm').addEventListener('submit', saveProduct);
     }
 
@@ -290,10 +269,8 @@
         byId('productForm').reset();
         byId('modalAction').value = 'create';
         byId('modalProductId').value = '0';
-        byId('modalProductImageUrl').value = '';
         byId('modalProductStatus').value = 'ACTIVE';
         byId('modalProductTitle').textContent = 'Add New Product';
-        setPreview(null);
         byId('productFormMessage').textContent = '';
         showModal();
     }
@@ -307,9 +284,6 @@
         byId('modalProductUnit').value = product.defaultUnit || 'kg';
         byId('modalProductDesc').value = product.description || '';
         byId('modalProductStatus').value = product.status || 'ACTIVE';
-        byId('modalProductImageUrl').value = product.imageUrl || '';
-        const photo = getProductPhoto(product);
-        setPreview(photo ? photo.src : null);
         byId('modalProductTitle').textContent = 'Edit Product';
         byId('productFormMessage').textContent = '';
         showModal();
@@ -327,34 +301,12 @@
         document.body.classList.remove('catalog-modal-open');
     }
 
-    function previewSelectedImage(event) {
-        const file = event.target.files && event.target.files[0];
-        if (!file) return;
-        const message = byId('productFormMessage');
-        if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type) || file.size > 2 * 1024 * 1024) {
-            event.target.value = '';
-            message.textContent = 'Choose a JPEG, PNG or GIF image smaller than 2 MB.';
-            message.className = 'catalog-form-message is-error';
-            return;
-        }
-        const preview = byId('productImagePreview');
-        const url = URL.createObjectURL(file);
-        setPreview(url);
-        preview.dataset.previewUrl = url;
-        message.textContent = '';
-    }
 
     async function saveProduct(event) {
         event.preventDefault();
         const form = event.currentTarget;
         const message = byId('productFormMessage');
         if (!form.reportValidity()) return;
-        const image = byId('modalProductImage').files[0];
-        if (image && image.size > 2 * 1024 * 1024) {
-            message.textContent = 'Choose an image smaller than 2 MB.';
-            message.className = 'catalog-form-message is-error';
-            return;
-        }
         const payload = new FormData();
         payload.append('action', byId('modalAction').value);
         payload.append('productId', byId('modalProductId').value);
@@ -363,8 +315,6 @@
         payload.append('defaultUnit', byId('modalProductUnit').value);
         payload.append('description', byId('modalProductDesc').value.trim());
         payload.append('status', byId('modalProductStatus').value);
-        payload.append('imageUrl', byId('modalProductImageUrl').value);
-        if (image) payload.append('image', image);
         const button = form.querySelector('[type="submit"]');
         button.disabled = true;
         button.textContent = 'Saving…';
@@ -394,23 +344,6 @@
         window.setTimeout(() => toast.remove(), 4800);
     }
 
-    function setPreview(source) {
-        const preview = byId('productImagePreview');
-        const placeholder = byId('productImagePlaceholder');
-        if (preview.dataset.previewUrl) {
-            URL.revokeObjectURL(preview.dataset.previewUrl);
-            delete preview.dataset.previewUrl;
-        }
-        if (source) {
-            preview.src = source;
-            preview.hidden = false;
-            placeholder.hidden = true;
-        } else {
-            preview.removeAttribute('src');
-            preview.hidden = true;
-            placeholder.hidden = false;
-        }
-    }
 
     function escapeHtml(value) {
         const element = document.createElement('span');
