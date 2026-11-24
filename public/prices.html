@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#142B4A">
     <title>Market Prices — AgriPrice Rwanda</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -39,16 +40,17 @@
 
     <main class="container">
         
-        <div class="prices-page-heading">
+        <section class="prices-page-heading price-search-hero">
             <div>
                 <h2>Daily Agricultural Market Prices</h2>
-                <p class="text-muted" style="font-size: 0.9rem;">Live database prices for Rubavu and regional trading hubs in Rwanda.</p>
+                <p>Live database prices for Rubavu and regional trading hubs in Rwanda.</p>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <span id="autoRefreshIndicator" class="badge badge-success">&#9679; Auto-Refreshing (12s)</span>
-                <span id="lastUpdatedTimestamp" class="text-muted" style="font-size: 0.85rem;"></span>
+                <span id="lastUpdatedTimestamp" style="font-size: 0.85rem;"></span>
             </div>
-        </div>
+            <small class="price-hero-credit">Kigali Market · <a href="https://commons.wikimedia.org/wiki/File:Kigali_Market_(02).jpg" target="_blank" rel="noopener noreferrer">Zenith4237, CC BY-SA 4.0</a></small>
+        </section>
 
         <!-- Filter Bar (AJAX & JSON live filtering without page reload) -->
         <div class="filter-bar">
