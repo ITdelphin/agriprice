@@ -33,10 +33,10 @@
           <head>
             <title>AgriPrice Rwanda - Prices Regrouped by Market</title>
             <style>
-              :root { --sky-blue:#87CEEB; --army-green:#4B5320; --beige:#F5F0E6; --navy:#142B4A; --white:#FFFFFF; --red:#DC2626; --black:#171717; --border-color:#DCE3EA; --sky-soft:#E8F6FD; }
+              :root { --sky-blue:#87CEEB; --army-green:#4B5320; --beige:#F5F0E6; --navy:#000000; --white:#FFFFFF; --red:#DC2626; --black:#000000; --border-color:#DDDDDD; --sky-soft:#E8F6FD; }
               body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:var(--beige); margin: 30px; color:var(--black); }
               .header { background:var(--navy); color: var(--white); padding: 20px; border-radius: 12px; margin-bottom: 25px; border-left: 6px solid var(--sky-blue); }
-              .market-card { background: var(--white); border:1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(20,43,74,.08); }
+              .market-card { background: var(--white); border:1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
               .market-title { background:var(--army-green); color: var(--white); margin: 0; padding: 12px 20px; border-radius: 12px 12px 0 0; }
               table { width: 100%; border-collapse: collapse; }
               th, td { padding: 10px 20px; text-align: left; border-bottom:1px solid var(--border-color); }
@@ -90,9 +90,9 @@
           <head>
             <title>AgriPrice Rwanda - Official Daily Market Bulletin</title>
             <style>
-              :root { --sky-blue:#87CEEB; --army-green:#4B5320; --beige:#F5F0E6; --navy:#142B4A; --white:#FFFFFF; --red:#DC2626; --black:#171717; --border-color:#DCE3EA; --sky-soft:#E8F6FD; }
+              :root { --sky-blue:#87CEEB; --army-green:#4B5320; --beige:#F5F0E6; --navy:#000000; --white:#FFFFFF; --red:#DC2626; --black:#000000; --border-color:#DDDDDD; --sky-soft:#E8F6FD; }
               body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:var(--beige); color:var(--black); margin: 40px; }
-              .bulletin-box { max-width: 960px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 14px; box-shadow: 0 8px 24px rgba(20,43,74,.10); border-top:6px solid var(--sky-blue); }
+              .bulletin-box { max-width: 960px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.10); border-top:6px solid var(--sky-blue); }
               h2 { color: var(--navy); }
               .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; background:var(--sky-soft); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); }
               .meta-item { font-size: 0.9em; }

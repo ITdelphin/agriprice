@@ -3,8 +3,8 @@
  * Implements the 3 required interactive agricultural price charts.
  */
 if (typeof Chart !== 'undefined') {
-    Chart.defaults.color = '#142B4A';
-    Chart.defaults.borderColor = 'rgba(20, 43, 74, 0.10)';
+    Chart.defaults.color = '#000000';
+    Chart.defaults.borderColor = 'rgba(0,0,0, 0.10)';
     Chart.defaults.font.family = 'Segoe UI, Roboto, Helvetica, Arial, sans-serif';
 }
 
@@ -52,7 +52,7 @@ const AgriCharts = {
                             fill: true,
                             tension: 0.3,
                             pointRadius: 4,
-                            pointBackgroundColor: '#142B4A'
+                            pointBackgroundColor: '#000000'
                         },
                         {
                             label: 'Min Price (RWF)',
@@ -138,10 +138,10 @@ const AgriCharts = {
                         backgroundColor: [
                             'rgba(135, 206, 235, 0.92)',
                             'rgba(75, 83, 32, 0.88)',
-                            'rgba(20, 43, 74, 0.88)',
+                            'rgba(0,0,0, 0.88)',
                             'rgba(98, 179, 216, 0.92)'
                         ],
-                        borderColor: '#142B4A',
+                        borderColor: '#000000',
                         borderWidth: 1.5,
                         borderRadius: 6
                     }]
@@ -204,7 +204,7 @@ const AgriCharts = {
                         backgroundColor: [
                             '#87CEEB',
                             '#4B5320',
-                            '#142B4A',
+                            '#000000',
                             '#62B3D8',
                             '#EBE3D3'
                         ],
