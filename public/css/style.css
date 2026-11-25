@@ -1811,3 +1811,29 @@ img:not([src$="logo.svg"]) { display: none !important; }
 @media (max-width: 768px) {
     .market-directory-photo { min-height: 200px; }
 }
+
+.nav-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--navy);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.nav-menu-toggle:hover { border-color: var(--sky-border); background: var(--sky-soft); }
+@media (max-width: 768px) {
+    .public-home-navbar .nav-container { flex-wrap: wrap; }
+    .public-home-navbar .nav-menu-toggle { display: inline-flex; margin-left: auto; }
+    .public-home-navbar #publicNav { display: none; width: 100%; }
+    .public-home-navbar #publicNav.is-open { display: block; }
+    .public-home-navbar .nav-menu { flex-direction: column; align-items: stretch; gap: 4px; padding: 10px 0 4px; }
+    .public-home-navbar .nav-menu li { width: 100%; }
+    .public-home-navbar .nav-menu .btn { width: 100%; }
+}
