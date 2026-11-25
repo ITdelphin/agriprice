@@ -138,6 +138,15 @@
             }
         }
 
+        function marketImage(name) {
+            const value = String(name || '').toLowerCase();
+            if (value.includes('gisenyi')) return 'assets/images/markets/gisenyi.jpg';
+            if (value.includes('rubavu')) return 'assets/images/markets/rubavu.jpg';
+            if (value.includes('mahoko')) return 'assets/images/markets/mahoko.jpg';
+            if (value.includes('nyabugogo')) return 'assets/images/markets/nyabugogo.jpg';
+            return 'assets/images/kigali-market.jpg';
+        }
+
         function renderMarkets(list) {
             const container = document.getElementById('marketsListContainer');
             if (!list || list.length === 0) {
@@ -148,6 +157,9 @@
             container.innerHTML = list.map(m => {
                 return `
                 <article class="market-directory-card">
+                    <div class="market-directory-photo">
+                        <img src="${marketImage(m.marketName)}" alt="${escapeHtml(m.marketName)} market" loading="lazy">
+                    </div>
                     <div class="market-directory-body">
                         <div class="market-directory-head">
                             <h3>${escapeHtml(m.marketName)}</h3>
