@@ -438,7 +438,8 @@
             if (v.includes('rubavu')) return 'assets/images/markets/rubavu.jpg';
             if (v.includes('mahoko')) return 'assets/images/markets/mahoko.jpg';
             if (v.includes('nyabugogo')) return 'assets/images/markets/nyabugogo.jpg';
-            return 'assets/images/kigali-market.jpg';
+            if (v.includes('kigali')) return 'assets/images/kigali-market.jpg';
+            return 'assets/images/hero-background.jpg';
         }
 
         document.addEventListener('DOMContentLoaded', () => {

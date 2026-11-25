@@ -6,6 +6,18 @@
     const state = { products: [], filtered: [], page: 1, isAgent: false, currentUser: null, loading: false };
     const byId = id => document.getElementById(id);
 
+    function productImage(name, category) {
+        const value = `${name || ''} ${category || ''}`.toLowerCase();
+        if (value.includes('sweet') && value.includes('potato')) return 'assets/images/catalog/sweet-potatoes.jpg';
+        if (value.includes('potato') || value.includes('irish')) return 'assets/images/catalog/potatoes.jpg';
+        if (value.includes('bean') || value.includes('pea') || value.includes('legume')) return 'assets/images/catalog/beans.jpg';
+        if (value.includes('cassava') || value.includes('manioc')) return 'assets/images/catalog/cassava.jpg';
+        if (value.includes('onion')) return 'assets/images/catalog/onions.jpg';
+        if (value.includes('banana') || value.includes('plantain')) return 'assets/images/catalog/bananas.jpg';
+        if (value.includes('maize') || value.includes('corn') || value.includes('cereal') || value.includes('grain')) return 'assets/images/catalog/maize.jpg';
+        return 'assets/images/catalog/product-placeholder.svg';
+    }
+
     document.addEventListener('DOMContentLoaded', init);
 
     async function init() {
@@ -18,6 +30,12 @@
             state.currentUser = auth && auth.authenticated ? auth : null;
         } catch (_) {
             state.isAgent = false;
+        }
+        const addProductButton = byId('btnOpenAddProduct');
+        if (addProductButton) addProductButton.style.display = state.isAgent ? 'inline-flex' : 'none';
+        if (!state.isAgent) {
+            const modal = byId('productModal');
+            if (modal) modal.remove();
         }
         await loadProducts();
     }
@@ -94,7 +112,7 @@
         byId('catalogHeroCount').textContent = `${state.products.length} products in the directory`;
         byId('catalogResultNote').textContent = total ? `Showing ${startIndex + 1}–${Math.min(startIndex + pageSize, total)} of ${total}` : '';
         if (!visible.length) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px;"><strong>${state.products.length ? 'No products found' : 'No products yet'}</strong><br><span class="text-muted">${state.products.length ? 'Try another name or clear the filters.' : 'Once an agent adds a product, it will appear here.'}</span>${state.products.length ? '<br><button type="button" id="emptyClearFilters" class="btn btn-sm btn-secondary" style="margin-top: 12px;">Clear filters</button>' : ''}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px;"><strong>${state.products.length ? 'No products found' : 'No products yet'}</strong><br><span class="text-muted">${state.products.length ? 'Try another name or clear the filters.' : 'Once an agent adds a product, it will appear here.'}</span>${state.products.length ? '<br><button type="button" id="emptyClearFilters" class="btn btn-sm btn-secondary" style="margin-top: 12px;">Clear filters</button>' : ''}</td></tr>`;
             byId('productPaginationInfo').textContent = 'Nothing to show right now';
             renderPageControls(pages);
             const clear = byId('emptyClearFilters');
@@ -115,6 +133,7 @@
             : `<a class="btn btn-sm btn-primary" href="prices.html?productId=${encodeURIComponent(id)}">See prices</a>`;
         return `<tr>
             <td>${String(product.productId || rowNumber).padStart(3, '0')}</td>
+            <td><div class="catalog-product-photo"><img src="${productImage(name, product.category)}" alt="${escapeHtml(name)}" loading="lazy"></div></td>
             <td><strong>${escapeHtml(name)}</strong><br><span class="text-muted">ID ${String(id).padStart(4, '0')}</span></td>
             <td><span class="badge badge-info">${escapeHtml(product.category || 'Uncategorized')}</span></td>
             <td>${escapeHtml(product.defaultUnit || '—')}</td>
@@ -224,6 +243,7 @@
     }
 
     function showModal() {
+        if (!state.isAgent) return;
         byId('productModal').hidden = false;
         document.body.classList.add('catalog-modal-open');
         window.setTimeout(() => byId('modalProductName').focus(), 0);
@@ -240,6 +260,11 @@
         event.preventDefault();
         const form = event.currentTarget;
         const message = byId('productFormMessage');
+        if (!state.isAgent) {
+            message.textContent = 'Only signed-in agents can add products.';
+            message.className = 'catalog-form-message is-error';
+            return;
+        }
         if (!form.reportValidity()) return;
         const payload = new FormData();
         payload.append('action', byId('modalAction').value);

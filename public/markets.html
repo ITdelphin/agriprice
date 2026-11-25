@@ -144,7 +144,8 @@
             if (value.includes('rubavu')) return 'assets/images/markets/rubavu.jpg';
             if (value.includes('mahoko')) return 'assets/images/markets/mahoko.jpg';
             if (value.includes('nyabugogo')) return 'assets/images/markets/nyabugogo.jpg';
-            return 'assets/images/kigali-market.jpg';
+            if (value.includes('kigali')) return 'assets/images/kigali-market.jpg';
+            return 'assets/images/hero-background.jpg';
         }
 
         function renderMarkets(list) {
