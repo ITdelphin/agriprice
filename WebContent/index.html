@@ -6,12 +6,15 @@
     <meta name="theme-color" content="#142B4A">
     <meta name="description" content="AgriPrice Rwanda shares clear daily produce prices from Rwandan markets so farmers, traders, and buyers can plan with confidence.">
     <title>AgriPrice Rwanda | Agricultural Market Prices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="css/style.css">
     <style>
         body.public-home { background: var(--beige); color: var(--navy); }
         body.public-home img:not([src$="logo.svg"]) { display: block !important; }
-        .public-home h1, .public-home h2, .public-home h3 { font-family: inherit; }
+        .public-home h1, .public-home h2, .public-home h3 { font-family: "Manrope", "DM Sans", sans-serif; }
 
         .home2-header.public-header { background: var(--white); border-bottom: 1px solid var(--border-color); }
         .home2-nav-wrap.public-nav-wrap { max-width: 1180px; min-height: 70px; padding: 0 24px; }
@@ -225,7 +228,7 @@
             </div>
         </div>
 
-        <section class="home2-section" id="about" aria-labelledby="home2SummaryTitle">
+        <section class="home2-section" aria-labelledby="home2SummaryTitle">
             <div class="home2-section-heading">
                 <span class="home2-kicker">A quick guide</span>
                 <h2 id="home2SummaryTitle">A clear picture of today's market.</h2>
@@ -375,7 +378,6 @@
     </footer>
 
     <script src="js/api.js"></script>
-    <script src="js/site-shell.js"></script>
     <script src="js/app.js"></script>
     <script>
         let homePriceReports = [];

@@ -8,14 +8,14 @@
 <body class="xml-export-page" data-app-shell="off">
     <header class="navbar"><div class="nav-container"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="brand-text"><h1>AgriPrice Rwanda</h1><span>Market intelligence</span></span></a><nav class="page-utility-nav" aria-label="Workspace links"><a href="dashboard.html">Workspace</a><a href="prices.html">Price reports</a><a href="markets.html">Markets</a></nav></div></header>
     <main class="container">
-        <div class="page-heading export-page-heading"><div><span class="page-kicker">Share the bulletin</span><h2>Take the Daily Price Bulletin with you.</h2><p class="text-muted">Check today’s bulletin, view the data, or share it another way.</p></div><button type="button" class="btn btn-primary" id="downloadXml">Download XML</button></div>
+        <div class="page-heading export-page-heading"><div><span class="page-kicker">Share the bulletin</span><h2>Take the bulletin with you.</h2><p class="text-muted">Check today’s bulletin, view the data, or share it another way.</p></div><button type="button" class="btn btn-primary" id="downloadXml">Download XML</button></div>
         <div class="grid-2">
             <section class="card"><h3 class="card-title">Bulletin formats</h3><p class="text-muted" style="margin:8px 0 18px">The easy-to-read bulletin opens first. You can also view the data file if you need it.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-outline" target="_blank" rel="noopener" href="export/prices">Easy-to-read bulletin</a><a class="btn btn-secondary" href="export/prices?format=grouped" target="_blank" rel="noopener">Grouped by market</a><a class="btn btn-secondary" href="export/prices?format=sms" target="_blank" rel="noopener">Text for SMS</a><a class="btn btn-secondary" href="export/prices?format=xpath">Try sample queries</a><button class="btn btn-outline" type="button" id="validateXml">Check bulletin format</button></div><p id="exportStatus" class="chart-state" role="status" style="margin-top:16px"></p></section>
             <section class="card"><div class="card-header"><h3 class="card-title">Bulletin data</h3><button class="btn btn-sm btn-secondary" type="button" id="refreshXml">Refresh</button></div><pre id="xmlOutput" style="max-height:420px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--white);border:1px solid var(--border-color);border-radius:10px;padding:16px;color:var(--navy);font-size:.82rem">Loading today’s bulletin…</pre></section>
         </div>
     </main>
     <footer class="footer"><div class="container"><p>&copy; 2026 AgriPrice Rwanda &middot; Market data for Rubavu and Gisenyi.</p></div></footer>
-    <script src="js/api.js"></script><script src="js/site-shell.js"></script><script src="js/app.js"></script><script src="js/shell.js"></script>
+    <script src="js/api.js"></script><script src="js/app.js"></script><script src="js/shell.js"></script>
     <script>
         const xmlOutput = document.getElementById('xmlOutput');
         const exportStatus = document.getElementById('exportStatus');
