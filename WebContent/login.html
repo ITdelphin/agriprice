@@ -4,13 +4,39 @@
     <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#142B4A">
     <meta name="description" content="Sign in to the AgriPrice Rwanda agent workspace to submit and manage agricultural market price reports.">
     <title>Agent sign in | AgriPrice Rwanda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .login-main { display: block; width: min(480px, calc(100% - 32px)); margin: 48px auto 36px; padding: 0; overflow: hidden; border: 1px solid var(--border-color); border-radius: 18px; background: var(--white); box-shadow: 0 14px 38px rgba(20,43,74,.10); }
+        .login-panel { width: 100%; max-width: none; margin: 0; padding: 38px 38px 32px; align-self: auto; }
+        .login-panel-heading { margin-bottom: 26px; }
+        .login-lock-mark { width: 46px; height: 46px; margin-bottom: 18px; border-radius: 14px; background: var(--navy); box-shadow: 0 6px 16px rgba(20,43,74,.18); }
+        .login-lock-mark span { width: 16px; height: 13px; border: 2px solid var(--white); border-radius: 3px; }
+        .login-panel-heading .section-kicker { color: var(--navy); font-size: 10px; letter-spacing: 1.4px; }
+        .login-panel-heading h1 { margin: 8px 0 6px; color: var(--navy); font-size: 30px; letter-spacing: -.8px; }
+        .login-panel-heading p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+        .login-form { gap: 17px; }
+        .login-field label { color: var(--navy); }
+        .login-field input { min-height: 48px; border-color: var(--border-color); border-radius: 9px; }
+        .login-field input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(20,43,74,.10); }
+        .login-submit { width: 100%; min-height: 48px; margin-top: 4px; border: 0; border-radius: 9px; background: var(--navy); color: var(--white); font-size: 14px; font-weight: 700; }
+        .login-submit:hover { background: var(--army-green); }
+        .login-security-note { margin-top: 14px; color: var(--muted); font-size: 11px; text-align: center; }
+        .login-backlink { margin: 20px 0 0; padding-top: 18px; border-top: 1px solid var(--border-color); color: var(--muted); font-size: 12px; text-align: center; }
+        .login-backlink a { color: var(--navy); font-weight: 700; }
+        .login-story { display: none !important; }
+        .login-footer { max-width: 480px; margin: 0 auto 28px; }
+        @media (max-width: 560px) {
+            .login-main { width: calc(100% - 24px); margin: 24px auto; border-radius: 14px; }
+            .login-panel { padding: 28px 22px 26px; }
+            .login-panel-heading h1 { font-size: 26px; }
+        }
+    </style>
 </head>
 <body class="public-home login-page">
     <header class="public-header">
@@ -56,18 +82,6 @@
 
             <p class="login-backlink">Looking for prices? <a href="prices.html">Browse the market reports</a></p>
         </section>
-
-        <aside class="login-story" aria-label="About the agent workspace">
-            <div class="login-story-photo" role="img" aria-label="Agricultural tea fields in Rwanda"></div>
-            <div class="login-story-overlay"></div>
-            <div class="login-story-content">
-                <span class="login-story-label"><span></span> CONNECTED LOCAL MARKETS</span>
-                <h2>Good information<br>moves markets forward.</h2>
-                <p>Help farmers, buyers and traders make informed decisions by sharing timely, accurate market reports.</p>
-                <div class="login-story-links"><a href="submit-price.html">Submit a price report <span>→</span></a><a href="trends.html">Explore market trends <span>→</span></a></div>
-            </div>
-            <div class="login-story-credit">Tea hills, Western Rwanda · <a href="https://commons.wikimedia.org/wiki/File:Tea_Hills_and_Blue_Skies.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons, CC BY-SA 4.0</a></div>
-        </aside>
     </main>
 
     <footer class="login-footer"><span>© 2026 AgriPrice Rwanda</span><a href="index.html">Public market information</a></footer>

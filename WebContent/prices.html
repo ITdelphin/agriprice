@@ -4,7 +4,7 @@
     <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#142B4A">
     <title>Market Prices — AgriPrice Rwanda</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -46,12 +46,7 @@
                 <h2>Daily Agricultural Market Prices</h2>
                 <p>Live database prices for Rubavu and regional trading hubs in Rwanda.</p>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <span id="autoRefreshIndicator" class="badge badge-success">&#9679; Auto-Refreshing (12s)</span>
-                <span id="lastUpdatedTimestamp" style="font-size: 0.85rem;"></span>
-            </div>
-            <small class="price-hero-credit">Kigali Market · <a href="https://commons.wikimedia.org/wiki/File:Kigali_Market_(02).jpg" target="_blank" rel="noopener noreferrer">Zenith4237, CC BY-SA 4.0</a></small>
-        </section>
+</section>
 
         <!-- Filter Bar (AJAX & JSON live filtering without page reload) -->
         <div class="filter-bar">
@@ -241,7 +236,6 @@
                 filteredPriceReports = Array.isArray(reports) ? reports : [];
                 pricePage = 1;
                 document.getElementById('resultCount').textContent = filteredPriceReports.length;
-                document.getElementById('lastUpdatedTimestamp').textContent = 'Updated: ' + new Date().toLocaleTimeString();
 
                 if (!filteredPriceReports.length) {
                     tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">No price reports matching filter criteria.</td></tr>';
