@@ -30,7 +30,7 @@ class WatchlistView {
                 this.alertBanner.style.display = 'block';
                 this.alertBanner.innerHTML = `
                     <div class="alert-box alert-success">
-                        <strong>Target Price Reached!</strong> ${alertCount} watched commodity price(s) in Rubavu/Gisenyi markets have met or fallen below your target buy price!
+                        <strong>Good news —</strong> ${alertCount} prices you’re watching have reached your target or gone lower.
                     </div>
                 `;
             } else {
@@ -42,8 +42,8 @@ class WatchlistView {
         if (!items || items.length === 0) {
             this.container.innerHTML = `
                 <div class="empty-card">
-                    <p>No agricultural commodities on your watchlist yet.</p>
-                    <p class="text-muted">${this.canManage ? 'Add products and target prices to track them here.' : 'This watchlist is view-only for visitors. A market agent can add and manage target prices.'}</p>
+                    <p>You haven’t added any products to watch yet.</p>
+                    <p class="text-muted">${this.canManage ? 'Add products and target prices to track them here.' : 'You can view this watchlist. A market agent can add and manage target prices.'}</p>
                 </div>
             `;
             return;
@@ -60,7 +60,7 @@ class WatchlistView {
                         <th>Current Price</th>
                         <th>Target Price</th>
                         <th>Status</th>
-                    <th>${this.canManage ? 'Agent actions' : 'Access'}</th>
+                    <th>${this.canManage ? 'Actions' : 'Access'}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,10 +69,10 @@ class WatchlistView {
         items.forEach(item => {
             const isAlert = item.targetReached;
             const statusClass = isAlert ? 'badge-success' : 'badge-neutral';
-            const statusText = isAlert ? 'TARGET REACHED' : 'MONITORING';
+            const statusText = isAlert ? 'Target reached' : 'Watching';
             const currentPriceText = item.currentPrice > 0 
                 ? `${item.currentPrice.toLocaleString()} RWF / ${item.defaultUnit || 'kg'}`
-                : 'Awaiting submission';
+                : 'No price reported yet';
 
             html += `
                 <tr class="${isAlert ? 'row-highlight-success' : ''}">
@@ -86,7 +86,7 @@ class WatchlistView {
                     <td><span class="badge ${statusClass}">${statusText}</span></td>
                     <td>${this.canManage
                         ? `<div class="watchlist-agent-actions"><button class="btn btn-sm btn-outline btn-save-target" data-id="${item.watchlistId}">Save</button><button class="btn btn-sm btn-danger btn-remove-item" data-id="${item.watchlistId}">Delete</button></div>`
-                        : '<span class="watchlist-view-only">View only</span>'}</td>
+                        : '<span class="watchlist-view-only">Viewing only</span>'}</td>
                 </tr>
             `;
         });

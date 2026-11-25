@@ -16,7 +16,7 @@
                 <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
                 <div class="brand-text">
                     <h1>AgriPrice Rwanda</h1>
-                    <span>Rubavu &amp; Gisenyi Market System</span>
+                    <span>Daily prices from Rubavu and Gisenyi</span>
                 </div>
             </a>
             <nav>
@@ -41,12 +41,12 @@
 
         <div class="watchlist-page-heading">
             <div>
-                <h2 id="watchlistTitle">My Agricultural Price Watchlist</h2>
-                <p class="text-muted" id="watchlistDescription">View saved product targets and see when a reported market price reaches them.</p>
+                <h2 id="watchlistTitle">My price watchlist</h2>
+                <p class="text-muted" id="watchlistDescription">See the products you’re watching and when prices reach your target.</p>
             </div>
             <div class="watchlist-heading-actions">
-                <a id="watchlistAgentSignIn" class="btn btn-secondary" href="login.html">Agent sign in to manage</a>
-                <button id="btnQuickAddWatchlist" class="btn btn-primary" type="button" hidden>+ Add New Watch Target</button>
+                <a id="watchlistAgentSignIn" class="btn btn-secondary" href="login.html">Sign in to manage your watchlist</a>
+                <button id="btnQuickAddWatchlist" class="btn btn-primary" type="button" hidden>+ Add a product to watch</button>
             </div>
         </div>
 
@@ -56,11 +56,11 @@
         <!-- Watchlist Table Container (Rendered by WatchlistView) -->
         <div class="card" style="border-top: 4px solid var(--primary);">
             <div class="card-header">
-                <h3 class="card-title">&#128065; Monitored Commodities &amp; Buy Thresholds</h3>
+                <h3 class="card-title">&#128065; Products you’re watching</h3>
                 <span class="badge badge-info" id="watchlistAccessBadge">Visitor view only</span>
             </div>
             <div id="watchlistContainer" class="table-responsive">
-                <p style="text-align: center; padding: 30px;">Loading your saved price targets...</p>
+                <p style="text-align: center; padding: 30px;">Loading the prices you’re watching…</p>
             </div>
         </div>
 
@@ -70,27 +70,27 @@
     <div id="quickAddModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
         <div class="card" style="width: 440px; max-width: 90%; background: white; margin: auto;">
             <div class="card-header">
-                <h3 class="card-title">Add Commodity to Watchlist</h3>
+                <h3 class="card-title">Add a product to your watchlist</h3>
                 <button id="btnCloseQuickAdd" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
             </div>
             <form id="quickAddForm">
                 <div class="form-group">
-                    <label class="form-label">Agricultural Product:</label>
+                    <label class="form-label">Product:</label>
                     <select id="quickAddProduct" class="form-control" required></select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Market (Optional):</label>
+                    <label class="form-label">Market (optional):</label>
                     <select id="quickAddMarket" class="form-control">
-                        <option value="">-- All Markets --</option>
+                        <option value="">Any market</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Target Buy Price (RWF / unit):</label>
+                    <label class="form-label">Price you’re watching for (RWF per unit):</label>
                     <input type="number" id="quickAddTarget" class="form-control" min="1" step="10" placeholder="e.g. 480" required>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
                     <button type="button" id="btnCancelQuickAdd" class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Target</button>
+                    <button type="submit" class="btn btn-primary">Save price target</button>
                 </div>
             </form>
         </div>
@@ -126,8 +126,8 @@
             document.getElementById('watchlistAgentSignIn').hidden = canManage;
             document.getElementById('watchlistAccessBadge').textContent = canManage ? 'Agent managed' : 'Visitor view only';
             if (canManage) {
-                document.getElementById('watchlistTitle').textContent = 'Agent Watchlist Management';
-                document.getElementById('watchlistDescription').textContent = 'Update target prices and remove items from this browser’s watchlist.';
+                document.getElementById('watchlistTitle').textContent = 'My watchlist';
+                document.getElementById('watchlistDescription').textContent = 'Change the prices you’re watching or remove a product.';
             }
             const controller = new WatchlistController(model, view);
 
@@ -183,7 +183,7 @@
                 } else {
                     const notice = document.getElementById('watchlistAlertBanner');
                     notice.className = 'watchlist-readonly-notice';
-                    notice.textContent = 'This watchlist is view-only for visitors. Sign in as a market agent to add or change target prices.';
+                    notice.textContent = 'You can view this watchlist. Sign in as an agent to add products or change target prices.';
                     notice.style.display = 'block';
                 }
             }

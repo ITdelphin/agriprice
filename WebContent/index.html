@@ -230,7 +230,7 @@
 
         <section class="home2-section" aria-labelledby="home2SummaryTitle">
             <div class="home2-section-heading">
-                <span class="home2-kicker">AgriPrice in brief</span>
+                <span class="home2-kicker">A quick guide</span>
                 <h2 id="home2SummaryTitle">A clear picture of today's market.</h2>
                 <p>One simple place to see what is happening in local agricultural markets, without the noise.</p>
             </div>
@@ -282,7 +282,7 @@
                         <img class="home2-step-img home2-img" src="assets/images/catalog/beans.jpg" alt="Dry beans">
                         <div class="home2-step-body">
                             <span class="home2-step-number">2</span>
-                            <h3>Reports are organised</h3>
+                            <h3>Prices are sorted clearly</h3>
                             <p>Each report is grouped by product, market, and date so the information stays accurate and easy to read.</p>
                         </div>
                     </article>
@@ -303,7 +303,7 @@
                 <div class="home2-section-heading">
                     <span class="home2-kicker">Market snapshot</span>
                     <h2 id="home2SnapshotTitle">Latest prices at a glance.</h2>
-                    <p>A short summary of the newest reports submitted by market agents.</p>
+                    <p>A quick look at the newest prices shared by local agents.</p>
                 </div>
                 <div class="home2-grid-3" id="homePrices">
                     <div class="home2-loading"><span class="home2-spinner"></span> Loading the latest prices…</div>
@@ -314,7 +314,7 @@
 
         <section class="home2-section" aria-labelledby="home2ProductsTitle">
             <div class="home2-section-heading">
-                <span class="home2-kicker">Key commodities</span>
+                <span class="home2-kicker">Popular products</span>
                 <h2 id="home2ProductsTitle">Products people follow most.</h2>
                 <p>Open any commodity to see its latest reports and price history.</p>
                 <a class="home2-card-link" href="products.html">Open product catalogue <span aria-hidden="true">→</span></a>
@@ -338,7 +338,7 @@
         <div class="home2-cta-wrap">
             <section class="home2-cta" aria-labelledby="home2CtaTitle">
                 <div>
-                    <h2 id="home2CtaTitle">Keep target prices close.</h2>
+                    <h2 id="home2CtaTitle">Track the prices that matter to you.</h2>
                     <p>Save the products you follow and set a target price so your next buying or selling decision is ready when the market moves.</p>
                 </div>
                 <a href="watchlist.html" class="home2-btn">Open watchlist <span aria-hidden="true">→</span></a>
@@ -371,7 +371,7 @@
             </div>
         </div>
         <div class="home2-footer-bottom">
-            <span>© 2026 AgriPrice Rwanda — Advanced Web &amp; Internet Programming FAT</span>
+            <span>© 2026 AgriPrice Rwanda — Built for Rwandan farmers and traders</span>
             <span>Market image: <a href="https://commons.wikimedia.org/wiki/File:Kigali_Market_(02).jpg" target="_blank" rel="noopener noreferrer">Zenith4237, CC BY-SA 4.0</a></span>
             <span>For price reports, contact your local market coordinator.</span>
         </div>
@@ -466,7 +466,7 @@
             try {
                 homePriceReports = await AgriAPI.getPrices();
                 if (!homePriceReports.length) {
-                    container.innerHTML = '<div class="home2-empty"><strong>No price reports yet</strong>Check back when local market agents submit their next update.</div>';
+                    container.innerHTML = '<div class="home2-empty"><strong>No prices shared yet</strong>Check back when local market agents submit their next update.</div>';
                     return;
                 }
                 container.innerHTML = homePriceReports.slice(0, 3).map(r => `<article class="home2-price-card">
@@ -486,7 +486,7 @@
             try {
                 const products = await AgriAPI.getProducts();
                 if (!products.length) {
-                    container.innerHTML = '<div class="home2-empty"><strong>No products listed yet</strong>The product catalogue will appear here once it is available.</div>';
+                    container.innerHTML = '<div class="home2-empty"><strong>No products have been added yet</strong>The product catalogue will appear here once it is available.</div>';
                     return;
                 }
                 container.innerHTML = `<div class="home2-product-panel">
@@ -511,7 +511,7 @@
                     </div>
                 </div>`;
             } catch (_) {
-                container.innerHTML = '<div class="home2-empty"><strong>Products could not be loaded</strong>Open the <a href="products.html">product catalogue</a> to try again.</div>';
+                container.innerHTML = '<div class="home2-empty"><strong>We couldn’t load products right now</strong>Open the <a href="products.html">product catalogue</a> to try again.</div>';
             }
         }
 
@@ -520,7 +520,7 @@
             try {
                 const markets = await AgriAPI.getMarkets();
                 if (!markets.length) {
-                    container.innerHTML = '<div class="home2-empty"><strong>No markets listed yet</strong>Market locations will appear here once they are available.</div>';
+                    container.innerHTML = '<div class="home2-empty"><strong>No markets have been added yet</strong>Market locations will appear here once they are available.</div>';
                     return;
                 }
                 container.innerHTML = markets.slice(0, 3).map(m => `<a class="home2-market-card" href="prices.html?marketId=${encodeURIComponent(m.marketId)}">
@@ -529,7 +529,7 @@
                     <span aria-hidden="true">↗</span>
                 </a>`).join('');
             } catch (_) {
-                container.innerHTML = '<div class="home2-empty"><strong>Markets could not be loaded</strong>Open the <a href="markets.html">market directory</a> to try again.</div>';
+                container.innerHTML = '<div class="home2-empty"><strong>We couldn’t load markets right now</strong>Open the <a href="markets.html">market directory</a> to try again.</div>';
             }
         }
     </script>

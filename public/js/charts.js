@@ -26,7 +26,7 @@ const AgriCharts = {
             if (!data.length) {
                 if (this.trendChartInstance) this.trendChartInstance.destroy();
                 this.trendChartInstance = null;
-                this.setChartState(statusId, 'No price history is available for this selection.');
+                this.setChartState(statusId, 'No past prices are available for this choice.');
                 return;
             }
             const labels = data.map(d => d.date);
@@ -44,7 +44,7 @@ const AgriCharts = {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Average Price (RWF)',
+                            label: 'Average price',
                             data: avgPrices,
                             borderColor: '#4B5320',
                             backgroundColor: 'rgba(75, 83, 32, 0.12)',
@@ -55,7 +55,7 @@ const AgriCharts = {
                             pointBackgroundColor: '#142B4A'
                         },
                         {
-                            label: 'Min Price (RWF)',
+                            label: 'Lowest price',
                             data: minPrices,
                             borderColor: '#87CEEB',
                             borderDash: [5, 5],
@@ -64,7 +64,7 @@ const AgriCharts = {
                             tension: 0.2
                         },
                         {
-                            label: 'Max Price (RWF)',
+                            label: 'Highest price',
                             data: maxPrices,
                             borderColor: '#DC2626',
                             borderDash: [3, 3],
@@ -93,15 +93,15 @@ const AgriCharts = {
                             title: { display: true, text: 'Price (RWF / unit)' }
                         },
                         x: {
-                            title: { display: true, text: 'Survey Date' }
+                            title: { display: true, text: 'Date reported' }
                         }
                     }
                 }
             });
-            this.setChartState(statusId, `${data.length} reporting dates shown.`);
+            this.setChartState(statusId, `Prices from ${data.length} market days.`);
         } catch (e) {
             console.error('Failed to load Trend Chart:', e);
-            this.setChartState(statusId, 'Price history could not be loaded.', 'error');
+            this.setChartState(statusId, 'We couldn’t load past prices.', 'error');
         }
     },
 
@@ -118,7 +118,7 @@ const AgriCharts = {
             if (!data.length) {
                 if (this.comparisonChartInstance) this.comparisonChartInstance.destroy();
                 this.comparisonChartInstance = null;
-                this.setChartState(statusId, 'No market reports are available for this product and date.');
+                this.setChartState(statusId, 'No prices were reported for this product on that date.');
                 return;
             }
             const labels = data.map(d => d.marketName);
@@ -168,7 +168,7 @@ const AgriCharts = {
             this.setChartState(statusId, `${data.length} market${data.length === 1 ? '' : 's'} compared.`);
         } catch (e) {
             console.error('Failed to load Comparison Chart:', e);
-            this.setChartState(statusId, 'Market comparison could not be loaded.', 'error');
+            this.setChartState(statusId, 'We couldn’t load market prices.', 'error');
         }
     },
 
@@ -177,7 +177,7 @@ const AgriCharts = {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        this.setChartState(statusId, 'Loading report distribution…');
+        this.setChartState(statusId, 'Loading prices by market…');
 
         try {
             const data = await AgriAPI.getMarketDistribution();
@@ -185,7 +185,7 @@ const AgriCharts = {
             if (!data.length) {
                 if (this.distributionChartInstance) this.distributionChartInstance.destroy();
                 this.distributionChartInstance = null;
-                this.setChartState(statusId, 'No market reports are available yet.');
+                this.setChartState(statusId, 'No prices have been reported yet.');
                 return;
             }
             const labels = data.map(d => d.marketName);
@@ -222,7 +222,7 @@ const AgriCharts = {
             this.setChartState(statusId, `${data.length} markets represented.`);
         } catch (e) {
             console.error('Failed to load Distribution Chart:', e);
-            this.setChartState(statusId, 'Report distribution could not be loaded.', 'error');
+            this.setChartState(statusId, 'We couldn’t load prices by market.', 'error');
         }
     },
 

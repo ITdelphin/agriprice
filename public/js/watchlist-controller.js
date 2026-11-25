@@ -48,11 +48,11 @@ class WatchlistController {
             return;
         }
         if (!productId || isNaN(productId)) {
-            this.view.showToast('Invalid product selected.', 'error');
+            this.view.showToast('Choose a product first.', 'error');
             return;
         }
         if (!targetPrice || isNaN(targetPrice) || targetPrice <= 0) {
-            this.view.showToast('Target price must be greater than 0 RWF.', 'error');
+            this.view.showToast('Enter a target price above 0 RWF.', 'error');
             return;
         }
 
@@ -73,20 +73,20 @@ class WatchlistController {
 
             const result = await res.json();
             if (res.ok && result.success) {
-                this.view.showToast(result.message || 'Added to watchlist successfully!');
+                this.view.showToast(result.message || 'Saved to your watchlist.');
                 await this.loadWatchlist(); // Reload updated items with joined data
             } else {
-                this.view.showToast(result.message || 'Failed to add item.', 'error');
+                this.view.showToast(result.message || 'We couldn’t add this product. Please try again.', 'error');
             }
         } catch (err) {
-            this.view.showToast('Network error while saving watchlist.', 'error');
+            this.view.showToast('We couldn’t save your watchlist. Check your connection and try again.', 'error');
             console.error(err);
         }
     }
 
     async handleUpdateTarget(watchlistId, newTargetPrice) {
         if (!this.view.canManage) {
-            this.view.showToast('Only a market agent can change target prices.', 'error');
+            this.view.showToast('Please sign in as an agent to change target prices.', 'error');
             return;
         }
         if (!newTargetPrice || isNaN(newTargetPrice) || newTargetPrice <= 0) {
@@ -113,16 +113,16 @@ class WatchlistController {
                 this.model.updateTargetPrice(watchlistId, newTargetPrice);
                 this.view.showToast('Target price updated.');
             } else {
-                this.view.showToast(result.message || 'Update failed.', 'error');
+                this.view.showToast(result.message || 'We couldn’t save your target price.', 'error');
             }
         } catch (err) {
-            this.view.showToast('Network error during update.', 'error');
+            this.view.showToast('We couldn’t update your target price. Check your connection and try again.', 'error');
         }
     }
 
     async handleRemoveItem(watchlistId) {
         if (!this.view.canManage) {
-            this.view.showToast('Only a market agent can delete watchlist items.', 'error');
+            this.view.showToast('Please sign in as an agent to remove products from your watchlist.', 'error');
             return;
         }
         try {
@@ -143,7 +143,7 @@ class WatchlistController {
                 this.model.removeItem(watchlistId);
                 this.view.showToast('Item removed from watchlist.');
             } else {
-                this.view.showToast(result.message || 'Could not delete item.', 'error');
+                this.view.showToast(result.message || 'We couldn’t remove this product. Please try again.', 'error');
             }
         } catch (err) {
             this.view.showToast('Network error removing item.', 'error');

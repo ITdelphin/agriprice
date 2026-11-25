@@ -9,93 +9,27 @@
     document.addEventListener('DOMContentLoaded', init);
 
     async function init() {
-        byId('catalogDate').textContent = new Intl.DateTimeFormat('en-RW', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date());
-        bindNavigation();
+        document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });
         bindFilters();
         bindModal();
         try {
             const auth = await AgriAPI.checkAuthStatus();
             state.isAgent = Boolean(auth && auth.authenticated);
             state.currentUser = auth && auth.authenticated ? auth : null;
-            renderProfile();
         } catch (_) {
             state.isAgent = false;
-            renderProfile();
         }
         await loadProducts();
     }
 
-    function bindNavigation() {
-        document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });
-
-        const notificationButton = byId('catalogNotifications');
-        const notificationPanel = byId('catalogNotice');
-        const userButton = byId('catalogUserMenuButton');
-        const userPanel = byId('catalogUserMenu');
-        notificationButton.addEventListener('click', () => togglePopover(notificationButton, notificationPanel));
-        userButton.addEventListener('click', () => togglePopover(userButton, userPanel));
-        document.addEventListener('click', event => {
-            if (!event.target.closest('.catalog-menu-wrap')) {
-                closePopover(notificationButton, notificationPanel);
-                closePopover(userButton, userPanel);
-            }
-        });
-        byId('catalogSignOut').addEventListener('click', signInOrOut);
-        const globalSearch = byId('globalProductSearch');
-        globalSearch.addEventListener('focus', () => globalSearch.closest('.catalog-top-search').classList.add('is-open'));
-        globalSearch.closest('.catalog-top-search').addEventListener('click', event => {
-            if (window.matchMedia('(max-width: 700px)').matches) {
-                event.currentTarget.classList.add('is-open');
-                globalSearch.focus();
-            }
-        });
-    }
-
-    function togglePopover(button, panel) {
-        const show = panel.hidden;
-        panel.hidden = !show;
-        button.setAttribute('aria-expanded', String(show));
-    }
-    function closePopover(button, panel) { panel.hidden = true; button.setAttribute('aria-expanded', 'false'); }
-
-    async function signInOrOut() {
-        if (state.currentUser) await signOut();
-        else location.href = 'login.html';
-    }
-
-    async function signOut() {
-        try { await AgriAPI.logout(); } catch (_) { /* Return to sign-in even if the session has expired. */ }
-        location.href = 'login.html';
-    }
-
-    function renderProfile() {
-        const name = state.currentUser ? (state.currentUser.fullName || 'Market agent') : 'Guest visitor';
-        const role = state.currentUser ? 'Market agent' : 'Public access';
-        const initial = name.trim().charAt(0).toUpperCase() || 'G';
-        byId('topUserName').textContent = name;
-        byId('topUserRole').textContent = role;
-        byId('topAvatar').textContent = initial;
-        byId('catalogSignOut').textContent = state.currentUser ? 'Sign out' : 'Agent sign in';
-        byId('catalogDashboardLink').hidden = !state.currentUser;
-        byId('btnOpenAddProduct').hidden = false;
-        byId('catalogNotifications').setAttribute('aria-label', state.currentUser ? 'Catalog notifications' : 'Sign in to receive catalog notifications');
-    }
 
     function bindFilters() {
         byId('productFilterForm').addEventListener('submit', event => { event.preventDefault(); applyFilters(); });
         byId('productSearchInput').addEventListener('input', applyFilters);
         byId('productCategoryFilter').addEventListener('change', applyFilters);
         byId('productStatusFilter').addEventListener('change', applyFilters);
-        byId('globalProductSearch').addEventListener('input', event => {
-            byId('productSearchInput').value = event.target.value;
-            applyFilters();
-        });
-        byId('globalProductSearch').addEventListener('keydown', event => {
-            if (event.key === 'Enter') { event.preventDefault(); byId('productSearchInput').focus(); }
-        });
         byId('clearProductFilters').addEventListener('click', () => {
             byId('productFilterForm').reset();
-            byId('globalProductSearch').value = '';
             applyFilters();
         });
         byId('productPrevPage').addEventListener('click', () => changePage(state.page - 1));
@@ -160,8 +94,8 @@
         byId('catalogHeroCount').textContent = `${state.products.length} products in the directory`;
         byId('catalogResultNote').textContent = total ? `Showing ${startIndex + 1}–${Math.min(startIndex + pageSize, total)} of ${total}` : '';
         if (!visible.length) {
-            tbody.innerHTML = `<tr class="catalog-state-row"><td colspan="8"><div class="catalog-state catalog-empty-state"><span aria-hidden="true">—</span><strong>${state.products.length ? 'No products match these filters' : 'The product catalog is empty'}</strong><small>${state.products.length ? 'Try a different name, category or status.' : 'Products added by agents will appear here.'}</small>${state.products.length ? '<button type="button" id="emptyClearFilters">Clear filters</button>' : ''}</div></td></tr>`;
-            byId('productPaginationInfo').textContent = 'No products to show';
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px;"><strong>${state.products.length ? 'No products found' : 'No products yet'}</strong><br><span class="text-muted">${state.products.length ? 'Try another name or clear the filters.' : 'Once an agent adds a product, it will appear here.'}</span>${state.products.length ? '<br><button type="button" id="emptyClearFilters" class="btn btn-sm btn-secondary" style="margin-top: 12px;">Clear filters</button>' : ''}</td></tr>`;
+            byId('productPaginationInfo').textContent = 'Nothing to show right now';
             renderPageControls(pages);
             const clear = byId('emptyClearFilters');
             if (clear) clear.addEventListener('click', () => byId('clearProductFilters').click());
@@ -177,16 +111,16 @@
         const name = String(product.productName || 'Unnamed product');
         const status = String(product.status || 'INACTIVE').toUpperCase();
         const actionMarkup = state.isAgent
-            ? `<div class="catalog-row-actions"><button type="button" class="catalog-edit-button" data-action="edit" data-product-id="${id}">Edit</button><button type="button" class="catalog-delete-button" data-action="delete" data-product-id="${id}">Delete</button></div>`
-            : `<a class="catalog-view-button" href="prices.html?productId=${encodeURIComponent(id)}">View prices</a>`;
+            ? `<div class="row-actions"><button type="button" class="btn btn-sm btn-outline" data-action="edit" data-product-id="${id}">Edit</button><button type="button" class="btn btn-sm btn-secondary" data-action="delete" data-product-id="${id}">Delete</button></div>`
+            : `<a class="btn btn-sm btn-primary" href="prices.html?productId=${encodeURIComponent(id)}">See prices</a>`;
         return `<tr>
-            <td data-label="No."><span class="catalog-product-number">${String(product.productId || rowNumber).padStart(3, '0')}</span></td>
-            <td data-label="Product name"><strong class="catalog-product-name">${escapeHtml(name)}</strong><small class="catalog-product-id">PRD-${String(id).padStart(4, '0')}</small></td>
-            <td data-label="Category"><span class="catalog-category-pill">${escapeHtml(product.category || 'Uncategorized')}</span></td>
-            <td data-label="Standard unit"><span class="catalog-unit">${escapeHtml(product.defaultUnit || '—')}</span></td>
-            <td data-label="Description"><span class="catalog-description">${escapeHtml(product.description || 'No description provided')}</span></td>
-            <td data-label="Status"><span class="catalog-status catalog-status-${status.toLowerCase()}"><i></i>${escapeHtml(status)}</span></td>
-            <td data-label="Actions">${actionMarkup}</td>
+            <td>${String(product.productId || rowNumber).padStart(3, '0')}</td>
+            <td><strong>${escapeHtml(name)}</strong><br><span class="text-muted">ID ${String(id).padStart(4, '0')}</span></td>
+            <td><span class="badge badge-info">${escapeHtml(product.category || 'Uncategorized')}</span></td>
+            <td>${escapeHtml(product.defaultUnit || '—')}</td>
+            <td><span class="text-muted">${escapeHtml(product.description || 'No description yet')}</span></td>
+            <td><span class="badge ${status === 'ACTIVE' ? 'badge-success' : 'badge-neutral'}">${status === 'ACTIVE' ? 'Active' : 'Inactive'}</span></td>
+            <td>${actionMarkup}</td>
         </tr>`;
     }
 
@@ -213,15 +147,15 @@
     }
 
     function renderLoading() {
-        byId('productsTableBody').innerHTML = '<tr class="catalog-state-row"><td colspan="8"><div class="catalog-state"><span class="catalog-spinner" aria-hidden="true"></span><strong>Loading product catalog</strong><small>Connecting to the market database…</small></div></td></tr>';
+        byId('productsTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">Gathering products…<br><span class="text-muted">This will only take a moment.</span></td></tr>';
         byId('productsCount').textContent = 'Loading…';
-        byId('catalogHeroCount').textContent = 'Loading product catalog';
+        byId('catalogHeroCount').textContent = 'Loading products…';
     }
 
     function renderError(message) {
-        byId('productsTableBody').innerHTML = `<tr class="catalog-state-row"><td colspan="8"><div class="catalog-state catalog-error-state"><strong>Product catalog unavailable</strong><small>${escapeHtml(message)}</small><button type="button" id="retryProductLoad">Try again</button></div></td></tr>`;
-        byId('productsCount').textContent = 'Unable to load';
-        byId('catalogHeroCount').textContent = 'Catalog connection unavailable';
+        byId('productsTableBody').innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px;"><strong>Products could not load</strong><br><span class="text-muted">${escapeHtml(message)}</span><br><button type="button" id="retryProductLoad" class="btn btn-sm btn-primary" style="margin-top: 12px;">Try again</button></td></tr>`;
+        byId('productsCount').textContent = 'Temporarily unavailable';
+        byId('catalogHeroCount').textContent = 'Connection unavailable';
         byId('retryProductLoad').addEventListener('click', loadProducts);
     }
 
@@ -270,7 +204,7 @@
         byId('modalAction').value = 'create';
         byId('modalProductId').value = '0';
         byId('modalProductStatus').value = 'ACTIVE';
-        byId('modalProductTitle').textContent = 'Add New Product';
+        byId('modalProductTitle').textContent = 'Add product';
         byId('productFormMessage').textContent = '';
         showModal();
     }
@@ -284,7 +218,7 @@
         byId('modalProductUnit').value = product.defaultUnit || 'kg';
         byId('modalProductDesc').value = product.description || '';
         byId('modalProductStatus').value = product.status || 'ACTIVE';
-        byId('modalProductTitle').textContent = 'Edit Product';
+        byId('modalProductTitle').textContent = 'Edit product';
         byId('productFormMessage').textContent = '';
         showModal();
     }

@@ -5,11 +5,11 @@
 <body class="settings-page" data-app-shell="off">
     <header class="navbar"><div class="nav-container"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="brand-text"><h1>AgriPrice Rwanda</h1><span>Market intelligence</span></span></a><nav class="page-utility-nav" aria-label="Workspace links"><a href="dashboard.html">Workspace</a><a href="prices.html">Price reports</a><a href="markets.html">Markets</a></nav></div></header>
     <main class="container">
-        <div class="page-heading settings-page-heading"><div><span class="page-kicker">YOUR MARKET LENS</span><h2>Make this view yours.</h2><p class="text-muted">Choose the location and language that help you find useful prices faster.</p></div><span class="settings-illustration" aria-hidden="true">⌖</span></div>
+        <div class="page-heading settings-page-heading"><div><span class="page-kicker">Your preferences</span><h2>Make this view yours.</h2><p class="text-muted">Choose the location and language that help you find useful prices faster.</p></div><span class="settings-illustration" aria-hidden="true">⌖</span></div>
         <section class="card" style="max-width:720px">
-            <div class="form-group"><label class="form-label" for="prefMarket">Preferred market</label><select id="prefMarket" class="form-control"><option value="1">Gisenyi Central Market</option><option value="2">Rubavu Cross-Border Market</option><option value="3">Mahoko Modern Market</option></select><small class="text-muted">Used as the default market filter on the prices page.</small></div>
+            <div class="form-group"><label class="form-label" for="prefMarket">Preferred market</label><select id="prefMarket" class="form-control"><option value="1">Gisenyi Central Market</option><option value="2">Rubavu Cross-Border Market</option><option value="3">Mahoko Modern Market</option></select><small class="text-muted">We’ll show this market first on the prices page.</small></div>
             <div class="form-group"><label class="form-label" for="prefLanguage">Display language</label><select id="prefLanguage" class="form-control"><option value="EN">English</option><option value="RW">Kinyarwanda</option><option value="FR">Français</option></select></div>
-            <p id="settingsMessage" class="chart-state" role="status">Preferences are stored in a browser cookie.</p>
+            <p id="settingsMessage" class="chart-state" role="status">We’ll remember your choices on this device.</p>
             <button type="button" class="btn btn-primary" id="saveSettings">Save preferences</button>
         </section>
     </main>
@@ -24,7 +24,7 @@
                 select.innerHTML = markets.map(m => `<option value="${m.marketId}">${settingsEscape(m.marketName)}</option>`).join('');
                 if (saved && markets.some(m => String(m.marketId) === saved)) select.value = saved;
             } catch (_) {
-                const message = document.getElementById('settingsMessage'); message.textContent = 'Markets could not be loaded; your saved preference is unchanged.'; message.className = 'chart-state text-danger';
+                const message = document.getElementById('settingsMessage'); message.textContent = 'We couldn’t load markets, so your saved choice has not changed.'; message.className = 'chart-state text-danger';
             }
             document.getElementById('saveSettings').addEventListener('click', () => {
                 AgriCookies.set('preferred_market', document.getElementById('prefMarket').value);

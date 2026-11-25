@@ -5,64 +5,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#142B4A">
-    <meta name="description" content="Sign in to the AgriPrice Rwanda agent workspace to submit and manage agricultural market price reports.">
+    <meta name="description" content="Sign in to the AgriPrice Rwanda agent workspace.">
     <title>Agent sign in | AgriPrice Rwanda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .login-main { display: block; width: min(480px, calc(100% - 32px)); margin: 48px auto 36px; padding: 0; overflow: hidden; border: 1px solid var(--border-color); border-radius: 18px; background: var(--white); box-shadow: 0 14px 38px rgba(20,43,74,.10); }
-        .login-panel { width: 100%; max-width: none; margin: 0; padding: 38px 38px 32px; align-self: auto; }
-        .login-panel-heading { margin-bottom: 26px; }
-        .login-lock-mark { width: 46px; height: 46px; margin-bottom: 18px; border-radius: 14px; background: var(--navy); box-shadow: 0 6px 16px rgba(20,43,74,.18); }
-        .login-lock-mark span { width: 16px; height: 13px; border: 2px solid var(--white); border-radius: 3px; }
-        .login-panel-heading .section-kicker { color: var(--navy); font-size: 10px; letter-spacing: 1.4px; }
-        .login-panel-heading h1 { margin: 8px 0 6px; color: var(--navy); font-size: 30px; letter-spacing: -.8px; }
-        .login-panel-heading p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
-        .login-form { gap: 17px; }
-        .login-field label { color: var(--navy); }
-        .login-field input { min-height: 48px; border-color: var(--border-color); border-radius: 9px; }
-        .login-field input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(20,43,74,.10); }
-        .login-submit { width: 100%; min-height: 48px; margin-top: 4px; border: 0; border-radius: 9px; background: var(--navy); color: var(--white); font-size: 14px; font-weight: 700; }
-        .login-submit:hover { background: var(--army-green); }
-        .login-security-note { margin-top: 14px; color: var(--muted); font-size: 11px; text-align: center; }
-        .login-backlink { margin: 20px 0 0; padding-top: 18px; border-top: 1px solid var(--border-color); color: var(--muted); font-size: 12px; text-align: center; }
-        .login-backlink a { color: var(--navy); font-weight: 700; }
-        .login-story { display: none !important; }
-        .login-footer { max-width: 480px; margin: 0 auto 28px; }
-        @media (max-width: 560px) {
-            .login-main { width: calc(100% - 24px); margin: 24px auto; border-radius: 14px; }
-            .login-panel { padding: 28px 22px 26px; }
-            .login-panel-heading h1 { font-size: 26px; }
+        body.login-only { min-height: 100vh; display: block !important; background: var(--beige); }
+        body.login-only .login-main { width: min(420px, calc(100% - 32px)); min-height: 0; display: block; margin: 8vh auto; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+        .login-only-card { padding: 32px; border: 1px solid var(--border-color); border-radius: 14px; background: var(--white); box-shadow: 0 12px 30px rgba(20,43,74,.08); }
+        .login-only-card h1 { margin: 0 0 24px; color: var(--navy); font-size: 26px; letter-spacing: -.8px; }
+        body.login-only .login-form { display: grid; gap: 16px; margin: 0; }
+        body.login-only .login-field label { color: var(--navy); font-size: 12px; font-weight: 700; }
+        body.login-only .login-field input { min-height: 46px; padding: 0 12px; border: 1px solid var(--border-color); border-radius: 9px; background: var(--white); color: var(--navy); font-size: 13px; }
+        body.login-only .login-field input:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(20,43,74,.10); outline: none; }
+        body.login-only .login-password-label { display: block; }
+        body.login-only .login-password-input { position: relative; }
+        body.login-only .login-password-input input { padding-right: 64px; }
+        body.login-only .login-password-input button { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); border: 0; background: transparent; color: var(--navy); font-size: 11px; font-weight: 700; cursor: pointer; }
+        body.login-only .login-forgot-link { margin: 8px 0 0; text-align: right; }
+        body.login-only .login-forgot-link a { color: var(--navy); font-size: 11px; font-weight: 700; text-decoration: none; }
+        body.login-only .login-submit { width: 100%; min-height: 46px; margin: 4px 0 0; display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 9px; background: var(--navy); color: var(--white); font-size: 13px; font-weight: 700; cursor: pointer; }
+        body.login-only .login-submit:hover { background: var(--army-green); }
+        body.login-only .login-submit:disabled { opacity: .7; cursor: wait; }
+        body.login-only .login-feedback { margin: 0 0 16px; padding: 10px 12px; border-radius: 8px; font-size: 12px; }
+        body.login-only .login-feedback.is-error { border: 1px solid #e4b5b5; background: #fff4f4; color: #8c2020; }
+        body.login-only .login-feedback.is-success { border: 1px solid #b8d6bd; background: #f1fbf3; color: #246b36; }
+        @media (max-width: 480px) {
+            body.login-only .login-main { margin-top: 4vh; }
+            .login-only-card { padding: 24px 20px; }
         }
     </style>
 </head>
-<body class="public-home login-page">
-    <header class="public-header">
-        <div class="public-nav-wrap">
-            <a href="index.html" class="public-brand" aria-label="AgriPrice Rwanda home">
-                <span class="public-brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt="AgriPrice Rwanda logo"></span>
-                <span><strong>AgriPrice</strong><small>RWANDA</small></span>
-            </a>
-            <nav class="login-header-nav" aria-label="Main navigation">
-                <a href="prices.html">Market prices</a>
-                <a href="index.html">Back to home <span aria-hidden="true">→</span></a>
-            </nav>
-        </div>
-    </header>
-
+<body class="login-page login-only">
     <main class="login-main">
-        <section class="login-panel" aria-labelledby="loginTitle">
-            <div class="login-panel-heading">
-                <span class="login-lock-mark" aria-hidden="true"><span></span></span>
-                <span class="section-kicker">AGENT WORKSPACE</span>
-                <h1 id="loginTitle">Welcome back</h1>
-                <p>Sign in to submit market prices and manage your reports.</p>
-            </div>
-
+        <section class="login-only-card" aria-labelledby="loginTitle">
+            <h1 id="loginTitle">Agent sign in</h1>
             <div id="loginFeedback" class="login-feedback" style="display:none" role="status" aria-live="polite"></div>
-
             <form id="loginForm" class="login-form">
                 <div class="login-field">
                     <label for="agentEmail">Work email</label>
@@ -76,15 +56,10 @@
                     </div>
                     <p class="login-forgot-link"><a href="forgot-password.html">Forgot password?</a></p>
                 </div>
-                <button type="submit" id="btnLoginSubmit" class="login-submit"><span>Sign in securely</span><span aria-hidden="true">→</span></button>
-                <p class="login-security-note"><span aria-hidden="true">●</span> Your agent account is protected by a secure session.</p>
+                <button type="submit" id="btnLoginSubmit" class="login-submit"><span>Sign in to continue</span><span aria-hidden="true">→</span></button>
             </form>
-
-            <p class="login-backlink">Looking for prices? <a href="prices.html">Browse the market reports</a></p>
         </section>
     </main>
-
-    <footer class="login-footer"><span>© 2026 AgriPrice Rwanda</span><a href="index.html">Public market information</a></footer>
 
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
@@ -119,10 +94,10 @@
                         feedback.style.display = 'block';
                         window.setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
                     } else {
-                        showLoginError(response.data.message || 'The email or password was not recognized.');
+                        showLoginError(response.data.message || 'That email or password doesn’t match. Please try again.');
                     }
                 } catch (_) {
-                    showLoginError('We could not reach the sign-in service. Check your connection and try again.');
+                    showLoginError('We couldn’t connect to sign-in. Check your connection and try again.');
                 }
             });
 
@@ -132,7 +107,7 @@
                 feedback.style.display = 'block';
                 submit.disabled = false;
                 submit.removeAttribute('aria-busy');
-                submit.querySelector('span').textContent = 'Sign in securely';
+                submit.querySelector('span').textContent = 'Sign in to continue';
             }
         });
     </script>

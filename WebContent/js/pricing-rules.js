@@ -2,7 +2,7 @@
 window.AgriPricingRules = Object.freeze({
     validatePrice(price) {
         if (typeof price !== 'number' || !Number.isFinite(price) || price <= 0) {
-            throw new Error('Agricultural price must be greater than zero RWF.');
+            throw new Error('Please enter a price above 0 RWF.');
         }
         return true;
     },

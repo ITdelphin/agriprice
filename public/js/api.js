@@ -80,7 +80,7 @@ const AgriAPI = {
 
     async submitPrice(data) {
         if (STATIC_HOSTED) {
-            return { status: 403, data: { success: false, message: 'This hosted demo is read-only.' } };
+            return { status: 403, data: { success: false, message: 'This demo lets you view prices but not change them.' } };
         }
         const res = await fetch('api/prices', {
             method: 'POST',
@@ -90,15 +90,15 @@ const AgriAPI = {
         const text = await res.text();
         let result;
         try {
-            result = text ? JSON.parse(text) : { success: false, message: 'Empty response from server.' };
+            result = text ? JSON.parse(text) : { success: false, message: 'We didn’t get a clear reply. Please try again.' };
         } catch (_) {
-            throw new Error(`Server returned an invalid response (HTTP ${res.status}).`);
+            throw new Error('We couldn’t read the reply from the service. Please try again.');
         }
         return { status: res.status, data: result };
     },
 
     async updatePrice(data) {
-        if (STATIC_HOSTED) return { success: false, message: 'This hosted demo is read-only.' };
+        if (STATIC_HOSTED) return { success: false, message: 'This demo lets you view prices but not change them.' };
         data.action = 'update';
         const res = await fetch('api/prices', {
             method: 'POST',
@@ -109,7 +109,7 @@ const AgriAPI = {
     },
 
     async deletePrice(reportId) {
-        if (STATIC_HOSTED) return { success: false, message: 'This hosted demo is read-only.' };
+        if (STATIC_HOSTED) return { success: false, message: 'This demo lets you view prices but not change them.' };
         const res = await fetch('api/prices', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -120,7 +120,7 @@ const AgriAPI = {
 
     async login(email, password) {
         if (STATIC_HOSTED) {
-            return { status: 403, data: { success: false, message: 'Sign-in is disabled in the hosted demo.' } };
+            return { status: 403, data: { success: false, message: 'Sign-in isn’t available in this demo.' } };
         }
         const res = await fetch('api/auth/login', {
             method: 'POST',
@@ -132,14 +132,14 @@ const AgriAPI = {
     },
 
     async logout() {
-        if (STATIC_HOSTED) return { success: true, message: 'Logged out successfully' };
+        if (STATIC_HOSTED) return { success: true, message: 'You’ve been signed out.' };
         const res = await fetch('api/auth/logout', { method: 'POST' });
         return await res.json();
     },
 
     async requestPasswordReset(email) {
         if (STATIC_HOSTED) {
-            return { success: false, message: 'Password reset is disabled in the static demo.' };
+            return { success: false, message: 'Password reset isn’t available in this demo.' };
         }
         const res = await fetch('api/auth/forgot-password', {
             method: 'POST',
@@ -151,7 +151,7 @@ const AgriAPI = {
 
     async resetPassword(token, newPassword) {
         if (STATIC_HOSTED) {
-            return { success: false, message: 'Password reset is disabled in the static demo.' };
+            return { success: false, message: 'Password reset isn’t available in this demo.' };
         }
         const res = await fetch('api/auth/reset-password', {
             method: 'POST',

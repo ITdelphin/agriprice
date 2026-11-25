@@ -93,7 +93,7 @@ const App = {
             marketSelect.value = AgriCookies.get('preferred_market') || '1';
             marketSelect.addEventListener('change', (e) => {
                 AgriCookies.set('preferred_market', e.target.value);
-                this.showToast('Preferred market saved: ' + e.target.options[e.target.selectedIndex].text);
+                this.showToast('We’ll show this market first: ' + e.target.options[e.target.selectedIndex].text);
             });
         }
 
@@ -101,7 +101,7 @@ const App = {
         if (langSelect) {
             langSelect.addEventListener('change', (e) => {
                 AgriCookies.set('preferred_language', e.target.value);
-                this.showToast('Language preference updated to ' + e.target.value);
+                this.showToast('Language preference saved.');
             });
         }
 
@@ -110,7 +110,7 @@ const App = {
             logoutBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 await AgriAPI.logout();
-                this.showToast('Logged out successfully.');
+                this.showToast('You’ve been signed out.');
                 setTimeout(() => window.location.href = 'index.html', 800);
             });
         }

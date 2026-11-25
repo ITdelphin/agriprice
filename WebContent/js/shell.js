@@ -3,12 +3,12 @@
     const links = [
         { href: 'dashboard.html', label: 'Dashboard', icon: '⌂' },
         { href: 'submit-price.html', label: 'Submit price', icon: '+' },
-        { href: 'products.html', label: 'Manage products', icon: '▦' },
-        { href: 'markets.html', label: 'Manage markets', icon: '⌖' },
+        { href: 'products.html', label: 'Products', icon: '▦' },
+        { href: 'markets.html', label: 'Markets', icon: '⌖' },
         { href: 'prices.html', label: 'Price reports', icon: '≋' },
         { href: 'watchlist.html', label: 'Watchlist', icon: '☆' },
         { href: 'trends.html', label: 'Price trends', icon: '⌁' },
-        { href: 'export.html', label: 'XML export', icon: '〈/〉' }
+        { href: 'export.html', label: 'Daily bulletin', icon: '〈/〉' }
     ];
 
     function mount() {
@@ -20,9 +20,9 @@
         body.insertAdjacentHTML('afterbegin', `
             <button class="sidebar-mobile-toggle" id="sidebarMobileToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
             <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-            <aside class="app-sidebar" id="appSidebar" aria-label="Application navigation">
-                <a class="side-brand" href="index.html" aria-label="AgriPrice Rwanda home"><span class="side-brand-mark" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="side-label"><strong>AgriPrice</strong><small>RWANDA MARKET INTELLIGENCE</small></span></a>
-                <div class="side-section-label">WORKSPACE</div>
+            <aside class="app-sidebar" id="appSidebar" aria-label="Main menu">
+                <a class="side-brand" href="index.html" aria-label="AgriPrice Rwanda home"><span class="side-brand-mark" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="side-label"><strong>AgriPrice</strong><small>Local market prices</small></span></a>
+                <div class="side-section-label">Tools</div>
                 <nav class="side-nav">${nav}</nav>
                 <div class="side-bottom">
                     <a class="side-link${activePage === 'settings.html' ? ' is-active' : ''}" href="settings.html" aria-label="Settings" title="Settings"${activePage === 'settings.html' ? ' aria-current="page"' : ''}><span class="side-icon" aria-hidden="true">⚙</span><span class="side-label">Settings</span></a>

@@ -16,7 +16,7 @@
                 <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
                 <div class="brand-text">
                     <h1>AgriPrice Rwanda</h1>
-                    <span>Rubavu &amp; Gisenyi Market System</span>
+                    <span>Daily prices from Rubavu and Gisenyi</span>
                 </div>
             </a>
             <nav>
@@ -87,8 +87,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Location Description &amp; Trading Specialization:</label>
-                    <textarea id="modalLocationDesc" class="form-control" rows="3" placeholder="Access roads, proximity to border, transport links..."></textarea>
+                    <label class="form-label">What should agents know about this market?</label>
+                    <textarea id="modalLocationDesc" class="form-control" rows="3" placeholder="Tell us about roads, nearby borders, and transport."></textarea>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
                     <button type="button" id="btnCancelMarketModal" class="btn btn-secondary">Cancel</button>
@@ -141,7 +141,7 @@
         function renderMarkets(list) {
             const container = document.getElementById('marketsListContainer');
             if (!list || list.length === 0) {
-                container.innerHTML = '<p style="padding: 25px;">No markets found.</p>';
+                container.innerHTML = '<p style="padding: 25px;">No markets match your search. Try another name or district.</p>';
                 return;
             }
 
@@ -230,7 +230,7 @@
 
                 if (e.target && e.target.classList.contains('btn-delete-market')) {
                     const id = parseInt(e.target.getAttribute('data-id'), 10);
-                    if (confirm('Delete this market? Markets linked to saved price reports are protected so that historical data stays intact.')) {
+                    if (confirm('Delete this market? We’ll keep this market if it has saved price reports so past prices are not lost.')) {
                         const res = await fetch('api/markets', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -269,7 +269,7 @@
                     closeModal();
                     await loadMarkets();
                 } else {
-                    App.showToast(data.message || 'Operation failed.', 'error');
+                    App.showToast(data.message || 'We couldn’t save your changes. Please try again.', 'error');
                 }
             });
         }

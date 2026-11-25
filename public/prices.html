@@ -18,7 +18,7 @@
                 <div class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></div>
                 <div class="brand-text">
                     <h1>AgriPrice Rwanda</h1>
-                    <span>Rubavu &amp; Gisenyi Market System</span>
+                    <span>Daily prices from Rubavu and Gisenyi</span>
                 </div>
             </a>
             <nav>
@@ -44,35 +44,35 @@
         <section class="prices-page-heading price-search-hero">
             <div>
                 <h2>Daily Agricultural Market Prices</h2>
-                <p>Live database prices for Rubavu and regional trading hubs in Rwanda.</p>
+                <p>Today’s prices from Rubavu and nearby markets, shared by local agents.</p>
             </div>
 </section>
 
         <!-- Filter Bar (AJAX & JSON live filtering without page reload) -->
         <div class="filter-bar">
             <div class="filter-item">
-                <label class="form-label">Search Keyword:</label>
+                <label class="form-label">Find a product or market</label>
                 <input type="text" id="filterSearch" class="form-control" placeholder="Search product or market...">
             </div>
             <div class="filter-item">
-                <label class="form-label">Filter by Product:</label>
+                <label class="form-label">Product</label>
                 <select id="filterProduct" class="form-control">
-                    <option value="">-- All Products --</option>
+                    <option value="">All products</option>
                 </select>
             </div>
             <div class="filter-item">
-                <label class="form-label">Filter by Market:</label>
+                <label class="form-label">Market</label>
                 <select id="filterMarket" class="form-control">
-                    <option value="">-- All Markets --</option>
+                    <option value="">Any market</option>
                 </select>
             </div>
             <div class="filter-item">
-                <label class="form-label">Report Date:</label>
+                <label class="form-label">Date reported</label>
                 <input type="date" id="filterDate" class="form-control" value="">
             </div>
             <div style="display: flex; gap: 8px;">
-                <button id="btnApplyFilter" class="btn btn-primary">Filter</button>
-                <button id="btnResetFilter" class="btn btn-secondary">Reset</button>
+                <button id="btnApplyFilter" class="btn btn-primary">Show prices</button>
+                <button id="btnResetFilter" class="btn btn-secondary">Clear filters</button>
             </div>
         </div>
 
@@ -80,11 +80,11 @@
         <section class="card">
             <div class="card-header">
                 <div>
-                    <h3 class="card-title">&#128181; Verified Price Reports (<span id="resultCount">0</span> records)</h3>
+                    <h3 class="card-title">&#128181; Latest price reports (<span id="resultCount">0</span>)</h3>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <a href="export/prices?format=xml" target="_blank" class="btn btn-sm btn-outline">&#128196; Raw XML</a>
-                    <a href="export/prices?format=html" target="_blank" class="btn btn-sm btn-outline">&#127760; Formatted Bulletin</a>
+                    <a href="export/prices?format=xml" target="_blank" class="btn btn-sm btn-outline">&#128196; Download data (XML)</a>
+                    <a href="export/prices?format=html" target="_blank" class="btn btn-sm btn-outline">&#127760; View daily bulletin</a>
                 </div>
             </div>
 
@@ -105,7 +105,7 @@
                         </tr>
                     </thead>
                     <tbody id="pricesTableBody">
-                        <tr><td colspan="10" style="text-align: center; padding: 40px;">Fetching prices from database...</td></tr>
+                        <tr><td colspan="10" style="text-align: center; padding: 40px;">Getting today’s prices…</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -115,7 +115,7 @@
         <!-- Quick Interactive Price Trends Chart -->
         <section class="card">
             <div class="card-header">
-                <h3 class="card-title">&#128202; Interactive Price Trend for Selected Product</h3>
+                <h3 class="card-title">&#128202; How this product’s price has changed</h3>
                 <span id="chartProductLabel" class="badge badge-info">Maize Grain</span>
             </div>
             <p id="priceTrendStatus" class="chart-state" role="status">Loading price history…</p>
@@ -137,7 +137,7 @@
     <div id="watchlistModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
         <div class="card" style="width: 420px; max-width: 90%; background: white; margin: auto;">
             <div class="card-header">
-                <h3 class="card-title">Add to Personal Watchlist</h3>
+                <h3 class="card-title">Save to my watchlist</h3>
                 <button id="btnCloseModal" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
             </div>
             <form id="formAddToWatchlist">
@@ -152,17 +152,17 @@
                     <input type="text" id="modalMarketName" class="form-control" readonly>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Current Observed Price:</label>
+                    <label class="form-label">Latest reported price:</label>
                     <input type="text" id="modalCurrentPrice" class="form-control" readonly>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Your Target Buy Price (RWF):</label>
+                    <label class="form-label">Price you’re watching for (RWF):</label>
                     <input type="number" id="modalTargetPrice" class="form-control" min="1" step="10" required placeholder="e.g. 450">
-                    <small class="text-muted">You will receive an alert whenever the price reaches or drops below this target.</small>
+                    <small class="text-muted">We’ll let you know when the price reaches this amount or goes lower.</small>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
                     <button type="button" id="btnCancelModal" class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save to Watchlist</button>
+                    <button type="submit" class="btn btn-primary">Save to my watchlist</button>
                 </div>
             </form>
         </div>
@@ -238,7 +238,7 @@
                 document.getElementById('resultCount').textContent = filteredPriceReports.length;
 
                 if (!filteredPriceReports.length) {
-                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">No price reports matching filter criteria.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">No prices match your search. Try different filters.</td></tr>';
                     document.getElementById('pricePagination').innerHTML = '';
                     return;
                 }
@@ -255,7 +255,7 @@
 
             } catch (err) {
                 console.error('Failed to fetch prices:', err);
-                document.getElementById('pricesTableBody').innerHTML = '<tr><td colspan="10" class="empty-state">Prices could not be loaded. Check the connection and try again.</td></tr>';
+                document.getElementById('pricesTableBody').innerHTML = '<tr><td colspan="10" class="empty-state">We couldn’t load prices right now. Please try again.</td></tr>';
                 document.getElementById('pricePagination').innerHTML = '';
             }
         }
