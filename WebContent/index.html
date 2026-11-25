@@ -30,22 +30,20 @@
         .home2-logout.public-logout { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 7px; background: var(--white); color: var(--navy); font-size: 12px; }
         .home2-menu.public-menu-toggle { padding: 8px 11px; border: 1px solid var(--border-color); border-radius: 7px; background: var(--white); color: var(--navy); font-size: 12px; font-weight: 700; }
 
-        .home2-hero { min-height: 520px; position: relative; display: flex; align-items: center; overflow: hidden; background: var(--navy); }
-        .home2-hero-image, .home2-hero-overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
-        .home2-hero-image { object-fit: cover; object-position: center 55%; }
-        .home2-hero-overlay { background: rgba(20, 43, 74, .72); }
-        .home2-hero-content { position: relative; z-index: 1; width: min(1180px, 100%); margin: 0 auto; padding: 70px 24px; color: var(--white); }
+        .home2-hero { max-width: 1180px; margin: 28px auto 0; padding: 0 24px; }
+        .home2-hero-panel { min-height: 440px; display: grid; grid-template-columns: 1.05fr .95fr; overflow: hidden; border-radius: 16px; background: var(--navy); color: var(--white); }
+        .home2-hero-content { align-self: center; padding: 54px 48px; }
+        .home2-hero-media { position: relative; min-height: 100%; }
+        .home2-hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 55%; }
         .home2-eyebrow { display: inline-block; padding: 6px 11px; border-radius: 999px; background: var(--sky-blue); color: var(--navy); font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; }
-        .home2-hero h1 { max-width: 700px; margin: 18px 0 12px; color: var(--white); font-size: clamp(34px, 5vw, 56px); font-weight: 800; letter-spacing: -1.8px; line-height: 1.1; }
-        .home2-hero p { max-width: 580px; margin: 0; color: rgba(255,255,255,.86); font-size: 15px; line-height: 1.75; }
+        .home2-hero h1 { max-width: 580px; margin: 18px 0 12px; color: var(--white); font-size: clamp(34px, 4.5vw, 52px); font-weight: 800; letter-spacing: -1.8px; line-height: 1.1; }
+        .home2-hero p { max-width: 540px; margin: 0; color: rgba(255,255,255,.86); font-size: 15px; line-height: 1.75; }
         .home2-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
         .home2-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 11px 18px; border-radius: 8px; font: inherit; font-size: 12px; font-weight: 800; text-decoration: none; transition: background .18s ease, border-color .18s ease; }
         .home2-btn-primary { border: 1px solid var(--sky-blue); background: var(--sky-blue); color: var(--navy); }
         .home2-btn-primary:hover { border-color: var(--white); background: var(--white); }
         .home2-btn-outline { border: 1px solid rgba(255,255,255,.55); background: transparent; color: var(--white); }
         .home2-btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.12); }
-        .home2-btn-dark { border: 1px solid var(--navy); background: var(--navy); color: var(--white); }
-        .home2-btn-dark:hover { border-color: var(--army-green); background: var(--army-green); }
 
         .home2-trust { background: var(--white); border-bottom: 1px solid var(--border-color); }
         .home2-trust-inner { max-width: 1180px; margin: 0 auto; padding: 20px 24px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
@@ -63,12 +61,12 @@
         .home2-section-heading h2 { margin: 0 0 8px; color: var(--navy); font-size: clamp(25px, 3vw, 34px); font-weight: 800; letter-spacing: -1px; line-height: 1.2; }
         .home2-section-heading p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
         .home2-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
-        .home2-card, .home2-product-card, .home2-price-card, .home2-market-card { border: 1px solid var(--border-color); border-radius: 12px; background: var(--white); }
+        .home2-card, .home2-price-card, .home2-market-card { border: 1px solid var(--border-color); border-radius: 12px; background: var(--white); }
         .home2-card { overflow: hidden; }
-        .home2-card-img, .home2-product-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+        .home2-card-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
         .home2-card-body { padding: 18px; }
-        .home2-card-body h3, .home2-product-card h3, .home2-price-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 16px; font-weight: 800; }
-        .home2-card-body p, .home2-product-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+        .home2-card-body h3, .home2-price-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 16px; font-weight: 800; }
+        .home2-card-body p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
         .home2-card-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 14px; color: var(--army-green); font-size: 12px; font-weight: 800; text-decoration: none; }
         .home2-card-link:hover { color: var(--navy); }
 
@@ -89,12 +87,23 @@
         .home2-snapshot-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; color: var(--navy); font-size: 12px; font-weight: 800; text-decoration: none; }
         .home2-snapshot-link:hover { color: var(--army-green); }
 
-        .home2-product-card { display: flex; flex-direction: column; overflow: hidden; color: inherit; text-decoration: none; transition: transform .18s ease, border-color .18s ease; }
-        .home2-product-card:hover { transform: translateY(-2px); border-color: var(--sky-deep); }
-        .home2-product-img { aspect-ratio: 4 / 3; }
-        .home2-product-card-body { display: flex; flex: 1; flex-direction: column; padding: 18px; }
-        .home2-product-tag { display: inline-block; margin-bottom: 8px; color: var(--army-green); font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
-        .home2-product-meta { margin-top: auto; padding-top: 14px; color: var(--navy); font-size: 12px; font-weight: 800; }
+        .home2-product-panel { overflow: hidden; border: 1px solid var(--border-color); border-radius: 12px; background: var(--white); }
+        .home2-product-scroll { width: 100%; overflow-x: auto; }
+        .home2-product-table { width: 100%; min-width: 760px; border-collapse: collapse; text-align: left; }
+        .home2-product-table thead { background: var(--beige); }
+        .home2-product-table th { height: 40px; padding: 0 14px; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+        .home2-product-table th:first-child, .home2-product-table td:first-child { padding-left: 20px; }
+        .home2-product-table th:last-child, .home2-product-table td:last-child { padding-right: 20px; }
+        .home2-product-table td { height: 78px; padding: 10px 14px; border-top: 1px solid var(--border-color); color: var(--muted); font-size: 12px; vertical-align: middle; }
+        .home2-product-table tbody tr:hover { background: var(--sky-soft); }
+        .home2-product-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .home2-product-thumb { width: 52px; height: 52px; flex: 0 0 auto; border: 1px solid var(--border-color); border-radius: 8px; object-fit: cover; }
+        .home2-product-cell strong { display: block; max-width: 210px; color: var(--navy); font-size: 13px; font-weight: 800; line-height: 1.35; }
+        .home2-product-cell small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+        .home2-product-pill { display: inline-block; padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 6px; color: var(--army-green); background: var(--beige); font-size: 10px; font-weight: 700; white-space: nowrap; }
+        .home2-product-description { display: -webkit-box; max-width: 300px; overflow: hidden; color: var(--muted); font-size: 11px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+        .home2-product-action { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 6px; color: var(--army-green); background: var(--white); font-size: 11px; font-weight: 800; text-decoration: none; white-space: nowrap; }
+        .home2-product-action:hover { border-color: var(--sky-border); background: var(--beige); }
 
         .home2-market-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
         .home2-market-card { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 14px; }
@@ -143,8 +152,10 @@
             .home2-nav.public-nav > span { display: flex; gap: 6px; }
             .home2-nav.public-nav > span > a { flex: 1; justify-content: center; }
             .home2-logout.public-logout { margin-top: 4px; }
-            .home2-hero { min-height: 500px; }
-            .home2-hero-content { padding: 56px 18px 64px; }
+            .home2-hero { margin-top: 18px; padding: 0 18px; }
+            .home2-hero-panel { grid-template-columns: 1fr; }
+            .home2-hero-content { padding: 42px 24px; }
+            .home2-hero-media { min-height: 260px; order: -1; }
             .home2-hero h1 { font-size: clamp(32px, 8.5vw, 44px); letter-spacing: -1.4px; }
             .home2-hero p { font-size: 14px; }
             .home2-trust-inner { grid-template-columns: 1fr; gap: 0; padding: 8px 18px; }
@@ -184,15 +195,18 @@
 
     <main>
         <section class="home2-hero" aria-labelledby="home2Title">
-            <img class="home2-hero-image home2-img" src="assets/images/hero-background.jpg" alt="Agricultural produce market in Rwanda">
-            <div class="home2-hero-overlay"></div>
-            <div class="home2-hero-content">
-                <span class="home2-eyebrow">Rubavu &amp; Gisenyi, Rwanda</span>
-                <h1 id="home2Title">Know the price before you trade.</h1>
-                <p>AgriPrice Rwanda brings daily produce prices from local markets into one clear place, so farmers, traders, and buyers can plan with confidence.</p>
-                <div class="home2-actions">
-                    <a href="prices.html" class="home2-btn home2-btn-primary">Browse market prices</a>
-                    <a href="#how-it-works" class="home2-btn home2-btn-outline">How it works</a>
+            <div class="home2-hero-panel">
+                <div class="home2-hero-content">
+                    <span class="home2-eyebrow">Rubavu &amp; Gisenyi, Rwanda</span>
+                    <h1 id="home2Title">Know the price before you trade.</h1>
+                    <p>AgriPrice Rwanda brings daily produce prices from local markets into one clear place, so farmers, traders, and buyers can plan with confidence.</p>
+                    <div class="home2-actions">
+                        <a href="prices.html" class="home2-btn home2-btn-primary">Browse market prices</a>
+                        <a href="#how-it-works" class="home2-btn home2-btn-outline">How it works</a>
+                    </div>
+                </div>
+                <div class="home2-hero-media">
+                    <img class="home2-hero-image home2-img" src="assets/images/hero-background.jpg" alt="Agricultural produce market in Rwanda">
                 </div>
             </div>
         </section>
@@ -303,8 +317,9 @@
                 <span class="home2-kicker">Key commodities</span>
                 <h2 id="home2ProductsTitle">Products people follow most.</h2>
                 <p>Open any commodity to see its latest reports and price history.</p>
+                <a class="home2-card-link" href="products.html">Open product catalogue <span aria-hidden="true">→</span></a>
             </div>
-            <div class="home2-grid-3" id="homeProducts">
+            <div id="homeProducts">
                 <div class="home2-loading"><span class="home2-spinner"></span> Loading products…</div>
             </div>
         </section>
@@ -474,19 +489,27 @@
                     container.innerHTML = '<div class="home2-empty"><strong>No products listed yet</strong>The product catalogue will appear here once it is available.</div>';
                     return;
                 }
-                container.innerHTML = products.slice(0, 3).map(p => {
-                    const category = p.category || productCategory(p.productName);
-                    const unit = p.defaultUnit || p.unit || 'standard unit';
-                    return `<a href="prices.html?productId=${encodeURIComponent(p.productId)}" class="home2-product-card">
-                        <img class="home2-product-img home2-img" src="${productImage(p.productName)}" alt="${escapeHome(p.productName)}">
-                        <div class="home2-product-card-body">
-                            <span class="home2-product-tag">${escapeHome(category)}</span>
-                            <h3>${escapeHome(p.productName)}</h3>
-                            <p>${escapeHome(p.description || `See current price reports for ${p.productName} across participating markets.`)}</p>
-                            <span class="home2-product-meta">Price per ${escapeHome(unit)} <span aria-hidden="true">→</span></span>
-                        </div>
-                    </a>`;
-                }).join('');
+                container.innerHTML = `<div class="home2-product-panel">
+                    <div class="home2-product-scroll">
+                        <table class="home2-product-table">
+                            <thead><tr><th scope="col">No.</th><th scope="col">Product</th><th scope="col">Category</th><th scope="col">Unit</th><th scope="col">Description</th><th scope="col"><span class="visually-hidden">Action</span></th></tr></thead>
+                            <tbody>
+                                ${products.slice(0, 3).map((p, index) => {
+                                    const category = p.category || productCategory(p.productName);
+                                    const unit = p.defaultUnit || p.unit || 'standard unit';
+                                    return `<tr>
+                                        <td class="home2-product-cell">${String(index + 1).padStart(2, '0')}</td>
+                                        <td><div class="home2-product-cell"><img class="home2-product-thumb home2-img" src="${productImage(p.productName)}" alt="${escapeHome(p.productName)}"><span><strong>${escapeHome(p.productName)}</strong><small>ID ${escapeHome(p.productId)}</small></span></div></td>
+                                        <td><span class="home2-product-pill">${escapeHome(category)}</span></td>
+                                        <td>${escapeHome(unit)}</td>
+                                        <td><span class="home2-product-description">${escapeHome(p.description || `See current price reports for ${p.productName}.`)}</span></td>
+                                        <td><a class="home2-product-action" href="prices.html?productId=${encodeURIComponent(p.productId)}">View prices <span aria-hidden="true">→</span></a></td>
+                                    </tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
             } catch (_) {
                 container.innerHTML = '<div class="home2-empty"><strong>Products could not be loaded</strong>Open the <a href="products.html">product catalogue</a> to try again.</div>';
             }
