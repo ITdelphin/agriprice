@@ -276,6 +276,8 @@
         payload.append('defaultUnit', byId('modalProductUnit').value);
         payload.append('description', byId('modalProductDesc').value.trim());
         payload.append('status', byId('modalProductStatus').value);
+        const imageInput = byId('modalProductImage');
+        if (imageInput && imageInput.files && imageInput.files.length > 0) payload.append('image', imageInput.files[0]);
         const button = form.querySelector('[type="submit"]');
         button.disabled = true;
         button.textContent = 'Saving…';
