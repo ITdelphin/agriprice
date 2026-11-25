@@ -64,7 +64,7 @@
 
     <!-- Modal: Add / Edit Market -->
     <div id="marketModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-        <div class="card" style="width: 480px; max-width: 90%; background: white; margin: auto;">
+        <div class="card" style="background: white; margin: auto;">
             <div class="card-header">
                 <h3 id="modalMarketTitle" class="card-title">Add New Market</h3>
                 <button id="btnCloseMarketModal" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">&times;</button>
@@ -76,7 +76,7 @@
                     <label class="form-label">Market Name:</label>
                     <input type="text" id="modalMarketName" class="form-control" required placeholder="e.g. Nyamyumba Local Market">
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                     <div class="form-group">
                         <label class="form-label">District:</label>
                         <input type="text" id="modalDistrict" class="form-control" required placeholder="e.g. Rubavu">
@@ -88,7 +88,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">What should agents know about this market?</label>
-                    <textarea id="modalLocationDesc" class="form-control" rows="3" placeholder="Tell us about roads, nearby borders, and transport."></textarea>
+                    <textarea id="modalLocationDesc" class="form-control" rows="2" placeholder="Tell us about roads, nearby borders, and transport."></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Market Photo:</label>

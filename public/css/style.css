@@ -1841,3 +1841,12 @@ img:not([src$="logo.svg"]) { display: none !important; }
 .catalog-product-photo { display: block !important; width: 72px; height: 56px; min-width: 72px; overflow: hidden; border-radius: 8px; background: var(--beige); }
 .catalog-product-photo img { display: block !important; width: 100%; height: 100%; object-fit: cover; }
 #productModal:not([hidden]) { display: flex; }
+#productModal .card, #marketModal .card { width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; padding: 14px; }
+#productModal .card-header, #marketModal .card-header { padding-bottom: 8px; }
+#productModal .card-title, #marketModal .card-title { font-size: 1.05rem; }
+#productModal form > p:first-of-type, #marketModal form > p:first-of-type { margin: 4px 0 10px; font-size: .72rem; }
+#productModal .form-group, #marketModal .form-group { margin-bottom: 8px; }
+#productModal .form-control, #marketModal .form-control { padding: 6px 9px; font-size: .78rem; }
+#productModal textarea.form-control, #marketModal textarea.form-control { min-height: 54px; }
+#productModal .catalog-form-message, #marketModal .catalog-form-message { min-height: 0; margin-top: 6px; }
+#productModal form > div:last-child, #marketModal form > div:last-child { position: sticky; bottom: -14px; z-index: 1; margin-top: 0; padding-top: 8px; background: var(--white); }

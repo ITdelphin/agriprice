@@ -120,7 +120,7 @@
     <div class="toast-container catalog-toast-region" id="catalogToastRegion" aria-live="polite" aria-atomic="true"></div>
 
     <div id="productModal" hidden style="position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center;">
-        <section class="card" role="dialog" aria-modal="true" aria-labelledby="modalProductTitle" style="width: 520px; max-width: 90%; margin: auto;">
+        <section class="card" role="dialog" aria-modal="true" aria-labelledby="modalProductTitle" style="margin: auto;">
             <div class="card-header">
                 <h3 class="card-title" id="modalProductTitle">Add product</h3>
                 <button type="button" id="btnCloseProductModal" class="btn btn-sm btn-secondary" aria-label="Close">&times;</button>
@@ -128,7 +128,7 @@
             <p class="text-muted">Add the details agents will use when they report prices.</p>
             <form id="productForm">
                 <input type="hidden" id="modalAction" value="create"><input type="hidden" id="modalProductId" value="0">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;">
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label class="form-label" for="modalProductName">Product name</label>
                         <input type="text" id="modalProductName" class="form-control" required maxlength="100" placeholder="For example, Dry Beans">
@@ -147,12 +147,12 @@
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label class="form-label" for="modalProductDesc">Description</label>
-                        <textarea id="modalProductDesc" class="form-control" rows="3" maxlength="500" placeholder="Short description or commonly traded variety"></textarea>
+                        <textarea id="modalProductDesc" class="form-control" rows="2" maxlength="500" placeholder="Short description or commonly traded variety"></textarea>
                     </div>
                     <div class="form-group" style="grid-column: 1 / -1;">
                         <label class="form-label" for="modalProductImage">Product image</label>
                         <input type="file" id="modalProductImage" name="image" class="form-control" accept="image/jpeg,image/png,image/gif">
-                        <small class="text-muted">JPG, PNG, or GIF. Leave empty to keep the current image.</small>
+                        <small class="text-muted" style="display: block; margin-top: 2px;">JPG, PNG, or GIF. Leave empty to keep the current image.</small>
                     </div>
                 </div>
                 <datalist id="productCategoryOptions"><option value="Cereals"></option><option value="Legumes"></option><option value="Tubers"></option><option value="Vegetables"></option><option value="Fruits"></option></datalist>
