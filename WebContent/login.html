@@ -7,9 +7,6 @@
     <meta name="theme-color" content="#142B4A">
     <meta name="description" content="Sign in to the AgriPrice Rwanda agent workspace.">
     <title>Agent sign in | AgriPrice Rwanda</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
         body.login-only { min-height: 100vh; display: block !important; background: var(--beige); }
@@ -30,8 +27,8 @@
         body.login-only .login-submit:hover { background: var(--army-green); }
         body.login-only .login-submit:disabled { opacity: .7; cursor: wait; }
         body.login-only .login-feedback { margin: 0 0 16px; padding: 10px 12px; border-radius: 8px; font-size: 12px; }
-        body.login-only .login-feedback.is-error { border: 1px solid #e4b5b5; background: #fff4f4; color: #8c2020; }
-        body.login-only .login-feedback.is-success { border: 1px solid #b8d6bd; background: #f1fbf3; color: #246b36; }
+        body.login-only .login-feedback.is-error { border: 1px solid var(--red); background: var(--red-soft); color: var(--red); }
+        body.login-only .login-feedback.is-success { border: 1px solid var(--army-green); background: var(--army-soft); color: var(--army-green); }
         @media (max-width: 480px) {
             body.login-only .login-main { margin-top: 4vh; }
             .login-only-card { padding: 24px 20px; }
@@ -62,6 +59,7 @@
     </main>
 
     <script src="js/api.js"></script>
+    <script src="js/site-shell.js"></script>
     <script src="js/app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

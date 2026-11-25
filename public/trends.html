@@ -11,7 +11,7 @@
 <body class="trends-page" data-app-shell="off">
     <header class="navbar"><div class="nav-container"><a class="brand" href="index.html"><span class="brand-icon" aria-hidden="true"><img src="assets/images/logo.svg" alt=""></span><span class="brand-text"><h1>AgriPrice Rwanda</h1><span>Market intelligence</span></span></a><nav class="page-utility-nav" aria-label="Workspace links"><a href="dashboard.html">Workspace</a><a href="prices.html">Price reports</a><a href="markets.html">Markets</a></nav></div></header>
     <main class="container">
-        <div class="page-heading trends-page-heading"><div><span class="page-kicker">Prices across Rwanda</span><h2>See the price story.</h2><p class="text-muted">See how prices are changing, compare markets, and find a good time to sell.</p></div><div class="trend-live-stamp"><i></i> Updated from recent reports</div></div>
+        <div class="page-heading trends-page-heading"><div><span class="page-kicker">Prices across Rwanda</span><h2>Price Trends, made simple.</h2><p class="text-muted">See how prices are changing, compare markets, and find a good time to sell.</p></div><div class="trend-live-stamp"><i></i> Updated from recent reports</div></div>
         <section class="card">
             <div class="trend-filters">
                 <div class="form-group"><label class="form-label" for="trendProduct">Product</label><select class="form-control" id="trendProduct"><option value="">Loading products…</option></select></div>
@@ -28,7 +28,7 @@
         <section class="card trend-card"><div class="card-header"><h3 class="card-title">Reports by market</h3><span class="badge badge-neutral">All submitted reports</span></div><p id="distributionChartStatus" class="chart-state" role="status">Loading prices by market…</p><div class="chart-wrapper"><canvas id="trendPagePie"></canvas></div></section>
     </main>
     <footer class="footer"><div class="container"><p>&copy; 2026 AgriPrice Rwanda &middot; Market data for Rubavu and Gisenyi.</p></div></footer>
-    <script src="js/api.js"></script><script src="js/charts.js"></script><script src="js/app.js"></script><script src="js/shell.js"></script>
+    <script src="js/api.js"></script><script src="js/site-shell.js"></script><script src="js/charts.js"></script><script src="js/app.js"></script><script src="js/shell.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const product = document.getElementById('trendProduct');
