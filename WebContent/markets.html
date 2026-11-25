@@ -90,6 +90,11 @@
                     <label class="form-label">What should agents know about this market?</label>
                     <textarea id="modalLocationDesc" class="form-control" rows="3" placeholder="Tell us about roads, nearby borders, and transport."></textarea>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Market Photo:</label>
+                    <input type="file" id="modalMarketImage" name="image" class="form-control" accept="image/jpeg,image/png,image/gif">
+                    <small class="form-text text-muted" style="display: block; margin-top: 5px;">JPG, PNG, or GIF. Leave empty to keep the current photo.</small>
+                </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
                     <button type="button" id="btnCancelMarketModal" class="btn btn-secondary">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Market</button>
@@ -138,8 +143,10 @@
             }
         }
 
-        function marketImage(name) {
-            const value = String(name || '').toLowerCase();
+        function marketImage(market) {
+            const uploaded = market && market.imageUrl && market.imageUrl !== 'NULL' ? String(market.imageUrl) : '';
+            if (uploaded) return uploaded;
+            const value = String((market && market.marketName) || '').toLowerCase();
             if (value.includes('gisenyi')) return 'assets/images/markets/gisenyi.jpg';
             if (value.includes('rubavu')) return 'assets/images/markets/rubavu.jpg';
             if (value.includes('mahoko')) return 'assets/images/markets/mahoko.jpg';
@@ -159,7 +166,7 @@
                 return `
                 <article class="market-directory-card">
                     <div class="market-directory-photo">
-                        <img src="${marketImage(m.marketName)}" alt="${escapeHtml(m.marketName)} market" loading="lazy">
+                        <img src="${escapeHtml(marketImage(m))}" alt="${escapeHtml(m.marketName)} market" loading="lazy" onerror="this.onerror=null;this.src='assets/images/hero-background.jpg'">
                     </div>
                     <div class="market-directory-body">
                         <div class="market-directory-head">
@@ -238,6 +245,7 @@
                     document.getElementById('modalDistrict').value = btn.getAttribute('data-dist');
                     document.getElementById('modalProvince').value = btn.getAttribute('data-prov');
                     document.getElementById('modalLocationDesc').value = btn.getAttribute('data-desc');
+                    document.getElementById('modalMarketImage').value = '';
                     modal.style.display = 'flex';
                 }
 
@@ -262,19 +270,19 @@
 
             document.getElementById('marketForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const payload = {
-                    action: document.getElementById('modalMarketAction').value,
-                    marketId: parseInt(document.getElementById('modalMarketId').value, 10),
-                    marketName: document.getElementById('modalMarketName').value.trim(),
-                    district: document.getElementById('modalDistrict').value.trim(),
-                    province: document.getElementById('modalProvince').value.trim(),
-                    locationDescription: document.getElementById('modalLocationDesc').value.trim()
-                };
+                const payload = new FormData();
+                payload.append('action', document.getElementById('modalMarketAction').value);
+                payload.append('marketId', document.getElementById('modalMarketId').value);
+                payload.append('marketName', document.getElementById('modalMarketName').value.trim());
+                payload.append('district', document.getElementById('modalDistrict').value.trim());
+                payload.append('province', document.getElementById('modalProvince').value.trim());
+                payload.append('locationDescription', document.getElementById('modalLocationDesc').value.trim());
+                const imageInput = document.getElementById('modalMarketImage');
+                if (imageInput.files && imageInput.files.length > 0) payload.append('image', imageInput.files[0]);
 
                 const res = await fetch('api/markets', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: payload
                 });
                 const data = await res.json();
                 if (res.ok && data.success) {

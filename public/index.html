@@ -420,8 +420,10 @@
             return 'Agricultural products';
         }
 
-        function productImage(name) {
-            const v = (name || '').toLowerCase();
+        function productImage(product) {
+            const uploaded = product && product.imageUrl && product.imageUrl !== 'NULL' ? String(product.imageUrl) : '';
+            if (uploaded) return uploaded;
+            const v = ((product && product.productName) || '').toLowerCase();
             if (v.includes('sweet') && v.includes('potato')) return 'assets/images/catalog/sweet-potatoes.jpg';
             if (v.includes('potato')) return 'assets/images/catalog/potatoes.jpg';
             if (v.includes('bean') || v.includes('pea')) return 'assets/images/catalog/beans.jpg';
@@ -429,7 +431,7 @@
             if (v.includes('onion')) return 'assets/images/catalog/onions.jpg';
             if (v.includes('banana') || v.includes('plantain')) return 'assets/images/catalog/bananas.jpg';
             if (v.includes('maize') || v.includes('corn')) return 'assets/images/catalog/maize.jpg';
-            return 'assets/images/catalog/maize.jpg';
+            return 'assets/images/catalog/product-placeholder.svg';
         }
 
         function marketImage(name) {
@@ -508,7 +510,7 @@
                                     const unit = p.defaultUnit || p.unit || 'standard unit';
                                     return `<tr>
                                         <td class="home2-product-cell">${String(index + 1).padStart(2, '0')}</td>
-                                        <td><div class="home2-product-cell"><img class="home2-product-thumb home2-img" src="${productImage(p.productName)}" alt="${escapeHome(p.productName)}"><span><strong>${escapeHome(p.productName)}</strong><small>ID ${escapeHome(p.productId)}</small></span></div></td>
+                                        <td><div class="home2-product-cell"><img class="home2-product-thumb home2-img" src="${escapeHome(productImage(p))}" alt="${escapeHome(p.productName)}" onerror="this.onerror=null;this.src='assets/images/catalog/product-placeholder.svg'"><span><strong>${escapeHome(p.productName)}</strong><small>ID ${escapeHome(p.productId)}</small></span></div></td>
                                         <td><span class="home2-product-pill">${escapeHome(category)}</span></td>
                                         <td>${escapeHome(unit)}</td>
                                         <td><span class="home2-product-description">${escapeHome(p.description || `See current price reports for ${p.productName}.`)}</span></td>

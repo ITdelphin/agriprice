@@ -11,16 +11,22 @@ public class Market implements Serializable {
     private String district;
     private String province;
     private String locationDescription;
+    private String imageUrl;
     private Timestamp createdAt;
 
     public Market() {}
 
     public Market(int marketId, String marketName, String district, String province, String locationDescription, Timestamp createdAt) {
+        this(marketId, marketName, district, province, locationDescription, createdAt, null);
+    }
+
+    public Market(int marketId, String marketName, String district, String province, String locationDescription, Timestamp createdAt, String imageUrl) {
         this.marketId = marketId;
         this.marketName = marketName;
         this.district = district;
         this.province = province;
         this.locationDescription = locationDescription;
+        this.imageUrl = imageUrl;
         this.createdAt = createdAt;
     }
 
@@ -62,6 +68,14 @@ public class Market implements Serializable {
 
     public void setLocationDescription(String locationDescription) {
         this.locationDescription = locationDescription;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Timestamp getCreatedAt() {

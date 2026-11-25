@@ -6,8 +6,10 @@
     const state = { products: [], filtered: [], page: 1, isAgent: false, currentUser: null, loading: false };
     const byId = id => document.getElementById(id);
 
-    function productImage(name, category) {
-        const value = `${name || ''} ${category || ''}`.toLowerCase();
+    function productImage(product) {
+        const uploaded = product && product.imageUrl && product.imageUrl !== 'NULL' ? String(product.imageUrl) : '';
+        if (uploaded) return uploaded;
+        const value = `${(product && product.productName) || ''} ${(product && product.category) || ''}`.toLowerCase();
         if (value.includes('sweet') && value.includes('potato')) return 'assets/images/catalog/sweet-potatoes.jpg';
         if (value.includes('potato') || value.includes('irish')) return 'assets/images/catalog/potatoes.jpg';
         if (value.includes('bean') || value.includes('pea') || value.includes('legume')) return 'assets/images/catalog/beans.jpg';
@@ -133,7 +135,7 @@
             : `<a class="btn btn-sm btn-primary" href="prices.html?productId=${encodeURIComponent(id)}">See prices</a>`;
         return `<tr>
             <td>${String(product.productId || rowNumber).padStart(3, '0')}</td>
-            <td><div class="catalog-product-photo"><img src="${productImage(name, product.category)}" alt="${escapeHtml(name)}" loading="lazy"></div></td>
+            <td><div class="catalog-product-photo"><img src="${escapeHtml(productImage(product))}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.onerror=null;this.src='assets/images/catalog/product-placeholder.svg'"></div></td>
             <td><strong>${escapeHtml(name)}</strong><br><span class="text-muted">ID ${String(id).padStart(4, '0')}</span></td>
             <td><span class="badge badge-info">${escapeHtml(product.category || 'Uncategorized')}</span></td>
             <td>${escapeHtml(product.defaultUnit || '—')}</td>

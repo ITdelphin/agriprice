@@ -19,13 +19,14 @@ public class MarketDAO {
 
     // 1. CREATE
     public int create(Market market) throws SQLException {
-        String sql = "INSERT INTO markets (market_name, district, province, location_description) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO markets (market_name, district, province, location_description, image_url) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, market.getMarketName().trim());
             ps.setString(2, market.getDistrict().trim());
             ps.setString(3, market.getProvince().trim());
             ps.setString(4, market.getLocationDescription());
+            ps.setString(5, market.getImageUrl());
             ps.executeUpdate();
             try (ResultSet gk = ps.getGeneratedKeys()) {
                 if (gk.next()) {
@@ -39,7 +40,7 @@ public class MarketDAO {
 
     // 2. READ (Single)
     public Market findById(int marketId) throws SQLException {
-        String sql = "SELECT market_id, market_name, district, province, location_description, created_at "
+        String sql = "SELECT market_id, market_name, district, province, location_description, image_url, created_at "
                    + "FROM markets WHERE market_id = ? AND market_id <> ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -57,7 +58,7 @@ public class MarketDAO {
     // 2. READ (All)
     public List<Market> getAll() throws SQLException {
         List<Market> list = new ArrayList<>();
-        String sql = "SELECT market_id, market_name, district, province, location_description, created_at "
+        String sql = "SELECT market_id, market_name, district, province, location_description, image_url, created_at "
                    + "FROM markets WHERE market_id <> ? ORDER BY market_name ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -73,7 +74,7 @@ public class MarketDAO {
 
     // 3. UPDATE
     public boolean update(Market market) throws SQLException {
-        String sql = "UPDATE markets SET market_name = ?, district = ?, province = ?, location_description = ? "
+        String sql = "UPDATE markets SET market_name = ?, district = ?, province = ?, location_description = ?, image_url = ? "
                    + "WHERE market_id = ? AND market_id <> ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -81,8 +82,9 @@ public class MarketDAO {
             ps.setString(2, market.getDistrict().trim());
             ps.setString(3, market.getProvince().trim());
             ps.setString(4, market.getLocationDescription());
-            ps.setInt(5, market.getMarketId());
-            ps.setInt(6, HIDDEN_MARKET_ID);
+            ps.setString(5, market.getImageUrl());
+            ps.setInt(6, market.getMarketId());
+            ps.setInt(7, HIDDEN_MARKET_ID);
             return ps.executeUpdate() > 0;
         }
     }
@@ -105,6 +107,7 @@ public class MarketDAO {
         m.setDistrict(rs.getString("district"));
         m.setProvince(rs.getString("province"));
         m.setLocationDescription(rs.getString("location_description"));
+        m.setImageUrl(rs.getString("image_url"));
         m.setCreatedAt(rs.getTimestamp("created_at"));
         return m;
     }
