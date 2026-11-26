@@ -107,7 +107,6 @@
 
         .home2-market-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
         .home2-market-card { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 14px; }
-        .home2-market-img { width: 88px; height: 72px; flex: 0 0 auto; border-radius: 8px; object-fit: cover; }
         .home2-market-card strong { display: block; overflow: hidden; color: var(--navy); font-size: 14px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
         .home2-market-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
         .home2-market-card span:last-child { margin-left: auto; color: var(--army-green); font-size: 18px; }
@@ -310,11 +309,11 @@
             <div class="home2-wide-inner">
                 <div class="home2-section-heading">
                     <span class="home2-kicker">Market snapshot</span>
-                    <h2 id="home2SnapshotTitle">Latest prices at a glance.</h2>
-                    <p>A quick look at the newest prices shared by local agents.</p>
+                    <h2 id="home2SnapshotTitle">Products at a glance.</h2>
+                    <p>A quick look at the products tracked in local markets.</p>
                 </div>
                 <div class="home2-grid-3" id="homePrices">
-                    <div class="home2-loading"><span class="home2-spinner"></span> Loading the latest prices…</div>
+                    <div class="home2-loading"><span class="home2-spinner"></span> Loading products…</div>
                 </div>
                 <a href="prices.html" class="home2-snapshot-link">See all price reports <span aria-hidden="true">→</span></a>
             </div>
@@ -387,24 +386,10 @@
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
     <script>
-        let homePriceReports = [];
-
         function escapeHome(value) {
             const node = document.createElement('span');
             node.textContent = value == null ? '' : String(value);
             return node.innerHTML;
-        }
-
-        function formatHomeNumber(value) {
-            const n = Number(value);
-            return Number.isFinite(n) ? n.toLocaleString() : '—';
-        }
-
-        function formatHomeDate(value) {
-            const d = new Date(`${value}T00:00:00`);
-            return Number.isNaN(d.getTime())
-                ? escapeHome(value)
-                : new Intl.DateTimeFormat('en-RW', { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
         }
 
         function productCategory(name) {
@@ -433,16 +418,6 @@
             return 'assets/images/catalog/product-placeholder.svg';
         }
 
-        function marketImage(name) {
-            const v = (name || '').toLowerCase();
-            if (v.includes('gisenyi')) return 'assets/images/markets/gisenyi.jpg';
-            if (v.includes('rubavu')) return 'assets/images/markets/rubavu.jpg';
-            if (v.includes('mahoko')) return 'assets/images/markets/mahoko.jpg';
-            if (v.includes('nyabugogo')) return 'assets/images/markets/nyabugogo.jpg';
-            if (v.includes('kigali')) return 'assets/images/kigali-market.jpg';
-            return 'assets/images/hero-background.jpg';
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.getElementById('publicMenuToggle');
             const nav = document.getElementById('publicNav');
@@ -466,31 +441,31 @@
                 }
             });
 
-            loadHomePrices();
+            loadHomeSnapshot();
             loadHomeProducts();
             loadFeaturedMarkets();
         });
 
-        async function loadHomePrices() {
+        async function loadHomeSnapshot() {
             const container = document.getElementById('homePrices');
             try {
-                homePriceReports = await AgriAPI.getPrices();
-                if (!homePriceReports.length) {
-                    container.innerHTML = '<div class="home2-empty"><strong>No prices shared yet</strong>Check back when local market agents submit their next update.</div>';
+                const products = await AgriAPI.getProducts();
+                if (!products.length) {
+                    container.innerHTML = '<div class="home2-empty"><strong>No products have been added yet</strong>Products will appear here once they are available.</div>';
                     return;
                 }
-                container.innerHTML = homePriceReports.slice(0, 3).map(r => `<article class="home2-price-card">
-                    <img class="home2-price-img home2-img" src="${escapeHome(productImage(r))}" alt="${escapeHome(r.productName)}" onerror="this.onerror=null;this.src='assets/images/catalog/product-placeholder.svg'">
+                container.innerHTML = products.slice(0, 3).map(p => `<article class="home2-price-card">
+                    <img class="home2-price-img home2-img" src="${escapeHome(productImage(p))}" alt="${escapeHome(p.productName)}" onerror="this.onerror=null;this.src='assets/images/catalog/product-placeholder.svg'">
                     <div class="home2-price-body">
-                        <span class="home2-price-date">${formatHomeDate(r.reportDate)}</span>
-                        <h3>${escapeHome(r.productName)}</h3>
-                        <p>${escapeHome(r.marketName)} · ${escapeHome(r.marketDistrict)}</p>
-                        <strong class="home2-price-value">${formatHomeNumber(r.priceRwf)} <small>RWF / ${escapeHome(r.unit)}</small></strong>
-                        <a class="home2-card-link" href="prices.html?productId=${encodeURIComponent(r.productId)}">View details <span aria-hidden="true">→</span></a>
+                        <span class="home2-price-date">${escapeHome(p.category || productCategory(p.productName))}</span>
+                        <h3>${escapeHome(p.productName)}</h3>
+                        <p>${escapeHome(p.description || 'Produce tracked in local markets')}</p>
+                        <strong class="home2-price-value">${escapeHome(p.defaultUnit || p.unit || 'standard unit')}</strong>
+                        <a class="home2-card-link" href="prices.html?productId=${encodeURIComponent(p.productId)}">View prices <span aria-hidden="true">→</span></a>
                     </div>
                 </article>`).join('');
             } catch (_) {
-                container.innerHTML = '<div class="home2-empty"><strong>Prices are temporarily unavailable</strong>Please try again in a moment or <a href="markets.html">browse the markets</a>.</div>';
+                container.innerHTML = '<div class="home2-empty"><strong>Products are temporarily unavailable</strong>Please try again in a moment or <a href="products.html">browse the catalogue</a>.</div>';
             }
         }
 
@@ -537,7 +512,6 @@
                     return;
                 }
                 container.innerHTML = markets.slice(0, 3).map(m => `<a class="home2-market-card" href="prices.html?marketId=${encodeURIComponent(m.marketId)}">
-                    <img class="home2-market-img home2-img" src="${escapeHome(marketImage(m.marketName))}" alt="${escapeHome(m.marketName)} market" onerror="this.onerror=null;this.src='assets/images/hero-background.jpg'">
                     <span><strong>${escapeHome(m.marketName)}</strong><small>${escapeHome(m.district)} · ${escapeHome(m.province)}</small></span>
                     <span aria-hidden="true">↗</span>
                 </a>`).join('');
