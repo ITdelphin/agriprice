@@ -1705,7 +1705,7 @@ p, li, td, th, label, small, span { color: inherit; }
 .chart-wrapper { width: 100%; }
 .chart-wrapper canvas { max-width: 100%; }
 .home-product-art, .catalog-product-photo, .market-directory-photo { background: var(--beige); }
-img { max-width: 100%; }
+img { display: block; max-width: 100%; }
 .table-responsive, .catalog-table-scroll { max-width: 100%; }
 
 /* Responsive accessibility */
@@ -1768,7 +1768,6 @@ img { max-width: 100%; }
     .price-hero-credit { right: 12px; bottom: 8px; font-size: 9px; }
 }
 
-img:not([src$="logo.svg"]) { display: none !important; }
 .home-hero { background: var(--navy) !important; }
 .home-hero-photo,
 .login-story-photo,
